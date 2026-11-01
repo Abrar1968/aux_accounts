@@ -16,8 +16,7 @@ class CrmSettingsService
     public function __construct(
         private readonly LeadOutcomeRepositoryInterface $outcomes,
         private readonly CrmOptionRepositoryInterface $options,
-    ) {
-    }
+    ) {}
 
     public function all(): array
     {

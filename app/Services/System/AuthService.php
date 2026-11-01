@@ -2,6 +2,7 @@
 
 namespace App\Services\System;
 
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,9 +15,7 @@ use Illuminate\Validation\ValidationException;
 /** Session authentication + password reset (SMTP). */
 class AuthService
 {
-    public function __construct(private readonly UserService $users)
-    {
-    }
+    public function __construct(private readonly UserService $users) {}
 
     public function login(Request $request, string $email, string $password, bool $remember): void
     {
@@ -35,7 +34,7 @@ class AuthService
     }
 
     /** Landing page per role: callers go straight to the CRM Today screen. */
-    public function homeFor(\App\Models\User $user): string
+    public function homeFor(User $user): string
     {
         return $user->hasPermission('dashboard.view') ? route('dashboard') : route('crm.today');
     }

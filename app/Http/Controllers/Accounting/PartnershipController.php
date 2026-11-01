@@ -15,9 +15,7 @@ use Inertia\Response;
 
 class PartnershipController extends Controller
 {
-    public function __construct(private readonly PartnershipService $partnerships)
-    {
-    }
+    public function __construct(private readonly PartnershipService $partnerships) {}
 
     public function index(Request $request, ListingService $list): Response
     {

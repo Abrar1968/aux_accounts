@@ -11,6 +11,7 @@ use App\Models\OpeningReceivable;
 use App\Models\PartnershipRevenue;
 use App\Models\Project;
 use App\Repositories\Contracts\CustomerPaymentRepositoryInterface;
+use App\Services\Shared\AuditService;
 use App\Services\Shared\PeriodService;
 use App\Services\Shared\SequenceService;
 use App\Support\Money;
@@ -36,8 +37,7 @@ class CustomerPaymentService
         private readonly CustomerPaymentRepositoryInterface $repo,
         private readonly SequenceService $sequences,
         private readonly PeriodService $periods,
-    ) {
-    }
+    ) {}
 
     /** @param array{paid_at:string, receivable_type:string, receivable_id:int, cash_received:float, processing_fee?:?float, method?:?string, account?:?string, notes?:?string, request_id?:?string, source_name?:?string} $data */
     public function record(array $data): CustomerPayment
@@ -108,7 +108,7 @@ class CustomerPaymentService
     public function delete(CustomerPayment $p, string $reason): void
     {
         $this->periods->assertOpen($p->paid_at);
-        app(\App\Services\Shared\AuditService::class)->record('deleted', $p, $p->toArray(), null, $reason);
+        app(AuditService::class)->record('deleted', $p, $p->toArray(), null, $reason);
         $p->delete();
     }
 }

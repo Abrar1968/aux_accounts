@@ -10,9 +10,7 @@ use Inertia\Response;
 
 class LiabilityController extends Controller
 {
-    public function __construct(private readonly LiabilityService $liabilities)
-    {
-    }
+    public function __construct(private readonly LiabilityService $liabilities) {}
 
     public function index(): Response
     {

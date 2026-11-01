@@ -27,8 +27,7 @@ class ReceivableService
         private readonly OpeningReceivableRepositoryInterface $opening,
         private readonly PartnershipRevenueRepositoryInterface $partnerships,
         private readonly CustomerPaymentRepositoryInterface $payments,
-    ) {
-    }
+    ) {}
 
     /** @return Collection<int, array<string,mixed>> */
     public function balancesAt(?string $cut = null): Collection

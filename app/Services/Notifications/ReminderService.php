@@ -30,8 +30,7 @@ class ReminderService
         private readonly ReceivableService $receivables,
         private readonly PayrollService $payroll,
         private readonly ControlsService $controls,
-    ) {
-    }
+    ) {}
 
     private function now(): CarbonImmutable
     {
@@ -46,8 +45,12 @@ class ReminderService
         $groups = Lead::query()->whereNotIn('stage', LeadComputer::CLOSED_STAGES)->whereNotNull('next_followup')
             ->whereDate('next_followup', '<=', $today)->get()->groupBy('owner');
         foreach ($groups as $owner => $leads) {
-            $user = User::query()->where('name', $owner)->where('is_active', true)->first();
-            $users = $user ? collect([$user]) : $this->notifications->recipients(FollowUpsDue::TYPE);
+            $ownerIds = $leads->pluck('owner_id')->filter()->unique();
+            $users = User::query()->where('is_active', true)
+                ->where(fn ($q) => $q->whereIn('id', $ownerIds)->orWhere('name', $owner))->get();
+            if ($users->isEmpty()) {
+                $users = $this->notifications->recipients(FollowUpsDue::TYPE);
+            }
             $overdue = $leads->filter(fn ($l) => $l->next_followup->toDateString() < $today)->count();
             $this->notifications->send(new FollowUpsDue(
                 $leads->count().' follow-ups due today',

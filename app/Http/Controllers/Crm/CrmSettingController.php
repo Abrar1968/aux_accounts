@@ -8,13 +8,10 @@ use App\Http\Requests\Crm\SaveOptionRequest;
 use App\Http\Requests\Crm\SaveOutcomeRequest;
 use App\Services\Crm\CrmSettingsService;
 use App\Services\Crm\DailyAllocationService;
-use Illuminate\Http\Request;
 
 class CrmSettingController extends Controller
 {
-    public function __construct(private readonly CrmSettingsService $settings)
-    {
-    }
+    public function __construct(private readonly CrmSettingsService $settings) {}
 
     public function saveOutcome(SaveOutcomeRequest $request)
     {

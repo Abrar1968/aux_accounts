@@ -29,6 +29,16 @@
         <env name="MAIL_MAILER" value="array" force="true"/>
         <env name="QUEUE_CONNECTION" value="sync" force="true"/>
         <env name="SESSION_DRIVER" value="array" force="true"/>
+        <!-- Cloud/CI shells export these as process vars ($_SERVER); override them too. -->
+        <server name="APP_ENV" value="testing" force="true"/>
+        <server name="BROADCAST_CONNECTION" value="null" force="true"/>
+        <server name="CACHE_STORE" value="array" force="true"/>
+        <server name="DB_CONNECTION" value="sqlite" force="true"/>
+        <server name="DB_DATABASE" value=":memory:" force="true"/>
+        <server name="DB_URL" value="" force="true"/>
+        <server name="MAIL_MAILER" value="array" force="true"/>
+        <server name="QUEUE_CONNECTION" value="sync" force="true"/>
+        <server name="SESSION_DRIVER" value="array" force="true"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>

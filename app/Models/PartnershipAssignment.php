@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Casts\DateOnly;
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Model;
 
 class PartnershipAssignment extends Model
 {
-    use \App\Models\Concerns\Auditable;
+    use Auditable;
 
     protected $table = 'partnership_assignments';
 
@@ -15,15 +17,24 @@ class PartnershipAssignment extends Model
     protected function casts(): array
     {
         return [
-            'effective_from' => \App\Casts\DateOnly::class,
-            'effective_through' => \App\Casts\DateOnly::class,
+            'effective_from' => DateOnly::class,
+            'effective_through' => DateOnly::class,
             'share_percent' => 'decimal:4',
         ];
     }
 
-    public function collaborator() { return $this->belongsTo(Collaborator::class); }
+    public function collaborator()
+    {
+        return $this->belongsTo(Collaborator::class);
+    }
 
-    public function package() { return $this->belongsTo(PartnershipPackage::class, 'package_id'); }
+    public function package()
+    {
+        return $this->belongsTo(PartnershipPackage::class, 'package_id');
+    }
 
-    public function revenues() { return $this->hasMany(PartnershipRevenue::class, 'assignment_id'); }
+    public function revenues()
+    {
+        return $this->hasMany(PartnershipRevenue::class, 'assignment_id');
+    }
 }

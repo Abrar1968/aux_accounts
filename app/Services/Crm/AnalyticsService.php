@@ -15,8 +15,7 @@ class AnalyticsService
     public function __construct(
         private readonly LeadRepositoryInterface $leads,
         private readonly LeadCallRepositoryInterface $calls,
-    ) {
-    }
+    ) {}
 
     /** @return array<string,mixed> */
     public function forPeriod(string $start, string $end): array

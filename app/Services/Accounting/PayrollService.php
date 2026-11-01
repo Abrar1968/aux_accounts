@@ -20,8 +20,7 @@ class PayrollService
     public function __construct(
         private readonly PayrollRepositoryInterface $repo,
         private readonly PeriodService $periods,
-    ) {
-    }
+    ) {}
 
     public static function codeFor(Period $p, string $employeeName): string
     {

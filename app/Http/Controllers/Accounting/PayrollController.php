@@ -18,9 +18,7 @@ use Inertia\Response;
 
 class PayrollController extends Controller
 {
-    public function __construct(private readonly PayrollService $payroll)
-    {
-    }
+    public function __construct(private readonly PayrollService $payroll) {}
 
     public function index(Request $request, ListingService $list): Response
     {

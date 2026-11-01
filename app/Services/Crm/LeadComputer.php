@@ -17,9 +17,7 @@ class LeadComputer
 
     public const MEETING_OUTCOMES = ['Meeting Set', 'Office Visit — Scheduled'];
 
-    public function __construct(private readonly PhoneNormalizer $phones)
-    {
-    }
+    public function __construct(private readonly PhoneNormalizer $phones) {}
 
     /** @return array{stage:string, score:int, followup_days:int} */
     public function outcome(string $outcome, array $outcomes): array

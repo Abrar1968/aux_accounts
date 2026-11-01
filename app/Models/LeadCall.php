@@ -18,5 +18,8 @@ class LeadCall extends Model
         ];
     }
 
-    public function lead() { return $this->belongsTo(Lead::class); }
+    public function lead()
+    {
+        return $this->belongsTo(Lead::class);
+    }
 }

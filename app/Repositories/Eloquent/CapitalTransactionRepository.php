@@ -9,7 +9,7 @@ class CapitalTransactionRepository extends BaseRepository implements CapitalTran
 {
     protected string $model = CapitalTransaction::class;
 
-    protected array $searchable = ['type','notes'];
+    protected array $searchable = ['type', 'notes'];
 
     protected function periodFilterColumns(): array
     {

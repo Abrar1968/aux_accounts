@@ -18,8 +18,7 @@ class SearchService
         private readonly OperatingExpenseRepositoryInterface $expenses,
         private readonly EmployeeRepositoryInterface $employees,
         private readonly LeadRepositoryInterface $leads,
-    ) {
-    }
+    ) {}
 
     public function search(User $user, string $q, int $limit = 6): array
     {

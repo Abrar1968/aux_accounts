@@ -11,9 +11,7 @@ use Inertia\Response;
 
 class NotificationController extends Controller
 {
-    public function __construct(private readonly NotificationService $notifications)
-    {
-    }
+    public function __construct(private readonly NotificationService $notifications) {}
 
     public function index(Request $request): Response
     {

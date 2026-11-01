@@ -9,5 +9,4 @@ class PartnershipPackage extends Model
     protected $table = 'partnership_packages';
 
     protected $guarded = ['id'];
-
 }

@@ -16,7 +16,7 @@ class RecognitionCalculator
      *   contract_value:float, opening_progress:float, ending_progress:?float, override:mixed,
      *   duplicate_in_month:bool, historical:bool
      * } $in
-     * @param array{start:string, months:int, share:float} $siam
+     * @param  array{start:string, months:int, share:float}  $siam
      * @return array{entry_check:string, auto_revenue:float, recognized_amount:float, siam_eligible:float, siam_share:float, recognition_month:?string}
      */
     public function compute(array $in, array $siam): array

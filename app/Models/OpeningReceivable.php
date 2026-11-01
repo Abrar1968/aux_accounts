@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Model;
 
 class OpeningReceivable extends Model
 {
-    use \App\Models\Concerns\Auditable;
+    use Auditable;
 
     protected $table = 'opening_receivables';
 
@@ -19,5 +20,8 @@ class OpeningReceivable extends Model
         ];
     }
 
-    public function payments() { return $this->hasMany(CustomerPayment::class, 'receivable_id')->where('receivable_type', 'opening'); }
+    public function payments()
+    {
+        return $this->hasMany(CustomerPayment::class, 'receivable_id')->where('receivable_type', 'opening');
+    }
 }

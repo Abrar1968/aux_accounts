@@ -6,9 +6,9 @@ use App\Exceptions\Domain\DomainException;
 use App\Models\Collaborator;
 use App\Models\PartnershipAssignment;
 use App\Models\PartnershipPackage;
-use App\Services\Shared\SequenceService;
 use App\Models\PartnershipRevenue;
 use App\Services\Shared\PeriodService;
+use App\Services\Shared\SequenceService;
 use App\Support\Money;
 use App\Support\Period;
 
@@ -22,8 +22,7 @@ class PartnershipService
     public function __construct(
         private readonly PeriodService $periods,
         private readonly SequenceService $sequences,
-    ) {
-    }
+    ) {}
 
     public function generateThrough(Period $through): int
     {

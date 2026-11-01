@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Model;
 
 class Investor extends Model
 {
-    use \App\Models\Concerns\Auditable;
+    use Auditable;
 
     protected $table = 'investors';
 
@@ -20,7 +21,13 @@ class Investor extends Model
         ];
     }
 
-    public function ownerships() { return $this->hasMany(InvestorOwnership::class); }
+    public function ownerships()
+    {
+        return $this->hasMany(InvestorOwnership::class);
+    }
 
-    public function transactions() { return $this->hasMany(CapitalTransaction::class); }
+    public function transactions()
+    {
+        return $this->hasMany(CapitalTransaction::class);
+    }
 }

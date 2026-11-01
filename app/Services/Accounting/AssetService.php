@@ -17,8 +17,7 @@ class AssetService
         private readonly DepreciationCalculator $calculator,
         private readonly PeriodService $periods,
         private readonly SequenceService $sequences,
-    ) {
-    }
+    ) {}
 
     public function create(array $data): FixedAsset
     {

@@ -9,5 +9,4 @@ class LeadOutcome extends Model
     protected $table = 'lead_outcomes';
 
     protected $guarded = ['id'];
-
 }

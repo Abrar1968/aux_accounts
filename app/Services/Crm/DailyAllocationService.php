@@ -16,8 +16,7 @@ class DailyAllocationService
     public function __construct(
         private readonly LeadRepositoryInterface $leads,
         private readonly SettingsService $settings,
-    ) {
-    }
+    ) {}
 
     public function target(): int
     {

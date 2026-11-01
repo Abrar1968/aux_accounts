@@ -12,9 +12,7 @@ use InvalidArgumentException;
  */
 final class Period
 {
-    private function __construct(public readonly CarbonImmutable $start)
-    {
-    }
+    private function __construct(public readonly CarbonImmutable $start) {}
 
     public static function of(string|DateTimeInterface $value): self
     {

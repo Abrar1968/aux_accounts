@@ -26,8 +26,7 @@ abstract class AppNotification extends Notification implements ShouldQueue
         public string $level = 'info',
         public ?string $url = null,
         public array $meta = [],
-    ) {
-    }
+    ) {}
 
     public function via(object $notifiable): array
     {

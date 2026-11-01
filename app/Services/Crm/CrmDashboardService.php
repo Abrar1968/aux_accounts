@@ -15,8 +15,7 @@ class CrmDashboardService
         private readonly LeadRepositoryInterface $leads,
         private readonly LeadService $leadService,
         private readonly SettingsService $settings,
-    ) {
-    }
+    ) {}
 
     public function summary(?CarbonImmutable $today = null): array
     {

@@ -15,7 +15,7 @@ class BackupService
     {
         $conn = DB::connection();
         $driver = $conn->getDriverName();
-        $sql = "-- Auxtech Ops backup ".now()->toDateTimeString()." ({$driver})\nSET FOREIGN_KEY_CHECKS=0;\n";
+        $sql = '-- Auxtech Ops backup '.now()->toDateTimeString()." ({$driver})\nSET FOREIGN_KEY_CHECKS=0;\n";
         $tables = $driver === 'sqlite'
             ? collect($conn->select("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"))->pluck('name')
             : collect($conn->select('SHOW TABLES'))->map(fn ($r) => array_values((array) $r)[0]);
@@ -27,7 +27,7 @@ class BackupService
             }
             foreach ($conn->table($t)->cursor() as $row) {
                 $vals = array_map(fn ($v) => $v === null ? 'NULL' : $pdo->quote((string) $v), (array) $row);
-                $sql .= "INSERT INTO `{$t}` (`".implode('`,`', array_keys((array) $row))."`) VALUES (".implode(',', $vals).");\n";
+                $sql .= "INSERT INTO `{$t}` (`".implode('`,`', array_keys((array) $row)).'`) VALUES ('.implode(',', $vals).");\n";
             }
         }
         $sql .= "SET FOREIGN_KEY_CHECKS=1;\n";

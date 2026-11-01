@@ -15,9 +15,7 @@ use Inertia\Response;
 
 class UserController extends Controller
 {
-    public function __construct(private readonly UserService $users)
-    {
-    }
+    public function __construct(private readonly UserService $users) {}
 
     public function index(): Response
     {

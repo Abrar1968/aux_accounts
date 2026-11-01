@@ -13,9 +13,7 @@ use Inertia\Response;
 
 class AdvanceController extends Controller
 {
-    public function __construct(private readonly AdvanceService $advances)
-    {
-    }
+    public function __construct(private readonly AdvanceService $advances) {}
 
     public function index(Request $request, ListingService $list): Response
     {

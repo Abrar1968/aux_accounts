@@ -11,9 +11,7 @@ use Illuminate\Support\Facades\Storage;
 
 class AttachmentController extends Controller
 {
-    public function __construct(private readonly AttachmentService $attachments)
-    {
-    }
+    public function __construct(private readonly AttachmentService $attachments) {}
 
     public function store(StoreAttachmentRequest $request)
     {

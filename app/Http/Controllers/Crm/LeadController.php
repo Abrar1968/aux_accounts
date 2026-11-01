@@ -22,9 +22,7 @@ use Inertia\Response;
 
 class LeadController extends Controller
 {
-    public function __construct(private readonly LeadService $leads)
-    {
-    }
+    public function __construct(private readonly LeadService $leads) {}
 
     public function index(Request $request, ListingService $list, CrmSettingsService $settings): Response
     {

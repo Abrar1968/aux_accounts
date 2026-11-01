@@ -13,9 +13,7 @@ use Inertia\Response;
 
 class CapitalController extends Controller
 {
-    public function __construct(private readonly CapitalService $capital)
-    {
-    }
+    public function __construct(private readonly CapitalService $capital) {}
 
     public function index(Request $request, ListingService $list): Response
     {

@@ -5,7 +5,6 @@ namespace App\Services\Crm;
 use App\Exceptions\Domain\DomainException;
 use App\Models\Lead;
 use App\Models\LeadCall;
-use App\Repositories\Contracts\CrmOptionRepositoryInterface;
 use App\Repositories\Contracts\LeadCallRepositoryInterface;
 use App\Services\Shared\SettingsService;
 use Carbon\CarbonImmutable;
@@ -22,11 +21,10 @@ class CallLogService
         private readonly LeadCallRepositoryInterface $calls,
         private readonly LeadService $leads,
         private readonly SettingsService $settings,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param array{call_uuid:string, call_type:string, outcome:string, caller?:?string, notes?:?string, next_followup?:?string} $data
+     * @param  array{call_uuid:string, call_type:string, outcome:string, caller?:?string, notes?:?string, next_followup?:?string}  $data
      * @return array{action:'saved'|'already_saved', call: LeadCall}
      */
     public function save(Lead $lead, array $data): array

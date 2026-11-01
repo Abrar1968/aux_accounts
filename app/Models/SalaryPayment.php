@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Casts\DateOnly;
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Model;
 
 class SalaryPayment extends Model
 {
-    use \App\Models\Concerns\Auditable;
+    use Auditable;
 
     protected $table = 'salary_payments';
 
@@ -15,11 +17,14 @@ class SalaryPayment extends Model
     protected function casts(): array
     {
         return [
-            'paid_on' => \App\Casts\DateOnly::class,
+            'paid_on' => DateOnly::class,
             'amount' => 'decimal:2',
             'posted_at' => 'datetime',
         ];
     }
 
-    public function payroll() { return $this->belongsTo(Payroll::class); }
+    public function payroll()
+    {
+        return $this->belongsTo(Payroll::class);
+    }
 }

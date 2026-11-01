@@ -16,5 +16,4 @@ class ExpenseCategory extends Model
             'statement_line' => 'boolean',
         ];
     }
-
 }

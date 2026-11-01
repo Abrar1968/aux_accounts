@@ -13,9 +13,7 @@ use Inertia\Response;
 
 class AssetController extends Controller
 {
-    public function __construct(private readonly AssetService $assets)
-    {
-    }
+    public function __construct(private readonly AssetService $assets) {}
 
     public function index(): Response
     {

@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Casts\DateOnly;
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Model;
 
 class Payroll extends Model
 {
-    use \App\Models\Concerns\Auditable;
+    use Auditable;
 
     protected $table = 'payrolls';
 
@@ -15,7 +17,7 @@ class Payroll extends Model
     protected function casts(): array
     {
         return [
-            'period' => \App\Casts\DateOnly::class,
+            'period' => DateOnly::class,
             'gross_salary' => 'decimal:2',
             'source_net_paid' => 'decimal:2',
             'legacy_referral_snapshot' => 'decimal:2',
@@ -23,9 +25,18 @@ class Payroll extends Model
         ];
     }
 
-    public function employee() { return $this->belongsTo(Employee::class); }
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class);
+    }
 
-    public function payments() { return $this->hasMany(SalaryPayment::class); }
+    public function payments()
+    {
+        return $this->hasMany(SalaryPayment::class);
+    }
 
-    public function recoveries() { return $this->hasMany(EmployeeAdvance::class)->where('type', 'Recovery'); }
+    public function recoveries()
+    {
+        return $this->hasMany(EmployeeAdvance::class)->where('type', 'Recovery');
+    }
 }

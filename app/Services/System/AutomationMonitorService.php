@@ -4,7 +4,6 @@ namespace App\Services\System;
 
 use App\Models\AuditLog;
 use App\Models\AutomationRun;
-use App\Models\User;
 use App\Notifications\AutomationFailed;
 use App\Services\Notifications\NotificationService;
 use Closure;
@@ -13,9 +12,7 @@ use Throwable;
 /** Automation runs (replaces the Apps_Script status tab + CRM Automation Log) and audit browsing. */
 class AutomationMonitorService
 {
-    public function __construct(private readonly NotificationService $notifications)
-    {
-    }
+    public function __construct(private readonly NotificationService $notifications) {}
 
     /** Runs a scheduled job, records it, and alerts owners on failure. */
     public function track(string $command, Closure $job): mixed

@@ -11,9 +11,7 @@ class LeadUpdated implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets;
 
-    public function __construct(public int $leadId, public string $code)
-    {
-    }
+    public function __construct(public int $leadId, public string $code) {}
 
     public function broadcastOn(): array
     {

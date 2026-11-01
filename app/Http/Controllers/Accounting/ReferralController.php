@@ -14,9 +14,7 @@ use Inertia\Response;
 
 class ReferralController extends Controller
 {
-    public function __construct(private readonly ReferralService $referrals)
-    {
-    }
+    public function __construct(private readonly ReferralService $referrals) {}
 
     public function index(Request $request, ListingService $list): Response
     {

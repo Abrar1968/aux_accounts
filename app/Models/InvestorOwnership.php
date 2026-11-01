@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\DateOnly;
 use Illuminate\Database\Eloquent\Model;
 
 class InvestorOwnership extends Model
@@ -13,10 +14,13 @@ class InvestorOwnership extends Model
     protected function casts(): array
     {
         return [
-            'effective_from' => \App\Casts\DateOnly::class,
+            'effective_from' => DateOnly::class,
             'percent' => 'decimal:4',
         ];
     }
 
-    public function investor() { return $this->belongsTo(Investor::class); }
+    public function investor()
+    {
+        return $this->belongsTo(Investor::class);
+    }
 }

@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Casts\DateOnly;
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Model;
 
 class MarketingService extends Model
 {
-    use \App\Models\Concerns\Auditable;
+    use Auditable;
 
     protected $table = 'marketing_services';
 
@@ -15,10 +17,13 @@ class MarketingService extends Model
     protected function casts(): array
     {
         return [
-            'service_month' => \App\Casts\DateOnly::class,
+            'service_month' => DateOnly::class,
             'revenue' => 'decimal:2',
         ];
     }
 
-    public function payments() { return $this->hasMany(CustomerPayment::class, 'receivable_id')->where('receivable_type', 'marketing'); }
+    public function payments()
+    {
+        return $this->hasMany(CustomerPayment::class, 'receivable_id')->where('receivable_type', 'marketing');
+    }
 }

@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Casts\DateOnly;
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Model;
 
 class EmployeeAdvance extends Model
 {
-    use \App\Models\Concerns\Auditable;
+    use Auditable;
 
     protected $table = 'employee_advances';
 
@@ -15,13 +17,19 @@ class EmployeeAdvance extends Model
     protected function casts(): array
     {
         return [
-            'txn_date' => \App\Casts\DateOnly::class,
-            'related_salary_period' => \App\Casts\DateOnly::class,
+            'txn_date' => DateOnly::class,
+            'related_salary_period' => DateOnly::class,
             'amount' => 'decimal:2',
         ];
     }
 
-    public function employee() { return $this->belongsTo(Employee::class); }
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class);
+    }
 
-    public function payroll() { return $this->belongsTo(Payroll::class); }
+    public function payroll()
+    {
+        return $this->belongsTo(Payroll::class);
+    }
 }

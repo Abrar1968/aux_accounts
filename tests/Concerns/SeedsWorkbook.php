@@ -16,7 +16,7 @@ trait SeedsWorkbook
 
     protected string $seeder = DatabaseSeeder::class;
 
-    protected function userWithRole(string $role, string $name = null): User
+    protected function userWithRole(string $role, ?string $name = null): User
     {
         return User::factory()->create([
             'name' => $name ?? ucfirst($role).' User',

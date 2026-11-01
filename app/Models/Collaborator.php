@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Casts\DateOnly;
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Model;
 
 class Collaborator extends Model
 {
-    use \App\Models\Concerns\Auditable;
+    use Auditable;
 
     protected $table = 'collaborators';
 
@@ -15,10 +17,13 @@ class Collaborator extends Model
     protected function casts(): array
     {
         return [
-            'agreement_start' => \App\Casts\DateOnly::class,
-            'agreement_end' => \App\Casts\DateOnly::class,
+            'agreement_start' => DateOnly::class,
+            'agreement_end' => DateOnly::class,
         ];
     }
 
-    public function assignments() { return $this->hasMany(PartnershipAssignment::class); }
+    public function assignments()
+    {
+        return $this->hasMany(PartnershipAssignment::class);
+    }
 }

@@ -20,8 +20,7 @@ class CrmReportService
         private readonly CrmReportRepositoryInterface $reports,
         private readonly AnalyticsService $analytics,
         private readonly SettingsService $settings,
-    ) {
-    }
+    ) {}
 
     /** @return array{start:string, end:string, status:string} */
     public function period(string $type, string $day, ?CarbonImmutable $now = null): array

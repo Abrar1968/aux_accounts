@@ -11,9 +11,7 @@ class AutomationFinished implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets;
 
-    public function __construct(public string $command, public array $summary)
-    {
-    }
+    public function __construct(public string $command, public array $summary) {}
 
     public function broadcastOn(): array
     {

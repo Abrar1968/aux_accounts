@@ -18,9 +18,7 @@ use Inertia\Response;
 
 class ProjectController extends Controller
 {
-    public function __construct(private readonly ProjectService $projects)
-    {
-    }
+    public function __construct(private readonly ProjectService $projects) {}
 
     public function index(Request $request, ListingService $list): Response
     {

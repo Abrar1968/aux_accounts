@@ -16,8 +16,7 @@ class MarketingRevenueService
         private readonly MarketingServiceRepositoryInterface $repo,
         private readonly PeriodService $periods,
         private readonly SequenceService $sequences,
-    ) {
-    }
+    ) {}
 
     public function create(array $data): MarketingService
     {

@@ -16,5 +16,4 @@ class SourceAlias extends Model
             'confirmed' => 'boolean',
         ];
     }
-
 }

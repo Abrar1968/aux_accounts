@@ -11,9 +11,7 @@ use App\Support\Money;
 class ReferralTierCalculator
 {
     /** @param list<array{below:?int,fixed?:float,rate?:float}> $tiers */
-    public function __construct(private readonly array $tiers)
-    {
-    }
+    public function __construct(private readonly array $tiers) {}
 
     public function memo(float $totalContractValue): float
     {

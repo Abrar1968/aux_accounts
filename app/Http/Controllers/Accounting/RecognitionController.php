@@ -15,9 +15,7 @@ use Inertia\Response;
 
 class RecognitionController extends Controller
 {
-    public function __construct(private readonly RevenueRecognitionService $recognition)
-    {
-    }
+    public function __construct(private readonly RevenueRecognitionService $recognition) {}
 
     public function index(Request $request, ListingService $list): Response
     {

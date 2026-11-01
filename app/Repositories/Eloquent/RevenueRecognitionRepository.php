@@ -9,7 +9,7 @@ class RevenueRecognitionRepository extends BaseRepository implements RevenueReco
 {
     protected string $model = RevenueRecognition::class;
 
-    protected array $searchable = ['code','notes'];
+    protected array $searchable = ['code', 'notes'];
 
     protected function periodFilterColumns(): array
     {

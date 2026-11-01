@@ -18,8 +18,7 @@ class PeriodService
     public function __construct(
         private readonly PeriodRepositoryInterface $periods,
         private readonly SettingsService $settings,
-    ) {
-    }
+    ) {}
 
     public function modelStart(): Period
     {

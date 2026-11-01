@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Casts\DateOnly;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -19,7 +20,7 @@ class RecordResource extends JsonResource
             $out[$k] = match (true) {
                 $v === null => null,
                 is_string($cast) && str_starts_with($cast, 'decimal') => (float) $v,
-                $cast === \App\Casts\DateOnly::class => substr((string) $v, 0, 10),
+                $cast === DateOnly::class => substr((string) $v, 0, 10),
                 default => $v,
             };
         }

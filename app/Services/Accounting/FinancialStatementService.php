@@ -9,8 +9,8 @@ use App\Repositories\Contracts\ExpensePaymentRepositoryInterface;
 use App\Repositories\Contracts\FixedAssetRepositoryInterface;
 use App\Repositories\Contracts\LiabilityRepositoryInterface;
 use App\Repositories\Contracts\MarketingServiceRepositoryInterface;
-use App\Repositories\Contracts\OperatingExpenseRepositoryInterface;
 use App\Repositories\Contracts\OpeningReceivableRepositoryInterface;
+use App\Repositories\Contracts\OperatingExpenseRepositoryInterface;
 use App\Repositories\Contracts\PartnershipRevenueRepositoryInterface;
 use App\Repositories\Contracts\PayrollRepositoryInterface;
 use App\Repositories\Contracts\ReferralRepositoryInterface;
@@ -119,8 +119,7 @@ class FinancialStatementService
         private readonly EmployeeAdvanceRepositoryInterface $advances,
         private readonly FixedAssetRepositoryInterface $assets,
         private readonly OpeningReceivableRepositoryInterface $openingAr,
-    ) {
-    }
+    ) {}
 
     public function flush(): void
     {
@@ -186,7 +185,7 @@ class FinancialStatementService
         $fees = $this->payments->sumBetween('processing_fee', 'paid_at', $from, $to);
         $byCategory = $this->expenses->query()
             ->where('accrual_month', '>=', $from)->where('accrual_month', '<', $to)
-            ->selectRaw("category, SUM(amount) total, SUM(CASE WHEN subcategory = ? THEN 0 ELSE amount END) non_fee", [self::PROCESSING_FEE])
+            ->selectRaw('category, SUM(amount) total, SUM(CASE WHEN subcategory = ? THEN 0 ELSE amount END) non_fee', [self::PROCESSING_FEE])
             ->groupBy('category')->get()->keyBy('category');
 
         $named = 0.0;

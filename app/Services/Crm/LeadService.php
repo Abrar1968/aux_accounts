@@ -5,11 +5,15 @@ namespace App\Services\Crm;
 use App\Events\LeadUpdated;
 use App\Exceptions\Domain\DomainException;
 use App\Models\Lead;
-use App\Models\LeadCall;
+use App\Models\Project;
+use App\Models\User;
+use App\Notifications\DealWon;
+use App\Notifications\LeadAssigned;
 use App\Repositories\Contracts\LeadCallRepositoryInterface;
 use App\Repositories\Contracts\LeadOutcomeRepositoryInterface;
 use App\Repositories\Contracts\LeadRepositoryInterface;
 use App\Services\Accounting\ProjectService;
+use App\Services\Notifications\NotificationService;
 use App\Services\Shared\SettingsService;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Auth;
@@ -30,8 +34,7 @@ class LeadService
         private readonly LeadComputer $computer,
         private readonly PhoneNormalizer $phones,
         private readonly SettingsService $settings,
-    ) {
-    }
+    ) {}
 
     /** @return array<string, array{stage:string, score:int, followup_days:int}> */
     public function outcomes(): array
@@ -106,12 +109,12 @@ class LeadService
         $reassigned = $lead->exists && $lead->isDirty('owner') && $lead->owner;
         $lead->save();
         event(new LeadUpdated($lead->id, $lead->code));
-        $notifications = app(\App\Services\Notifications\NotificationService::class);
+        $notifications = app(NotificationService::class);
         if ($becameWon) {
-            $notifications->send(new \App\Notifications\DealWon('Deal won 🎉', $lead->phone.' · '.$lead->business_type.($lead->deal_value ? ' · ৳'.number_format((float) $lead->deal_value, 2) : ''), 'success', '/crm/leads/'.$lead->id));
+            $notifications->send(new DealWon('Deal won 🎉', $lead->phone.' · '.$lead->business_type.($lead->deal_value ? ' · ৳'.number_format((float) $lead->deal_value, 2) : ''), 'success', '/crm/leads/'.$lead->id));
         }
-        if ($reassigned && ($user = \App\Models\User::query()->where('name', $lead->owner)->first())) {
-            $notifications->send(new \App\Notifications\LeadAssigned('Lead assigned to you', $lead->phone.' · '.$lead->outcome, 'info', '/crm/leads/'.$lead->id), $user);
+        if ($reassigned && ($user = User::query()->where('name', $lead->owner)->first())) {
+            $notifications->send(new LeadAssigned('Lead assigned to you', $lead->phone.' · '.$lead->outcome, 'info', '/crm/leads/'.$lead->id), $user);
         }
 
         return $lead;
@@ -183,7 +186,7 @@ class LeadService
     }
 
     /** CRM → accounting: create a Project from a Won lead (new integration). */
-    public function convertToProject(Lead $lead, array $data): \App\Models\Project
+    public function convertToProject(Lead $lead, array $data): Project
     {
         if ($lead->stage !== 'Won') {
             throw new DomainException('Only Won leads can be converted to a project.');

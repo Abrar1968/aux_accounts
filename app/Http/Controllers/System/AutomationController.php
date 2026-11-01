@@ -10,9 +10,7 @@ use Inertia\Response;
 
 class AutomationController extends Controller
 {
-    public function __construct(private readonly AutomationMonitorService $monitor)
-    {
-    }
+    public function __construct(private readonly AutomationMonitorService $monitor) {}
 
     public function index(): Response
     {

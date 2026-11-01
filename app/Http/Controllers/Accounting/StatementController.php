@@ -12,9 +12,7 @@ use Inertia\Response;
 
 class StatementController extends Controller
 {
-    public function __construct(private readonly FinancialStatementService $statements)
-    {
-    }
+    public function __construct(private readonly FinancialStatementService $statements) {}
 
     public function show(?string $month = null): Response
     {

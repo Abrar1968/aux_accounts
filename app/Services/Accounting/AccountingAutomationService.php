@@ -4,6 +4,7 @@ namespace App\Services\Accounting;
 
 use App\Events\AutomationFinished;
 use App\Notifications\ControlFailed;
+use App\Services\Notifications\NotificationService;
 use App\Services\Shared\PeriodService;
 use App\Support\Period;
 
@@ -18,8 +19,7 @@ class AccountingAutomationService
         private readonly RevenueRecognitionService $recognition,
         private readonly ControlsService $controls,
         private readonly FinancialStatementService $statements,
-    ) {
-    }
+    ) {}
 
     /** Idempotent: safe to run many times a day. Run tracking is done by AutomationMonitorService. */
     public function runDaily(?Period $current = null): array
@@ -35,7 +35,7 @@ class AccountingAutomationService
         $failing = $controls->whereIn('status', ['REVIEW', 'INPUT REQUIRED'])->values();
         $summary['controls_failing'] = $failing->pluck('key')->all();
         if ($failing->isNotEmpty()) {
-            app(\App\Services\Notifications\NotificationService::class)->send(new ControlFailed(
+            app(NotificationService::class)->send(new ControlFailed(
                 $failing->count().' accounting control(s) need review',
                 $failing->map(fn ($c) => $c['label'].' ('.$c['result'].')')->implode('; '),
                 'warning', '/accounting/controls',

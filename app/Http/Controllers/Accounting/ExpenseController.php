@@ -19,9 +19,7 @@ use Inertia\Response;
 
 class ExpenseController extends Controller
 {
-    public function __construct(private readonly ExpenseService $expenses)
-    {
-    }
+    public function __construct(private readonly ExpenseService $expenses) {}
 
     public function index(Request $request, ListingService $list): Response
     {

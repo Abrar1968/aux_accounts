@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Accounting;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Accounting\StoreMarketingRequest;
 use App\Http\Requests\Accounting\UpdateMarketingRequest;
+use App\Http\Resources\RecordResource;
 use App\Models\MarketingService;
 use App\Services\Accounting\MarketingRevenueService;
 use App\Services\Shared\ListingService;
@@ -14,14 +15,12 @@ use Inertia\Response;
 
 class MarketingController extends Controller
 {
-    public function __construct(private readonly MarketingRevenueService $marketing)
-    {
-    }
+    public function __construct(private readonly MarketingRevenueService $marketing) {}
 
     public function index(Request $request, ListingService $list): Response
     {
         $page = $list->page('marketing', $request->query());
-        $page->through(fn ($m) => (new \App\Http\Resources\RecordResource($m))->resolve() + $this->marketing->status($m));
+        $page->through(fn ($m) => (new RecordResource($m))->resolve() + $this->marketing->status($m));
 
         return Inertia::render('Accounting/Marketing/Index', ['services' => $page, 'filters' => $request->only(['q'])]);
     }

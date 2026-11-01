@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Casts\DateOnly;
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Lead extends Model
 {
-    use \App\Models\Concerns\Auditable;
+    use Auditable;
 
     protected $table = 'leads';
 
@@ -15,22 +18,31 @@ class Lead extends Model
     protected function casts(): array
     {
         return [
-            'lead_date' => \App\Casts\DateOnly::class,
+            'lead_date' => DateOnly::class,
             'followup_override' => 'datetime',
             'next_followup' => 'datetime',
             'meeting_at' => 'datetime',
             'last_activity_at' => 'datetime',
-            'closed_date' => \App\Casts\DateOnly::class,
+            'closed_date' => DateOnly::class,
             'quoted_price' => 'decimal:2',
             'deal_value' => 'decimal:2',
         ];
     }
 
-    use \Illuminate\Database\Eloquent\SoftDeletes;
+    use SoftDeletes;
 
-    public function calls() { return $this->hasMany(LeadCall::class); }
+    public function calls()
+    {
+        return $this->hasMany(LeadCall::class);
+    }
 
-    public function ownerUser() { return $this->belongsTo(User::class, 'owner_id'); }
+    public function ownerUser()
+    {
+        return $this->belongsTo(User::class, 'owner_id');
+    }
 
-    public function project() { return $this->belongsTo(Project::class); }
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
 }

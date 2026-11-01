@@ -9,5 +9,4 @@ class Sequence extends Model
     protected $table = 'sequences';
 
     protected $guarded = ['id'];
-
 }

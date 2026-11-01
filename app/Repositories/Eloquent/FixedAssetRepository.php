@@ -9,7 +9,7 @@ class FixedAssetRepository extends BaseRepository implements FixedAssetRepositor
 {
     protected string $model = FixedAsset::class;
 
-    protected array $searchable = ['code','name','category'];
+    protected array $searchable = ['code', 'name', 'category'];
 
     protected function periodFilterColumns(): array
     {

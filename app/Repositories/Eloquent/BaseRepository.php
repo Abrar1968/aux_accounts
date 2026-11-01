@@ -4,6 +4,7 @@ namespace App\Repositories\Eloquent;
 
 use App\Repositories\Contracts\RepositoryInterface;
 use App\Support\Money;
+use App\Support\Period;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -91,7 +92,7 @@ abstract class BaseRepository implements RepositoryInterface
         }
         foreach ($this->filterable as $key => $col) {
             if (isset($filters[$key]) && $filters[$key] !== '') {
-                $q->where($col, $key === 'month' ? \App\Support\Period::of($filters[$key])->date() : $filters[$key]);
+                $q->where($col, $key === 'month' ? Period::of($filters[$key])->date() : $filters[$key]);
             }
         }
         foreach ($this->periodFilterColumns() as $col) {

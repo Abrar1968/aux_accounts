@@ -9,7 +9,7 @@ class LeadCallRepository extends BaseRepository implements LeadCallRepositoryInt
 {
     protected string $model = LeadCall::class;
 
-    protected array $searchable = ['notes','caller'];
+    protected array $searchable = ['notes', 'caller'];
 
     protected function periodFilterColumns(): array
     {

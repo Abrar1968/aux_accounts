@@ -11,7 +11,7 @@ class ExpensePaymentRepository extends BaseRepository implements ExpensePaymentR
 
     protected array $filterable = ['expense' => 'operating_expense_id'];
 
-    protected array $searchable = ['code','notes','method','account'];
+    protected array $searchable = ['code', 'notes', 'method', 'account'];
 
     protected function periodFilterColumns(): array
     {

@@ -11,9 +11,7 @@ use Inertia\Response;
 
 class SettingController extends Controller
 {
-    public function __construct(private readonly SettingsService $settings)
-    {
-    }
+    public function __construct(private readonly SettingsService $settings) {}
 
     public function index(CrmSettingsService $crm): Response
     {

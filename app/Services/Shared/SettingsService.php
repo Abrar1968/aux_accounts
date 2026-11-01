@@ -2,6 +2,7 @@
 
 namespace App\Services\Shared;
 
+use App\Exceptions\Domain\DomainException;
 use App\Models\Setting;
 use Illuminate\Support\Arr;
 
@@ -79,7 +80,7 @@ class SettingsService
         $changed = [];
         foreach ($values as $key => $value) {
             if (! in_array($key, self::EDITABLE, true)) {
-                throw new \App\Exceptions\Domain\DomainException("Setting {$key} is not editable.");
+                throw new DomainException("Setting {$key} is not editable.");
             }
             $this->set($key, $value, explode('.', $key)[0]);
             $changed[] = $key;

@@ -21,15 +21,16 @@ class ProjectService
         private readonly ReferralService $referrals,
         private readonly RevenueRecognitionService $recognition,
         private readonly PeriodService $periods,
-    ) {
-    }
+    ) {}
 
     public function create(array $data): Project
     {
         return DB::transaction(function () use ($data) {
             $kind = $data['kind'] ?? 'project';
             $start = $data['start_date'] ?? now()->toDateString();
-            $prefix = match ($kind) { 'international' => 'IPRJ', 'lead' => 'LEAD', default => 'PRJ' };
+            $prefix = match ($kind) {
+                'international' => 'IPRJ', 'lead' => 'LEAD', default => 'PRJ'
+            };
             $n = $this->sequences->next($prefix);
             $project = $this->repo->create(array_merge([
                 'revenue_method' => $kind === 'lead' ? 'Lead / No Revenue' : 'Point in Time',

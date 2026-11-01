@@ -4,6 +4,14 @@ namespace App\Services\Media;
 
 use App\Exceptions\Domain\DomainException;
 use App\Models\Attachment;
+use App\Models\CapitalTransaction;
+use App\Models\CustomerPayment;
+use App\Models\FixedAsset;
+use App\Models\Lead;
+use App\Models\Liability;
+use App\Models\OperatingExpense;
+use App\Models\Payroll;
+use App\Models\Project;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
@@ -18,19 +26,17 @@ use Illuminate\Support\Str;
 class AttachmentService
 {
     public const ATTACHABLE = [
-        'expense' => \App\Models\OperatingExpense::class,
-        'payment' => \App\Models\CustomerPayment::class,
-        'project' => \App\Models\Project::class,
-        'asset' => \App\Models\FixedAsset::class,
-        'liability' => \App\Models\Liability::class,
-        'capital' => \App\Models\CapitalTransaction::class,
-        'payroll' => \App\Models\Payroll::class,
-        'lead' => \App\Models\Lead::class,
+        'expense' => OperatingExpense::class,
+        'payment' => CustomerPayment::class,
+        'project' => Project::class,
+        'asset' => FixedAsset::class,
+        'liability' => Liability::class,
+        'capital' => CapitalTransaction::class,
+        'payroll' => Payroll::class,
+        'lead' => Lead::class,
     ];
 
-    public function __construct(private readonly ImageService $images)
-    {
-    }
+    public function __construct(private readonly ImageService $images) {}
 
     public function resolve(string $type, int $id): Model
     {

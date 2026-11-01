@@ -9,7 +9,7 @@ class OpeningReceivableRepository extends BaseRepository implements OpeningRecei
 {
     protected string $model = OpeningReceivable::class;
 
-    protected array $searchable = ['code','customer'];
+    protected array $searchable = ['code', 'customer'];
 
     protected function periodFilterColumns(): array
     {

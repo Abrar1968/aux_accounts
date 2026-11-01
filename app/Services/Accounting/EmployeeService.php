@@ -8,9 +8,7 @@ use App\Repositories\Contracts\EmployeeRepositoryInterface;
 
 class EmployeeService
 {
-    public function __construct(private readonly EmployeeRepositoryInterface $repo)
-    {
-    }
+    public function __construct(private readonly EmployeeRepositoryInterface $repo) {}
 
     public function create(array $data): Employee
     {

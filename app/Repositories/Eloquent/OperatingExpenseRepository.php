@@ -11,7 +11,7 @@ class OperatingExpenseRepository extends BaseRepository implements OperatingExpe
 
     protected array $filterable = ['category' => 'category'];
 
-    protected array $searchable = ['code','category','subcategory','description'];
+    protected array $searchable = ['code', 'category', 'subcategory', 'description'];
 
     protected function periodFilterColumns(): array
     {

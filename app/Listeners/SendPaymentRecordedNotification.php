@@ -8,9 +8,7 @@ use App\Services\Notifications\NotificationService;
 
 class SendPaymentRecordedNotification
 {
-    public function __construct(private readonly NotificationService $notifications)
-    {
-    }
+    public function __construct(private readonly NotificationService $notifications) {}
 
     public function handle(PaymentPosted $e): void
     {
