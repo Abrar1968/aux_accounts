@@ -1,0 +1,217 @@
+{
+ "outcomes": [
+  {
+   "name": "New",
+   "stage": "New",
+   "score": 10,
+   "followup_days": 0
+  },
+  {
+   "name": "No Response",
+   "stage": "Contacted",
+   "score": 20,
+   "followup_days": 1
+  },
+  {
+   "name": "Phone Off",
+   "stage": "Contacted",
+   "score": 15,
+   "followup_days": 1
+  },
+  {
+   "name": "Call Later",
+   "stage": "Contacted",
+   "score": 35,
+   "followup_days": 1
+  },
+  {
+   "name": "Interested",
+   "stage": "Interested",
+   "score": 60,
+   "followup_days": 1
+  },
+  {
+   "name": "Meeting Set",
+   "stage": "Meeting",
+   "score": 75,
+   "followup_days": 1
+  },
+  {
+   "name": "Demo/Proposal Sent",
+   "stage": "Proposal",
+   "score": 85,
+   "followup_days": 2
+  },
+  {
+   "name": "Negotiation",
+   "stage": "Negotiation",
+   "score": 90,
+   "followup_days": 1
+  },
+  {
+   "name": "Won",
+   "stage": "Won",
+   "score": 100,
+   "followup_days": 0
+  },
+  {
+   "name": "Lost",
+   "stage": "Lost",
+   "score": 0,
+   "followup_days": 0
+  },
+  {
+   "name": "Not Qualified",
+   "stage": "Lost",
+   "score": 0,
+   "followup_days": 0
+  },
+  {
+   "name": "Develop Later",
+   "stage": "Contacted",
+   "score": 30,
+   "followup_days": 30
+  },
+  {
+   "name": "Office Visit — Time Pending",
+   "stage": "Interested",
+   "score": 65,
+   "followup_days": 1
+  },
+  {
+   "name": "Office Visit — Scheduled",
+   "stage": "Meeting",
+   "score": 75,
+   "followup_days": 1
+  },
+  {
+   "name": "No Outcome",
+   "stage": "New",
+   "score": 0,
+   "followup_days": 0
+  }
+ ],
+ "services": [
+  "Website",
+  "Marketing",
+  "POS",
+  "Landing Page",
+  "Consultancy",
+  "App",
+  "Web Application",
+  "Software",
+  "Multivendor",
+  "Other"
+ ],
+ "sources": [
+  "Cold Outreach",
+  "Facebook",
+  "WhatsApp",
+  "Referral",
+  "Website",
+  "Google",
+  "LinkedIn",
+  "Partner",
+  "Walk-in",
+  "Other"
+ ],
+ "owners": [
+  "Abrar",
+  "Rizwan",
+  "Unassigned"
+ ],
+ "business_types": [
+  "Not identified",
+  "E-commerce / Online Store",
+  "Fashion / Clothing",
+  "Beauty / Skincare",
+  "Electronics / Gadgets",
+  "Restaurant / Food",
+  "Portfolio / Personal Brand",
+  "Corporate / Company",
+  "Service Business",
+  "Education / Courses",
+  "Healthcare / Clinic",
+  "Travel / Tourism",
+  "Real Estate",
+  "Agriculture",
+  "Home / Furniture",
+  "Multivendor Marketplace",
+  "Landing Page / Campaign",
+  "Booking / Appointment",
+  "NGO / Community",
+  "Organic",
+  "ERP",
+  "Other"
+ ],
+ "industries": [
+  "Not identified",
+  "Fashion / Clothing",
+  "Shoes / Footwear",
+  "Bags / Leather Goods",
+  "Jewelry / Accessories",
+  "Cosmetics / Beauty",
+  "Skincare / Personal Care",
+  "Electronics / Gadgets",
+  "Mobile Phones / Accessories",
+  "Computers / IT Hardware",
+  "Home Appliances",
+  "Furniture / Home Decor",
+  "Kitchen / Household Goods",
+  "Books / Stationery",
+  "Toys / Baby Products",
+  "Sports / Fitness Products",
+  "Groceries / Supermarket",
+  "Food / Beverage Products",
+  "Restaurant / Cafe",
+  "Bakery / Catering",
+  "Health / Medical Clinic",
+  "Hospital / Diagnostic Center",
+  "Pharmacy / Medicines",
+  "Dental Care",
+  "Wellness / Fitness / Gym",
+  "Education / School / College",
+  "Coaching / Training / Courses",
+  "Software / IT Services",
+  "Marketing / Advertising",
+  "Design / Creative Agency",
+  "Photography / Videography",
+  "Media / Entertainment",
+  "Printing / Packaging",
+  "Real Estate / Property",
+  "Construction / Contractors",
+  "Architecture / Interior Design",
+  "Travel / Tourism",
+  "Hotel / Resort / Hospitality",
+  "Transport / Logistics / Courier",
+  "Automotive / Vehicles",
+  "Vehicle Repair / Parts",
+  "Manufacturing / Factory",
+  "Garments / Textile",
+  "Wholesale / Distribution",
+  "Import / Export",
+  "Agriculture / Farming",
+  "Fisheries / Livestock",
+  "Pet Products / Veterinary",
+  "Legal / Law Firm",
+  "Accounting / Consulting",
+  "Finance / Insurance",
+  "Recruitment / HR Services",
+  "Cleaning / Maintenance",
+  "Repair / Technical Services",
+  "Salon / Barber / Spa",
+  "Events / Wedding Services",
+  "Security Services",
+  "Telecom / Internet Services",
+  "Energy / Solar / Utilities",
+  "NGO / Charity / Community",
+  "Government / Public Services",
+  "Religious / Cultural Organization",
+  "Handicrafts / Art / Gifts",
+  "Flowers / Plants / Gardening",
+  "Digital Products / Creator",
+  "Multi-category Retail / Marketplace",
+  "Professional / Personal Brand",
+  "Other"
+ ]
+}

@@ -42,6 +42,8 @@ class RepositoryServiceProvider extends ServiceProvider
             Contracts\RevenueRecognitionRepositoryInterface::class => Eloquent\RevenueRecognitionRepository::class,
             Contracts\SalaryPaymentRepositoryInterface::class => Eloquent\SalaryPaymentRepository::class,
             Contracts\SettingRepositoryInterface::class => Eloquent\SettingRepository::class,
+            Contracts\LeadOutcomeRepositoryInterface::class => Eloquent\LeadOutcomeRepository::class,
+            Contracts\CrmOptionRepositoryInterface::class => Eloquent\CrmOptionRepository::class,
         ];
     }
 }
