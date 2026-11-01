@@ -79,10 +79,32 @@ class ReceivableService
         return ['ar' => Money::sum($rows->pluck('ar')), 'advance' => Money::sum($rows->pluck('advance'))];
     }
 
-    /** Aging of current open A/R by days since the earned date (new report). */
+    /**
+     * Aging of open A/R (new report). Age = days since the latest of the earned date and the last
+     * receipt, bucketed 0-30 / 31-60 / 61-90 / 90+.
+     */
     public function aging(string $asOf): Collection
     {
-        return $this->balancesAt(null)->where('ar', '>', 0)->values();
+        $cut = date('Y-m-d', strtotime($asOf.' +1 day'));
+        $lastPaid = $this->payments->query()->where('paid_at', '<', $cut)
+            ->selectRaw('receivable_type, receivable_id, MAX(paid_at) d')->groupBy('receivable_type', 'receivable_id')->get()
+            ->mapWithKeys(fn ($r) => [$r->receivable_type.':'.$r->receivable_id => substr((string) $r->d, 0, 10)]);
+        $earned = $this->recognitions->query()->where('recognition_month', '<', $cut)
+            ->selectRaw('project_id, MAX(period) d')->groupBy('project_id')->pluck('d', 'project_id');
+
+        return $this->balancesAt($cut)->where('ar', '>', 0)->map(function ($r) use ($lastPaid, $earned, $asOf) {
+            $ref = match ($r['type']) {
+                'project' => $earned[$r['id']] ?? null,
+                'marketing' => $this->marketing->find($r['id'])?->service_month?->toDateString(),
+                'opening' => '2026-03-31',
+                default => null,
+            };
+            $ref = max(array_filter([$ref ? substr((string) $ref, 0, 10) : null, $lastPaid[$r['type'].':'.$r['id']] ?? null]) ?: [$asOf]);
+            $days = max(0, (int) ((strtotime($asOf) - strtotime($ref)) / 86400));
+
+            return $r + ['reference_date' => $ref, 'days' => $days,
+                'bucket' => $days <= 30 ? '0-30' : ($days <= 60 ? '31-60' : ($days <= 90 ? '61-90' : '90+'))];
+        })->sortByDesc('days')->values();
     }
 
     /** Searchable picker for the payment form (replaces Payments!E XLOOKUP on names). */

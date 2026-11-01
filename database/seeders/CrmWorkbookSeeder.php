@@ -84,7 +84,5 @@ class CrmWorkbookSeeder extends Seeder
                 'started_at' => $r['Time (Dhaka)'], 'finished_at' => $r['Time (Dhaka)'],
             ]);
         }
-        app(\App\Services\Shared\SettingsService::class)->set('crm.cursor.daily', '2026-11-01', 'crm');
-        app(\App\Services\Shared\SettingsService::class)->set('crm.cursor.monthly', '2026-11', 'crm');
     }
 }
