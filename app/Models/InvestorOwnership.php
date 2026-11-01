@@ -3,9 +3,8 @@
 namespace App\Models;
 
 use App\Casts\DateOnly;
-use Illuminate\Database\Eloquent\Model;
 
-class InvestorOwnership extends Model
+class InvestorOwnership extends BaseModel
 {
     protected $table = 'investor_ownerships';
 

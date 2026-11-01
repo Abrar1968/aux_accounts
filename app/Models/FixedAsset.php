@@ -4,9 +4,8 @@ namespace App\Models;
 
 use App\Casts\DateOnly;
 use App\Models\Concerns\Auditable;
-use Illuminate\Database\Eloquent\Model;
 
-class FixedAsset extends Model
+class FixedAsset extends BaseModel
 {
     use Auditable;
 

@@ -3,9 +3,8 @@
 namespace App\Models;
 
 use App\Casts\DateOnly;
-use Illuminate\Database\Eloquent\Model;
 
-class CrmReport extends Model
+class CrmReport extends BaseModel
 {
     protected $table = 'crm_reports';
 

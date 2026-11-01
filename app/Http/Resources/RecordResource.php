@@ -25,6 +25,6 @@ class RecordResource extends JsonResource
             };
         }
 
-        return $out;
+        return $out + $this->resource->relationsToArray();
     }
 }

@@ -4,9 +4,8 @@ namespace App\Models;
 
 use App\Casts\DateOnly;
 use App\Models\Concerns\Auditable;
-use Illuminate\Database\Eloquent\Model;
 
-class MarketingService extends Model
+class MarketingService extends BaseModel
 {
     use Auditable;
 

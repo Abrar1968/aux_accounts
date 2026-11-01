@@ -4,10 +4,9 @@ namespace App\Models;
 
 use App\Casts\DateOnly;
 use App\Models\Concerns\Auditable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class OperatingExpense extends Model
+class OperatingExpense extends BaseModel
 {
     use Auditable;
 

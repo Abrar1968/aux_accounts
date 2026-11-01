@@ -3,9 +3,8 @@
 namespace App\Models;
 
 use App\Models\Concerns\Auditable;
-use Illuminate\Database\Eloquent\Model;
 
-class Investor extends Model
+class Investor extends BaseModel
 {
     use Auditable;
 

@@ -28,4 +28,11 @@ class EmployeeService
 
         return $this->repo->update($e, $data);
     }
+
+    /** @return list<array{value:int,label:string}> active employees for pickers */
+    public function options(): array
+    {
+        return $this->repo->query()->where('is_active', true)->orderBy('name')->get(['id', 'name'])
+            ->map(fn ($e) => ['value' => $e->id, 'label' => $e->name])->all();
+    }
 }

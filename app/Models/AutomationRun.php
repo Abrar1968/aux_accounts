@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class AutomationRun extends Model
+class AutomationRun extends BaseModel
 {
     protected $table = 'automation_runs';
 

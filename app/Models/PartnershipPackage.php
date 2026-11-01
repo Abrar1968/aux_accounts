@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class PartnershipPackage extends Model
+class PartnershipPackage extends BaseModel
 {
     protected $table = 'partnership_packages';
 

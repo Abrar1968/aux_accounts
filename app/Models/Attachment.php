@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Attachment extends Model
+class Attachment extends BaseModel
 {
     protected $table = 'attachments';
 

@@ -4,9 +4,8 @@ namespace App\Models;
 
 use App\Casts\DateOnly;
 use App\Models\Concerns\Auditable;
-use Illuminate\Database\Eloquent\Model;
 
-class Liability extends Model
+class Liability extends BaseModel
 {
     use Auditable;
 

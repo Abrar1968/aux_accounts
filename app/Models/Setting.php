@@ -3,9 +3,8 @@
 namespace App\Models;
 
 use App\Models\Concerns\Auditable;
-use Illuminate\Database\Eloquent\Model;
 
-class Setting extends Model
+class Setting extends BaseModel
 {
     use Auditable;
 

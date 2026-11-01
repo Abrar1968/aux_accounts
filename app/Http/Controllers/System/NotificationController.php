@@ -16,7 +16,7 @@ class NotificationController extends Controller
     public function index(Request $request): Response
     {
         return Inertia::render('Notifications/Index', [
-            'notifications' => $this->notifications->list($request->user(), $request->query('filter', 'all')),
+            'items' => $this->notifications->list($request->user(), $request->query('filter', 'all')),
             'filter' => $request->query('filter', 'all'),
         ]);
     }

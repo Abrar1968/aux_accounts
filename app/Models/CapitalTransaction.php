@@ -4,9 +4,8 @@ namespace App\Models;
 
 use App\Casts\DateOnly;
 use App\Models\Concerns\Auditable;
-use Illuminate\Database\Eloquent\Model;
 
-class CapitalTransaction extends Model
+class CapitalTransaction extends BaseModel
 {
     use Auditable;
 

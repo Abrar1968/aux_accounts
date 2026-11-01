@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class NotificationPreference extends Model
+class NotificationPreference extends BaseModel
 {
     protected $guarded = ['id'];
 

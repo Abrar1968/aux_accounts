@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class CrmOption extends Model
+class CrmOption extends BaseModel
 {
     protected $table = 'crm_options';
 

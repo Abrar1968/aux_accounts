@@ -38,12 +38,15 @@ class LeadController extends Controller
         ]);
     }
 
-    public function show(Lead $lead): Response
+    public function show(Lead $lead, CrmSettingsService $settings): Response
     {
         $this->authorize('view', $lead);
         $lead->load('calls');
+        $options = $settings->all();
 
         return Inertia::render('Crm/Leads/Show', [
+            'outcomes' => $options['outcomes'],
+            'options' => $options,
             'lead' => new LeadResource($lead),
             'calls' => RecordResource::collection($lead->calls->sortByDesc('recorded_at')->values()),
         ]);

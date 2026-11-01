@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class LeadCall extends Model
+class LeadCall extends BaseModel
 {
     protected $table = 'lead_calls';
 
