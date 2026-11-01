@@ -1,0 +1,118 @@
+[
+ {
+  "Source Alias": "WTB / wtb / wtb_singapore",
+  "Canonical Name / ID": "WTB_SG / PRJ-APR-WTB-SG",
+  "Type": "Project",
+  "Decision": "Same project",
+  "Confirmed By User": "Yes",
+  "Notes": "Extra Aug/Sep WTB ৳20,000 due note is future maintenance idea only; excluded.",
+  "_row": 4
+ },
+ {
+  "Source Alias": "ehubshop / ehub / shaown ehub / bottola bazar / old bottola",
+  "Canonical Name / ID": "Shaown Legacy Portfolio / LEG-SHAOWN",
+  "Type": "Legacy receivable",
+  "Decision": "Same customer portfolio; do not create separate project",
+  "Confirmed By User": "Yes",
+  "Notes": "Shaown portfolio includes Reseller/Ehub, Fablix and Bottola Bazar. Bottola is already included in opening A/R and must not be recognized again as a separate project.",
+  "_row": 5
+ },
+ {
+  "Source Alias": "zasper / jas park / jasper",
+  "Canonical Name / ID": "Jas Park / PRJ-JUN-JASPARK",
+  "Type": "Project",
+  "Decision": "Same project",
+  "Confirmed By User": "Yes",
+  "Notes": "৳75 bKash fee treated as processing fee.",
+  "_row": 6
+ },
+ {
+  "Source Alias": "Wtb_bd / wtbl bd",
+  "Canonical Name / ID": "Wtb Bangladesh / PRJ-MAY-WTB-BD",
+  "Type": "Project",
+  "Decision": "Same project",
+  "Confirmed By User": "Yes",
+  "_row": 7
+ },
+ {
+  "Source Alias": "patronato_Italy / italy",
+  "Canonical Name / ID": "Patronato Italy lead",
+  "Type": "Lead",
+  "Decision": "Unconverted; no revenue/AR",
+  "Confirmed By User": "Yes",
+  "Notes": "Excluded from statements.",
+  "_row": 8
+ },
+ {
+  "Source Alias": "greenland",
+  "Canonical Name / ID": "Greenland compliance / PRJ-MAY-GREENLAND",
+  "Type": "Project",
+  "Decision": "Same project",
+  "Confirmed By User": "Yes",
+  "Notes": "No cash received in source rows.",
+  "_row": 9
+ },
+ {
+  "Source Alias": "server",
+  "Canonical Name / ID": "Fastserver / PRJ-MAY-FASTSERVER",
+  "Type": "Project",
+  "Decision": "Same project",
+  "Confirmed By User": "Yes",
+  "Notes": "Ending due ৳13,600 through Sep.",
+  "_row": 10
+ },
+ {
+  "Source Alias": "gadget-hridoy",
+  "Canonical Name / ID": "LEG-GADGET-HRID",
+  "Type": "Legacy receivable",
+  "Decision": "Pre-Apr project collection",
+  "Confirmed By User": "Yes",
+  "Notes": "৳2,000 collected Jul.",
+  "_row": 11
+ },
+ {
+  "Source Alias": "bikolpoo",
+  "Canonical Name / ID": "LEG-BIKOLPOO",
+  "Type": "Legacy receivable",
+  "Decision": "Pre-Apr project collection",
+  "Confirmed By User": "Yes",
+  "Notes": "৳2,000 collected May.",
+  "_row": 12
+ },
+ {
+  "Source Alias": "Wow Gadget",
+  "Canonical Name / ID": "LEG-WOW",
+  "Type": "Legacy receivable",
+  "Decision": "Pre-Apr project collection",
+  "Confirmed By User": "Yes",
+  "Notes": "৳7,000 collected Jun.",
+  "_row": 13
+ },
+ {
+  "Source Alias": "rider",
+  "Canonical Name / ID": "LEG-RIDER",
+  "Type": "Legacy receivable",
+  "Decision": "Pre-Jul old project collection",
+  "Confirmed By User": "Yes",
+  "Notes": "Treated as known pre-Apr/legacy receivable for opening schedule.",
+  "_row": 14
+ },
+ {
+  "Source Alias": "Career marketing",
+  "Canonical Name / ID": "MKT-CAREER-2026-07",
+  "Type": "Marketing service",
+  "Decision": "July service, paid Aug",
+  "Confirmed By User": "Yes",
+  "Notes": "Separate recurring marketing-service revenue.",
+  "_row": 15
+ },
+ {
+  "Source Alias": "stylaz",
+  "Canonical Name / ID": "PRJ-AUG-STYLAZ",
+  "Type": "Project",
+  "Decision": "Revenue Aug; cash Sep-13",
+  "Confirmed By User": "Yes",
+  "Notes": "Timestamp controls cash month.",
+  "_row": 16
+ }
+]

@@ -1,0 +1,146 @@
+[
+ {
+  "Setting": "Accounting Basis",
+  "Value": "Accrual",
+  "Editable?": "No",
+  "Notes": "Revenue/expense recognition separated from cash.",
+  "_row": 4
+ },
+ {
+  "Setting": "Model Start Date",
+  "Value": "2026-04-01",
+  "Unit / Format": "Date",
+  "Editable?": "No",
+  "Notes": "Historical model starts Apr-2026.",
+  "_row": 5
+ },
+ {
+  "Setting": "Opening Balance Date",
+  "Value": "2026-03-31",
+  "Unit / Format": "Date",
+  "Editable?": "No",
+  "Notes": "Pre-Apr opening balances.",
+  "_row": 6
+ },
+ {
+  "Setting": "AC Useful Life",
+  "Value": 60,
+  "Unit / Format": "Months",
+  "Editable?": "Yes",
+  "Notes": "5 years.",
+  "_row": 7
+ },
+ {
+  "Setting": "AC Residual Value",
+  "Value": 0,
+  "Unit / Format": "BDT",
+  "Editable?": "Yes",
+  "Notes": "Zero residual value.",
+  "_row": 8
+ },
+ {
+  "Setting": "Siam Contract Start",
+  "Value": "2026-11-01",
+  "Unit / Format": "Date",
+  "Editable?": "Yes",
+  "Notes": "Starts after full payment in Oct.",
+  "_row": 9
+ },
+ {
+  "Setting": "Siam Contract Months",
+  "Value": 24,
+  "Unit / Format": "Months",
+  "Editable?": "Yes",
+  "Notes": "2-year term.",
+  "_row": 10
+ },
+ {
+  "Setting": "Siam International Revenue Share",
+  "Value": 0.15,
+  "Unit / Format": "Percent",
+  "Editable?": "Yes",
+  "Notes": "Applies only to recognized revenue from records classified as International Project, from the contract start date and during the 24-month term. Ordinary Projects are excluded.",
+  "_row": 11
+ },
+ {
+  "Setting": "Referral Recognition Policy",
+  "Value": "When Paid",
+  "Editable?": "Yes",
+  "Notes": "Confirmed 3-Oct-2026: referral commission becomes owed only when the commission is paid. The unpaid memo is not an accrued contractual obligation.",
+  "_row": 12
+ },
+ {
+  "Setting": "Reporting Months",
+  "_row": 15
+ },
+ {
+  "Setting": "Month Label",
+  "Value": "Period Start",
+  "Unit / Format": "Period End",
+  "Editable?": "Status",
+  "Notes": "Notes",
+  "_row": 16
+ },
+ {
+  "Setting": "Apr-2026",
+  "Value": "2026-04-01",
+  "Unit / Format": "2026-04-30",
+  "Editable?": "Historical",
+  "Notes": "Imported/reconstructed",
+  "_row": 17
+ },
+ {
+  "Setting": "May-2026",
+  "Value": "2026-05-01",
+  "Unit / Format": "2026-05-31",
+  "Editable?": "Historical",
+  "Notes": "Imported/reconstructed",
+  "_row": 18
+ },
+ {
+  "Setting": "Jun-2026",
+  "Value": "2026-06-01",
+  "Unit / Format": "2026-06-30",
+  "Editable?": "Historical",
+  "Notes": "Imported/reconstructed",
+  "_row": 19
+ },
+ {
+  "Setting": "Jul-2026",
+  "Value": "2026-07-01",
+  "Unit / Format": "2026-07-31",
+  "Editable?": "Historical",
+  "Notes": "Imported/reconstructed",
+  "_row": 20
+ },
+ {
+  "Setting": "Aug-2026",
+  "Value": "2026-08-01",
+  "Unit / Format": "2026-08-31",
+  "Editable?": "Historical",
+  "Notes": "Imported/reconstructed",
+  "_row": 21
+ },
+ {
+  "Setting": "Sep-2026",
+  "Value": "2026-09-01",
+  "Unit / Format": "2026-09-30",
+  "Editable?": "Historical",
+  "Notes": "Imported/reconstructed",
+  "_row": 22
+ },
+ {
+  "Setting": "Oct-2026",
+  "Value": "2026-10-01",
+  "Unit / Format": "2026-10-31",
+  "Editable?": "Open",
+  "_row": 23
+ },
+ {
+  "Setting": "2026-11-01",
+  "Value": "2026-11-01 12:00:00",
+  "Unit / Format": "2026-11-30 12:00:00",
+  "Editable?": "Open",
+  "_row": 24
+ }
+]

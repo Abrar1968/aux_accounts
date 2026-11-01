@@ -1,0 +1,64 @@
+<?php
+
+namespace App\Services\Accounting;
+
+use App\Models\OperatingExpense;
+use App\Repositories\Contracts\OperatingExpenseRepositoryInterface;
+use App\Services\Shared\PeriodService;
+use App\Services\Shared\SequenceService;
+use App\Support\Money;
+use App\Support\Period;
+
+/**
+ * Operating_Expenses: bills (accrual) — cash is posted through PaymentPostingService.
+ */
+class ExpenseService
+{
+    public function __construct(
+        private readonly OperatingExpenseRepositoryInterface $repo,
+        private readonly SequenceService $sequences,
+        private readonly PeriodService $periods,
+    ) {
+    }
+
+    public function create(array $data): OperatingExpense
+    {
+        $accrual = $data['accrual_period'] ?? $data['expense_date'];
+        $this->periods->assertOpen($accrual);
+
+        return $this->repo->create($data + [
+            'code' => 'EXP-'.str_pad((string) $this->sequences->next('EXP'), 3, '0', STR_PAD_LEFT),
+            'accrual_month' => Period::of($accrual)->date(),
+            'source_kind' => 'Expense',
+        ]);
+    }
+
+    public function update(OperatingExpense $e, array $data): OperatingExpense
+    {
+        $this->periods->assertOpen($e->accrual_month, $data['accrual_period'] ?? null);
+        if (isset($data['accrual_period']) || isset($data['expense_date'])) {
+            $data['accrual_month'] = Period::of($data['accrual_period'] ?? $data['expense_date'] ?? $e->accrual_month)->date();
+        }
+
+        return $this->repo->update($e, $data);
+    }
+
+    /** Operating_Expenses!J,P,Q,S */
+    public function status(OperatingExpense $e): array
+    {
+        $settled = Money::sum($e->payments->pluck('amount'));
+        $cost = (float) $e->amount;
+
+        return [
+            'total_settled' => $settled,
+            'payable' => max(0.0, Money::round($cost - $settled)),
+            'payment_status' => $settled <= 0 ? 'Unpaid' : ($settled >= $cost - 0.01 ? 'Paid' : 'Partially Paid'),
+            'entry_check' => match (true) {
+                $cost < 0 => 'Invalid cost',
+                $settled > $cost + 0.01 => 'Overpayment - review',
+                ! $e->category => 'Category required',
+                default => 'OK',
+            },
+        ];
+    }
+}

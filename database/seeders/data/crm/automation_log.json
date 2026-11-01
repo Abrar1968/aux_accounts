@@ -1,0 +1,1374 @@
+[
+ {
+  "Time (Dhaka)": "2026-10-07 15:35:48",
+  "Action": "SETUP",
+  "Result": "OK",
+  "Details": "v1.0.0; 2 triggers; Dhaka day boundary; launch 2026-10-07",
+  "_row": 3
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 15:35:49",
+  "Action": "SETUP",
+  "Result": "ERROR",
+  "Details": "Cannot call SpreadsheetApp.getUi() from this context.",
+  "_row": 4
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 15:36:47",
+  "Action": "SETUP",
+  "Result": "OK",
+  "Details": "v1.0.1; 2 triggers; Dhaka day boundary; launch 2026-10-07",
+  "_row": 5
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 15:41:46",
+  "Action": "DAILY_PDF",
+  "Result": "ERROR",
+  "Details": "PDF export HTTP 404",
+  "_row": 6
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 15:46:54",
+  "Action": "SETUP",
+  "Result": "OK",
+  "Details": "v1.0.2; 2 triggers; Dhaka day boundary; launch 2026-10-07",
+  "_row": 7
+ },
+ {
+  "Time (Dhaka)": "2026-10-07",
+  "Action": "IMPORT_7_OCT_2026",
+  "Result": "OK",
+  "Details": "9 entries imported from Lead rows 3624–3632; only 2026-10-07. Earlier 2025 section excluded; 7 leading zeroes restored; 2 ambiguous numbers retained for review. Abrar default owner; client name optional.",
+  "_row": 9
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 15:48:11",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-07 to 2026-10-07; IN_PROGRESS; revision e6c03b14d18d",
+  "_row": 10
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 15:48:30",
+  "Action": "PDF_MONTHLY",
+  "Result": "OK",
+  "Details": "2026-10-07 to 2026-10-31; IN_PROGRESS; revision c282e92141a0",
+  "_row": 11
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 15:48:49",
+  "Action": "PDF_YEARLY",
+  "Result": "OK",
+  "Details": "2026-10-07 to 2026-12-31; IN_PROGRESS; revision 4f153c3cfcad",
+  "_row": 12
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 15:48:50",
+  "Action": "INITIAL_REPORTS",
+  "Result": "OK",
+  "Details": "3 initial in-progress PDFs saved; no historical leads imported",
+  "_row": 13
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 15:53:06",
+  "Action": "QA",
+  "Result": "ERROR",
+  "Details": "QA: phone normalization",
+  "_row": 14
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 15:54:36",
+  "Action": "QA",
+  "Result": "OK",
+  "Details": "Isolated fixtures: blank new rows, normalized duplicates, closure/reopen, stable ID, override, missing reason, empty slot exclusion, inclusive month-end and actual value. Fixtures removed.",
+  "_row": 15
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 15:55:55",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-07 to 2026-10-07; IN_PROGRESS; revision 6dcc0b57dff2",
+  "_row": 16
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 15:56:16",
+  "Action": "PDF_MONTHLY",
+  "Result": "OK",
+  "Details": "2026-10-07 to 2026-10-31; IN_PROGRESS; revision abe7bfb6611b",
+  "_row": 17
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 15:56:35",
+  "Action": "PDF_YEARLY",
+  "Result": "OK",
+  "Details": "2026-10-07 to 2026-12-31; IN_PROGRESS; revision 6ce0160aac48",
+  "_row": 18
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 15:56:36",
+  "Action": "INITIAL_REPORTS",
+  "Result": "OK",
+  "Details": "3 initial in-progress PDFs saved; no historical leads imported",
+  "_row": 19
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 15:57:06",
+  "Action": "PDF_DEDUP_QA",
+  "Result": "OK",
+  "Details": "Unchanged snapshot reused same Drive PDF; archive has no duplicate",
+  "_row": 20
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 15:57:49",
+  "Action": "VERIFY",
+  "Result": "OK",
+  "Details": "14 tabs; Dhaka; duplicate rows prevented; exactly 2 triggers; launch clipping and year rollover; no output formula errors; report folder accessible",
+  "_row": 21
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 16:27:28",
+  "Action": "CALL_SAVED",
+  "Result": "OK",
+  "Details": "Follow-up; call ID a7b0f079-9512-4d01-abe4-d99a26cd109f",
+  "_row": 22
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 16:27:30",
+  "Action": "CALL_QA",
+  "Result": "ERROR",
+  "Details": "The parameters (number,String,String) don't match the method signature for Utilities.formatDate.",
+  "_row": 23
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 16:29:02",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-07; 10 new blank slots; 30 total",
+  "_row": 24
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 16:30:02",
+  "Action": "QA_CALL_SAVED",
+  "Result": "OK",
+  "Details": "Follow-up; call ID 37d43462-7711-4944-8df8-d2775c1fdf4e",
+  "_row": 25
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 16:30:09",
+  "Action": "QA_CALL_SAVED",
+  "Result": "OK",
+  "Details": "Initial; call ID d363a95b-4737-4d6c-9257-6a34e56652b5",
+  "_row": 26
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 16:30:10",
+  "Action": "CALL_QA",
+  "Result": "OK",
+  "Details": "BD and international phones, invalid phone, E-commerce default, call save/counts, retry idempotency, latest result, Develop Later active and 30-day schedule. Fixtures removed.",
+  "_row": 27
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 16:39:55",
+  "Action": "QA_CALL_SAVED",
+  "Result": "OK",
+  "Details": "Follow-up; call ID 3a57319b-c00e-4933-b09c-d4282e5119d9",
+  "_row": 28
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 16:40:07",
+  "Action": "QA_CALL_SAVED",
+  "Result": "OK",
+  "Details": "Initial; call ID 09ed25e4-6a56-4063-93be-cc434807d727",
+  "_row": 29
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 16:40:13",
+  "Action": "QA_COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 2 → 5; history retained",
+  "_row": 30
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 16:40:17",
+  "Action": "QA_COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 5 → 3; history retained",
+  "_row": 31
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 16:40:20",
+  "Action": "CALL_QA",
+  "Result": "OK",
+  "Details": "BD and international phones, invalid phone, E-commerce default, call save/counts, retry idempotency, latest result, Develop Later active and 30-day schedule. Fixtures removed.",
+  "_row": 32
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 16:42:33",
+  "Action": "SETUP",
+  "Result": "OK",
+  "Details": "v1.1.0; 2 triggers; Dhaka day boundary; launch 2026-10-07",
+  "_row": 33
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 16:45:08",
+  "Action": "QA_CALL_SAVED",
+  "Result": "OK",
+  "Details": "Follow-up; call ID 0efcfc68-58a7-44f2-9fe1-3d12d21e14b4",
+  "_row": 34
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 16:45:16",
+  "Action": "QA_CALL_SAVED",
+  "Result": "OK",
+  "Details": "Initial; call ID b38787c4-325d-4b4d-9aab-b1260a1985fc",
+  "_row": 35
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 16:45:19",
+  "Action": "QA_COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 2 → 5; history retained",
+  "_row": 36
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 16:45:24",
+  "Action": "QA_COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 5 → 3; history retained",
+  "_row": 37
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 16:45:27",
+  "Action": "CALL_QA",
+  "Result": "OK",
+  "Details": "BD and international phones, invalid phone, E-commerce default, call save/counts, retry idempotency, latest result, Develop Later active and 30-day schedule. Fixtures removed.",
+  "_row": 38
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 16:46:57",
+  "Action": "VERIFY",
+  "Result": "OK",
+  "Details": "15 tabs; Dhaka; duplicate rows prevented; exactly 2 triggers; launch clipping and year rollover; no output formula errors; report folder accessible",
+  "_row": 39
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 17:28:54",
+  "Action": "SETUP",
+  "Result": "OK",
+  "Details": "v1.2.0; 2 triggers; Dhaka day boundary; launch 2026-10-07",
+  "_row": 40
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 17:30:46",
+  "Action": "QA",
+  "Result": "OK",
+  "Details": "Isolated fixtures: blank new rows, normalized duplicates, closure/reopen, stable ID, override, missing reason, empty slot exclusion, inclusive month-end and actual value. Fixtures removed.",
+  "_row": 41
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 17:30:58",
+  "Action": "QA_CALL_SAVED",
+  "Result": "OK",
+  "Details": "Follow-up; call ID ad923dab-ba65-4c53-a7cd-e6162cdb3277",
+  "_row": 42
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 17:31:08",
+  "Action": "QA_CALL_SAVED",
+  "Result": "OK",
+  "Details": "Initial; call ID 9992a6dd-f5a4-42e3-99d1-c5126b3461a9",
+  "_row": 43
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 17:31:13",
+  "Action": "QA_COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 2 → 5; history retained",
+  "_row": 44
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 17:31:18",
+  "Action": "QA_COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 5 → 3; history retained",
+  "_row": 45
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 17:31:22",
+  "Action": "CALL_QA",
+  "Result": "OK",
+  "Details": "BD and international phones, invalid phone, E-commerce default, call save/counts, bulk count increase, idempotency, negative correction, invalid total rollback, net total formulas, latest result, Develop Later active and 30-day schedule. Fixtures removed.",
+  "_row": 46
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 17:31:30",
+  "Action": "QA_ALLOCATE",
+  "Result": "OK",
+  "Details": "2026-10-08; 3 unused slots reused; 27 blank slots added; 30 available today",
+  "_row": 47
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 17:31:35",
+  "Action": "REUSE_QA",
+  "Result": "ERROR",
+  "Details": "QA: pending office visit has follow-up without fixed date",
+  "_row": 48
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 17:35:01",
+  "Action": "QA",
+  "Result": "OK",
+  "Details": "Isolated fixtures: blank new rows, normalized duplicates, closure/reopen, stable ID, override, missing reason, empty slot exclusion, inclusive month-end and actual value. Fixtures removed.",
+  "_row": 49
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 17:35:13",
+  "Action": "QA_CALL_SAVED",
+  "Result": "OK",
+  "Details": "Follow-up; call ID 42a323df-15f1-4894-b1ec-94c20e3c4cc3",
+  "_row": 50
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 17:35:21",
+  "Action": "QA_CALL_SAVED",
+  "Result": "OK",
+  "Details": "Initial; call ID fdceda39-75be-44ee-85fd-191a52751ce3",
+  "_row": 51
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 17:35:26",
+  "Action": "QA_COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 2 → 5; history retained",
+  "_row": 52
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 17:35:29",
+  "Action": "QA_COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 5 → 3; history retained",
+  "_row": 53
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 17:35:32",
+  "Action": "CALL_QA",
+  "Result": "OK",
+  "Details": "BD and international phones, invalid phone, E-commerce default, call save/counts, bulk count increase, idempotency, negative correction, invalid total rollback, net total formulas, latest result, Develop Later active and 30-day schedule. Fixtures removed.",
+  "_row": 54
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 17:35:39",
+  "Action": "QA_ALLOCATE",
+  "Result": "OK",
+  "Details": "2026-10-08; 3 unused slots reused; 27 blank slots added; 30 available today",
+  "_row": 55
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 17:35:46",
+  "Action": "REUSE_QA",
+  "Result": "OK",
+  "Details": "Unused rows reused before appending; entered lead and partial draft preserved; repeat run adds nothing; both office visit states and No Outcome formulas passed. Fixtures removed.",
+  "_row": 56
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 17:38:24",
+  "Action": "VERIFY",
+  "Result": "OK",
+  "Details": "15 tabs; Dhaka; duplicate rows prevented; exactly 2 triggers; launch clipping and year rollover; no output formula errors; report folder accessible",
+  "_row": 57
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 18:05:38",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 58
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 18:05:42",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 59
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 18:05:45",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 60
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 18:05:52",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 61
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 18:05:55",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 62
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 18:06:22",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 63
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 18:08:56",
+  "Action": "CALL_SAVED",
+  "Result": "OK",
+  "Details": "Follow-up; call ID c78868ee-6528-4088-bf92-e499b7a881bf",
+  "_row": 64
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 18:09:07",
+  "Action": "CALL_SAVED",
+  "Result": "OK",
+  "Details": "Follow-up; call ID d0adfa1c-f192-452d-b140-4d8d9b2ad839",
+  "_row": 65
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 18:09:16",
+  "Action": "CALL_SAVED",
+  "Result": "OK",
+  "Details": "Follow-up; call ID 39cc17e3-5d37-4fe1-b7b8-798460d45cda",
+  "_row": 66
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 18:09:32",
+  "Action": "CALL_SAVED",
+  "Result": "OK",
+  "Details": "Follow-up; call ID bf937a33-1447-4ded-a400-633c015ad221",
+  "_row": 67
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 18:09:49",
+  "Action": "CALL_SAVED",
+  "Result": "OK",
+  "Details": "Follow-up; call ID 7d78d9bb-6c3d-419f-b2a2-d4abb8b0b955",
+  "_row": 68
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 18:09:58",
+  "Action": "CALL_SAVED",
+  "Result": "OK",
+  "Details": "Follow-up; call ID fb53ef33-d807-4b0d-8ebf-e935fd8da5d0",
+  "_row": 69
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 18:10:08",
+  "Action": "CALL_SAVED",
+  "Result": "OK",
+  "Details": "Follow-up; call ID 9a4857c9-30a6-4554-85c5-3525d856ecfb",
+  "_row": 70
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 18:10:17",
+  "Action": "CALL_SAVED",
+  "Result": "OK",
+  "Details": "Follow-up; call ID 54b3112a-2604-4909-bd8a-925ad9f926d6",
+  "_row": 71
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 18:10:27",
+  "Action": "CALL_SAVED",
+  "Result": "OK",
+  "Details": "Follow-up; call ID da15e3d0-1e90-4b70-af98-92f33fa4f6f5",
+  "_row": 72
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 18:10:44",
+  "Action": "CALL_SAVED",
+  "Result": "OK",
+  "Details": "Follow-up; call ID 377a8a47-b80b-4c4f-9040-b875dc6b3e1b",
+  "_row": 73
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 18:10:58",
+  "Action": "CALL_SAVED",
+  "Result": "OK",
+  "Details": "Follow-up; call ID c31b95d6-046d-45fa-a01c-36d2c2695487",
+  "_row": 74
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 18:11:11",
+  "Action": "CALL_SAVED",
+  "Result": "OK",
+  "Details": "Follow-up; call ID 4bf4b0b6-36df-4bdc-95df-d203375cae54",
+  "_row": 75
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 21:16:49",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 1 → 2; history retained",
+  "_row": 76
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 21:21:54",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 1 → 2; history retained",
+  "_row": 77
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 21:22:05",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 1 → 2; history retained",
+  "_row": 78
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 23:50:57",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-07 to 2026-10-07; IN_PROGRESS; revision 9304e58f2cd9",
+  "_row": 79
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 23:53:27",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-07 to 2026-10-07; IN_PROGRESS; revision b38081fc599b",
+  "_row": 80
+ },
+ {
+  "Time (Dhaka)": "2026-10-07 23:55:40",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-07 to 2026-10-07; IN_PROGRESS; revision 8bf2978d83c6",
+  "_row": 81
+ },
+ {
+  "Time (Dhaka)": "2026-10-08 00:04:05",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-08; 18 unused slots reused; 12 blank slots added; 30 available today",
+  "_row": 82
+ },
+ {
+  "Time (Dhaka)": "2026-10-08 00:04:36",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-07 to 2026-10-07; CLOSED; revision 30fc7fe4567d",
+  "_row": 83
+ },
+ {
+  "Time (Dhaka)": "2026-10-08 13:46:03",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 84
+ },
+ {
+  "Time (Dhaka)": "2026-10-08 15:28:48",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 85
+ },
+ {
+  "Time (Dhaka)": "2026-10-08 15:29:10",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 1 → 2; history retained",
+  "_row": 86
+ },
+ {
+  "Time (Dhaka)": "2026-10-08 15:30:40",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 87
+ },
+ {
+  "Time (Dhaka)": "2026-10-08 15:31:32",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 88
+ },
+ {
+  "Time (Dhaka)": "2026-10-08 15:32:15",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 89
+ },
+ {
+  "Time (Dhaka)": "2026-10-08 15:34:57",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 90
+ },
+ {
+  "Time (Dhaka)": "2026-10-08 15:36:09",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 91
+ },
+ {
+  "Time (Dhaka)": "2026-10-08 15:36:13",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 92
+ },
+ {
+  "Time (Dhaka)": "2026-10-08 15:36:20",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 93
+ },
+ {
+  "Time (Dhaka)": "2026-10-08 15:39:18",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 94
+ },
+ {
+  "Time (Dhaka)": "2026-10-08 15:39:31",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 95
+ },
+ {
+  "Time (Dhaka)": "2026-10-08 15:52:44",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 2 → 3; history retained",
+  "_row": 96
+ },
+ {
+  "Time (Dhaka)": "2026-10-08 17:35:13",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 97
+ },
+ {
+  "Time (Dhaka)": "2026-10-08 17:35:20",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 98
+ },
+ {
+  "Time (Dhaka)": "2026-10-08 18:40:49",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 99
+ },
+ {
+  "Time (Dhaka)": "2026-10-08 18:42:58",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 100
+ },
+ {
+  "Time (Dhaka)": "2026-10-09 00:04:04",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-09; 17 unused slots reused; 13 blank slots added; 30 available today",
+  "_row": 101
+ },
+ {
+  "Time (Dhaka)": "2026-10-09 00:04:31",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-08 to 2026-10-08; CLOSED; revision a53d32827110",
+  "_row": 102
+ },
+ {
+  "Time (Dhaka)": "2026-10-10 00:04:04",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-10; 30 unused slots reused; 0 blank slots added; 30 available today",
+  "_row": 103
+ },
+ {
+  "Time (Dhaka)": "2026-10-10 00:04:36",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-09 to 2026-10-09; CLOSED; revision 7a2c9ad47087",
+  "_row": 104
+ },
+ {
+  "Time (Dhaka)": "2026-10-11 00:04:16",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-11; 30 unused slots reused; 0 blank slots added; 30 available today",
+  "_row": 105
+ },
+ {
+  "Time (Dhaka)": "2026-10-11 00:04:56",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-10 to 2026-10-10; CLOSED; revision f23f05cae395",
+  "_row": 106
+ },
+ {
+  "Time (Dhaka)": "2026-10-11 13:23:04",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 107
+ },
+ {
+  "Time (Dhaka)": "2026-10-11 13:23:12",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 108
+ },
+ {
+  "Time (Dhaka)": "2026-10-11 13:24:08",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 109
+ },
+ {
+  "Time (Dhaka)": "2026-10-11 13:25:22",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 110
+ },
+ {
+  "Time (Dhaka)": "2026-10-11 13:26:17",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 3; history retained",
+  "_row": 111
+ },
+ {
+  "Time (Dhaka)": "2026-10-11 13:27:16",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 112
+ },
+ {
+  "Time (Dhaka)": "2026-10-11 13:27:38",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 113
+ },
+ {
+  "Time (Dhaka)": "2026-10-11 13:29:07",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 114
+ },
+ {
+  "Time (Dhaka)": "2026-10-11 13:29:13",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 115
+ },
+ {
+  "Time (Dhaka)": "2026-10-11 13:29:58",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 116
+ },
+ {
+  "Time (Dhaka)": "2026-10-11 13:30:45",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 117
+ },
+ {
+  "Time (Dhaka)": "2026-10-11 13:34:13",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 118
+ },
+ {
+  "Time (Dhaka)": "2026-10-11 13:47:51",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 119
+ },
+ {
+  "Time (Dhaka)": "2026-10-11 13:47:59",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 120
+ },
+ {
+  "Time (Dhaka)": "2026-10-11 13:48:09",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 121
+ },
+ {
+  "Time (Dhaka)": "2026-10-11 13:48:25",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 122
+ },
+ {
+  "Time (Dhaka)": "2026-10-11 13:49:35",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 123
+ },
+ {
+  "Time (Dhaka)": "2026-10-11 13:49:52",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 124
+ },
+ {
+  "Time (Dhaka)": "2026-10-12 00:04:08",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-12; 14 unused slots reused; 16 blank slots added; 30 available today",
+  "_row": 125
+ },
+ {
+  "Time (Dhaka)": "2026-10-12 00:04:47",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-11 to 2026-10-11; CLOSED; revision e6e4539d9869",
+  "_row": 126
+ },
+ {
+  "Time (Dhaka)": "2026-10-12 13:43:36",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 127
+ },
+ {
+  "Time (Dhaka)": "2026-10-12 13:45:01",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 128
+ },
+ {
+  "Time (Dhaka)": "2026-10-12 14:13:31",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 129
+ },
+ {
+  "Time (Dhaka)": "2026-10-12 14:15:22",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 130
+ },
+ {
+  "Time (Dhaka)": "2026-10-12 14:23:29",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 131
+ },
+ {
+  "Time (Dhaka)": "2026-10-12 14:23:42",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 132
+ },
+ {
+  "Time (Dhaka)": "2026-10-12 14:24:23",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 133
+ },
+ {
+  "Time (Dhaka)": "2026-10-12 17:36:39",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 134
+ },
+ {
+  "Time (Dhaka)": "2026-10-12 17:37:21",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 135
+ },
+ {
+  "Time (Dhaka)": "2026-10-12 17:38:02",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 136
+ },
+ {
+  "Time (Dhaka)": "2026-10-13 00:04:08",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-13; 20 unused slots reused; 10 blank slots added; 30 available today",
+  "_row": 137
+ },
+ {
+  "Time (Dhaka)": "2026-10-13 00:04:42",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-12 to 2026-10-12; CLOSED; revision d7a3ec83edb5",
+  "_row": 138
+ },
+ {
+  "Time (Dhaka)": "2026-10-13 15:12:27",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 139
+ },
+ {
+  "Time (Dhaka)": "2026-10-13 15:13:21",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 140
+ },
+ {
+  "Time (Dhaka)": "2026-10-13 15:14:02",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 141
+ },
+ {
+  "Time (Dhaka)": "2026-10-13 15:15:57",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 142
+ },
+ {
+  "Time (Dhaka)": "2026-10-13 15:16:07",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 143
+ },
+ {
+  "Time (Dhaka)": "2026-10-13 15:16:50",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 144
+ },
+ {
+  "Time (Dhaka)": "2026-10-13 15:17:00",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 2 → 1; history retained",
+  "_row": 145
+ },
+ {
+  "Time (Dhaka)": "2026-10-13 15:18:19",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 146
+ },
+ {
+  "Time (Dhaka)": "2026-10-13 15:19:45",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 147
+ },
+ {
+  "Time (Dhaka)": "2026-10-13 15:20:05",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total -1 → 1; history retained",
+  "_row": 148
+ },
+ {
+  "Time (Dhaka)": "2026-10-13 17:42:29",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 149
+ },
+ {
+  "Time (Dhaka)": "2026-10-13 17:42:42",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 150
+ },
+ {
+  "Time (Dhaka)": "2026-10-13 17:43:27",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 151
+ },
+ {
+  "Time (Dhaka)": "2026-10-13 17:44:21",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 152
+ },
+ {
+  "Time (Dhaka)": "2026-10-13 17:44:33",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 1; history retained",
+  "_row": 153
+ },
+ {
+  "Time (Dhaka)": "2026-10-13 17:49:25",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 154
+ },
+ {
+  "Time (Dhaka)": "2026-10-14 00:04:07",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-14; 18 unused slots reused; 12 blank slots added; 30 available today",
+  "_row": 155
+ },
+ {
+  "Time (Dhaka)": "2026-10-14 00:04:38",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-13 to 2026-10-13; CLOSED; revision 0356361507cf",
+  "_row": 156
+ },
+ {
+  "Time (Dhaka)": "2026-10-15 00:04:12",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-15; 30 unused slots reused; 0 blank slots added; 30 available today",
+  "_row": 157
+ },
+ {
+  "Time (Dhaka)": "2026-10-15 00:05:04",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-14 to 2026-10-14; CLOSED; revision 809db5f9e089",
+  "_row": 158
+ },
+ {
+  "Time (Dhaka)": "2026-10-16 00:04:34",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-16; 30 unused slots reused; 0 blank slots added; 30 available today",
+  "_row": 159
+ },
+ {
+  "Time (Dhaka)": "2026-10-16 00:05:40",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-15 to 2026-10-15; CLOSED; revision 20a9f2b1a873",
+  "_row": 160
+ },
+ {
+  "Time (Dhaka)": "2026-10-17 00:04:51",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-17; 30 unused slots reused; 0 blank slots added; 30 available today",
+  "_row": 161
+ },
+ {
+  "Time (Dhaka)": "2026-10-17 00:05:39",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-16 to 2026-10-16; CLOSED; revision 9ecb98ec2f12",
+  "_row": 162
+ },
+ {
+  "Time (Dhaka)": "2026-10-18 00:04:04",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-18; 30 unused slots reused; 0 blank slots added; 30 available today",
+  "_row": 163
+ },
+ {
+  "Time (Dhaka)": "2026-10-18 00:04:34",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-17 to 2026-10-17; CLOSED; revision e0da41976e6b",
+  "_row": 164
+ },
+ {
+  "Time (Dhaka)": "2026-10-19 00:04:04",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-19; 30 unused slots reused; 0 blank slots added; 30 available today",
+  "_row": 165
+ },
+ {
+  "Time (Dhaka)": "2026-10-19 00:04:37",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-18 to 2026-10-18; CLOSED; revision e0c69b937eda",
+  "_row": 166
+ },
+ {
+  "Time (Dhaka)": "2026-10-20 00:04:09",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-20; 30 unused slots reused; 0 blank slots added; 30 available today",
+  "_row": 167
+ },
+ {
+  "Time (Dhaka)": "2026-10-20 00:04:43",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-19 to 2026-10-19; CLOSED; revision 2e7ba3b4993e",
+  "_row": 168
+ },
+ {
+  "Time (Dhaka)": "2026-10-21 00:04:12",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-21; 30 unused slots reused; 0 blank slots added; 30 available today",
+  "_row": 169
+ },
+ {
+  "Time (Dhaka)": "2026-10-21 00:05:00",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-20 to 2026-10-20; CLOSED; revision 432f3235d7c7",
+  "_row": 170
+ },
+ {
+  "Time (Dhaka)": "2026-10-22 00:04:45",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-22; 30 unused slots reused; 0 blank slots added; 30 available today",
+  "_row": 171
+ },
+ {
+  "Time (Dhaka)": "2026-10-22 00:05:34",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-21 to 2026-10-21; CLOSED; revision 7dee31a32bf7",
+  "_row": 172
+ },
+ {
+  "Time (Dhaka)": "2026-10-23 00:04:14",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-23; 30 unused slots reused; 0 blank slots added; 30 available today",
+  "_row": 173
+ },
+ {
+  "Time (Dhaka)": "2026-10-23 00:05:05",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-22 to 2026-10-22; CLOSED; revision 0e4c5b1647cc",
+  "_row": 174
+ },
+ {
+  "Time (Dhaka)": "2026-10-24 00:04:03",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-24; 30 unused slots reused; 0 blank slots added; 30 available today",
+  "_row": 175
+ },
+ {
+  "Time (Dhaka)": "2026-10-24 00:04:29",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-23 to 2026-10-23; CLOSED; revision 328729148b48",
+  "_row": 176
+ },
+ {
+  "Time (Dhaka)": "2026-10-25 00:04:08",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-25; 30 unused slots reused; 0 blank slots added; 30 available today",
+  "_row": 177
+ },
+ {
+  "Time (Dhaka)": "2026-10-25 00:04:37",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-24 to 2026-10-24; CLOSED; revision a0e3c319ae4c",
+  "_row": 178
+ },
+ {
+  "Time (Dhaka)": "2026-10-26 00:04:05",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-26; 30 unused slots reused; 0 blank slots added; 30 available today",
+  "_row": 179
+ },
+ {
+  "Time (Dhaka)": "2026-10-26 00:04:36",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-25 to 2026-10-25; CLOSED; revision e3101a360fb0",
+  "_row": 180
+ },
+ {
+  "Time (Dhaka)": "2026-10-26 12:15:40",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 181
+ },
+ {
+  "Time (Dhaka)": "2026-10-26 12:15:51",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 182
+ },
+ {
+  "Time (Dhaka)": "2026-10-26 12:18:04",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 183
+ },
+ {
+  "Time (Dhaka)": "2026-10-26 12:19:11",
+  "Action": "COUNT_UPDATE",
+  "Result": "OK",
+  "Details": "Total 0 → 2; history retained",
+  "_row": 184
+ },
+ {
+  "Time (Dhaka)": "2026-10-27 00:04:05",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-27; 0 unused slots reused; 30 blank slots added; 30 available today",
+  "_row": 185
+ },
+ {
+  "Time (Dhaka)": "2026-10-27 00:04:34",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-26 to 2026-10-26; CLOSED; revision fc47998da653",
+  "_row": 186
+ },
+ {
+  "Time (Dhaka)": "2026-10-28 00:04:08",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-28; 30 unused slots reused; 0 blank slots added; 30 available today",
+  "_row": 187
+ },
+ {
+  "Time (Dhaka)": "2026-10-28 00:04:41",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-27 to 2026-10-27; CLOSED; revision 68cc1361e55f",
+  "_row": 188
+ },
+ {
+  "Time (Dhaka)": "2026-10-29 00:04:55",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-29; 30 unused slots reused; 0 blank slots added; 30 available today",
+  "_row": 189
+ },
+ {
+  "Time (Dhaka)": "2026-10-29 00:05:37",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-28 to 2026-10-28; CLOSED; revision f2b6cff14ca9",
+  "_row": 190
+ },
+ {
+  "Time (Dhaka)": "2026-10-30 00:04:09",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-30; 30 unused slots reused; 0 blank slots added; 30 available today",
+  "_row": 191
+ },
+ {
+  "Time (Dhaka)": "2026-10-30 00:04:47",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-29 to 2026-10-29; CLOSED; revision e75868e6cd2d",
+  "_row": 192
+ },
+ {
+  "Time (Dhaka)": "2026-10-31 00:04:14",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-10-31; 30 unused slots reused; 0 blank slots added; 30 available today",
+  "_row": 193
+ },
+ {
+  "Time (Dhaka)": "2026-10-31 00:05:01",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-30 to 2026-10-30; CLOSED; revision f5a22ceacaf4",
+  "_row": 194
+ },
+ {
+  "Time (Dhaka)": "2026-11-01 00:04:26",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-11-01; 30 unused slots reused; 0 blank slots added; 30 available today",
+  "_row": 195
+ },
+ {
+  "Time (Dhaka)": "2026-11-01 00:05:06",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-10-31 to 2026-10-31; CLOSED; revision cb5072f84add",
+  "_row": 196
+ },
+ {
+  "Time (Dhaka)": "2026-11-01 00:05:39",
+  "Action": "PDF_MONTHLY",
+  "Result": "OK",
+  "Details": "2026-10-07 to 2026-10-31; CLOSED; revision 93fd754a8c97",
+  "_row": 197
+ },
+ {
+  "Time (Dhaka)": "2026-11-02 00:04:06",
+  "Action": "CREATE_ROWS",
+  "Result": "OK",
+  "Details": "2026-11-02; 30 unused slots reused; 0 blank slots added; 30 available today",
+  "_row": 198
+ },
+ {
+  "Time (Dhaka)": "2026-11-02 00:04:36",
+  "Action": "PDF_DAILY",
+  "Result": "OK",
+  "Details": "2026-11-01 to 2026-11-01; CLOSED; revision aba649e597f6",
+  "_row": 199
+ }
+]
