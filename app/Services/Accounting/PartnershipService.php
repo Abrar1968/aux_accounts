@@ -3,7 +3,10 @@
 namespace App\Services\Accounting;
 
 use App\Exceptions\Domain\DomainException;
+use App\Models\Collaborator;
 use App\Models\PartnershipAssignment;
+use App\Models\PartnershipPackage;
+use App\Services\Shared\SequenceService;
 use App\Models\PartnershipRevenue;
 use App\Services\Shared\PeriodService;
 use App\Support\Money;
@@ -16,8 +19,10 @@ use App\Support\Period;
  */
 class PartnershipService
 {
-    public function __construct(private readonly PeriodService $periods)
-    {
+    public function __construct(
+        private readonly PeriodService $periods,
+        private readonly SequenceService $sequences,
+    ) {
     }
 
     public function generateThrough(Period $through): int
@@ -45,6 +50,29 @@ class PartnershipService
         }
 
         return $created;
+    }
+
+    public function overview(): array
+    {
+        return [
+            'collaborators' => Collaborator::query()->orderBy('code')->get(),
+            'packages' => PartnershipPackage::query()->orderBy('code')->get(),
+            'assignments' => PartnershipAssignment::query()->with('collaborator:id,code,name', 'package:id,code,name')->orderBy('code')->get(),
+        ];
+    }
+
+    public function createCollaborator(array $data): Collaborator
+    {
+        $n = $this->sequences->next('COL', Collaborator::query()->count());
+
+        return Collaborator::query()->create($data + ['code' => 'COL-'.str_pad((string) $n, 4, '0', STR_PAD_LEFT)]);
+    }
+
+    public function createAssignment(array $data): PartnershipAssignment
+    {
+        $n = $this->sequences->next('ASM', PartnershipAssignment::query()->count());
+
+        return PartnershipAssignment::query()->create($data + ['code' => 'ASM-'.str_pad((string) $n, 4, '0', STR_PAD_LEFT)]);
     }
 
     public function setEarning(PartnershipRevenue $r, ?float $grossSales, ?float $directAmount, ?string $notes = null): PartnershipRevenue

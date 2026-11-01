@@ -9,6 +9,8 @@ class ProjectRepository extends BaseRepository implements ProjectRepositoryInter
 {
     protected string $model = Project::class;
 
+    protected array $filterable = ['kind' => 'kind'];
+
     protected array $searchable = ['code','name','customer'];
 
     protected function periodFilterColumns(): array

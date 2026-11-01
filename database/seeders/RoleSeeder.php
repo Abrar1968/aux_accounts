@@ -10,7 +10,8 @@ class RoleSeeder extends Seeder
 {
     public const ROLES = [
         'owner' => ['Owner', ['*']],
-        'accountant' => ['Accountant', ['dashboard.view', 'accounting.*', 'attachments.*', 'audit.view']],
+        'accountant' => ['Accountant', ['dashboard.view', 'accounting.projects.*', 'accounting.payments.*', 'accounting.expenses.*',
+            'accounting.payroll.*', 'accounting.ledger.*', 'accounting.reports.*', 'accounting.periods.manage', 'attachments.*', 'audit.view']],
         'sales_manager' => ['Sales Manager', ['dashboard.view', 'crm.*', 'accounting.reports.view', 'accounting.projects.view', 'accounting.projects.create', 'attachments.*']],
         'caller' => ['Caller', ['crm.leads.view', 'crm.leads.create', 'crm.leads.update', 'crm.calls.create', 'crm.reports.view']],
         'viewer' => ['Viewer / Investor', ['dashboard.view', 'accounting.reports.view', 'accounting.ledger.view']],

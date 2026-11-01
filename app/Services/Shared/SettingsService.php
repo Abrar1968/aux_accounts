@@ -66,6 +66,28 @@ class SettingsService
         return array_merge(self::DEFAULTS, $this->cache);
     }
 
+    /** Policies an owner may change from the Settings page (others are model constants). */
+    public const EDITABLE = [
+        'assets.ac_useful_life', 'assets.ac_residual', 'siam.start', 'siam.months', 'siam.share', 'referral.tiers',
+        'opening.other_fixed_assets', 'opening.other_assets', 'opening.cash', 'opening.other_liabilities',
+        'crm.daily_slots', 'crm.default_owner', 'crm.default_business_type', 'crm.report_brand',
+    ];
+
+    /** @param array<string,mixed> $values */
+    public function updateMany(array $values): array
+    {
+        $changed = [];
+        foreach ($values as $key => $value) {
+            if (! in_array($key, self::EDITABLE, true)) {
+                throw new \App\Exceptions\Domain\DomainException("Setting {$key} is not editable.");
+            }
+            $this->set($key, $value, explode('.', $key)[0]);
+            $changed[] = $key;
+        }
+
+        return $changed;
+    }
+
     public function flush(): void
     {
         $this->cache = null;

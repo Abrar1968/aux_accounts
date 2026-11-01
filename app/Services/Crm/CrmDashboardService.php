@@ -62,4 +62,13 @@ class CrmDashboardService
                 ->map(fn ($l) => $this->leadService->present($l))->values(),
         ];
     }
+
+    /** Kanban columns in funnel order. */
+    public function pipeline(): array
+    {
+        $stages = ['New', 'Contacted', 'Interested', 'Meeting', 'Proposal', 'Negotiation', 'Won', 'Lost'];
+        $leads = $this->leads->query()->orderBy('next_followup')->get()->map(fn ($l) => $this->leadService->present($l));
+
+        return collect($stages)->map(fn ($s) => ['stage' => $s, 'count' => $leads->where('stage', $s)->count(), 'leads' => $leads->where('stage', $s)->values()])->all();
+    }
 }

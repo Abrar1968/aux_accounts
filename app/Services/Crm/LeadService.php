@@ -102,10 +102,25 @@ class LeadService
         if (! $closed && $lead->closed_date) {
             $lead->closed_date = null;
         }
+        $becameWon = $lead->isDirty('stage') && $lead->stage === 'Won';
+        $reassigned = $lead->exists && $lead->isDirty('owner') && $lead->owner;
         $lead->save();
         event(new LeadUpdated($lead->id, $lead->code));
+        $notifications = app(\App\Services\Notifications\NotificationService::class);
+        if ($becameWon) {
+            $notifications->send(new \App\Notifications\DealWon('Deal won 🎉', $lead->phone.' · '.$lead->business_type.($lead->deal_value ? ' · ৳'.number_format((float) $lead->deal_value, 2) : ''), 'success', '/crm/leads/'.$lead->id));
+        }
+        if ($reassigned && ($user = \App\Models\User::query()->where('name', $lead->owner)->first())) {
+            $notifications->send(new \App\Notifications\LeadAssigned('Lead assigned to you', $lead->phone.' · '.$lead->outcome, 'info', '/crm/leads/'.$lead->id), $user);
+        }
 
         return $lead;
+    }
+
+    public function archive(Lead $lead): void
+    {
+        $lead->delete(); // soft delete; calls and history are kept
+        event(new LeadUpdated($lead->id, $lead->code));
     }
 
     /** Leads!I "Calls Made": posts a Count update / Count correction delta so history is kept. */

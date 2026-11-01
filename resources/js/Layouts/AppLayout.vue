@@ -75,8 +75,9 @@ onBeforeUnmount(() => channel && window.Echo?.leave('auxtech'));
                         <Icon name="bell" />
                         <span v-if="unread" class="absolute right-1 top-1 grid min-w-4 place-items-center rounded-full bg-negative px-1 text-[10px] font-bold leading-4 text-white">{{ unread > 9 ? '9+' : unread }}</span>
                     </Link>
-                    <div v-if="user" class="ml-1 hidden items-center gap-2 sm:flex">
-                        <div class="grid size-8 place-items-center rounded-full bg-brand-100 text-xs font-semibold text-brand-700">{{ user.name.slice(0, 2).toUpperCase() }}</div>
+                    <div v-if="user" class="ml-1 flex items-center gap-2">
+                        <Link href="/profile" class="grid size-8 place-items-center rounded-full bg-brand-100 text-xs font-semibold text-brand-700" :title="user.name">{{ user.name.slice(0, 2).toUpperCase() }}</Link>
+                        <Link href="/logout" method="post" as="button" class="hidden rounded-lg px-2 py-1.5 text-sm text-ink-2 hover:bg-surface-2 sm:block">Sign out</Link>
                     </div>
                 </div>
             </header>
