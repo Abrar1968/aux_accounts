@@ -1,0 +1,33 @@
+[
+ {
+  "Service ID": "MKT-CAREER-2026-07",
+  "Service Month": "2026-07-01",
+  "Client": "Career marketing",
+  "Revenue Earned": 10000,
+  "Cash Received": 10000,
+  "Payment Date": "2026-08-11 22:16:47",
+  "Accounts Receivable": 0,
+  "Customer Advance": 0,
+  "Status": "Paid",
+  "Notes": "August payment relates to July service; monthly value is variable.",
+  "Revenue Type": "Marketing Service",
+  "Source": "User clarification",
+  "_row": 4
+ },
+ {
+  "Service ID": "MKT-2609-002",
+  "Service Month": "2026-09-01",
+  "Client": "paperless _m",
+  "Revenue Earned": 10000,
+  "Cash Received": 10000,
+  "Payment Date": "2026-10-10",
+  "Accounts Receivable": 0,
+  "Customer Advance": 0,
+  "Status": "Paid",
+  "Created At": "2026-10-13 13:10:44",
+  "Updated At": "2026-10-13 13:12:18",
+  "Revenue Type": "Marketing Service",
+  "Source": "Direct Entry",
+  "_row": 5
+ }
+]

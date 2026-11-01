@@ -1,0 +1,97 @@
+[
+ {
+  "Known Assets": "Known pre-Apr Accounts Receivable",
+  "col2": 111200,
+  "col3": "Known",
+  "_row": 4
+ },
+ {
+  "Known Assets": "AC Net Book Value",
+  "col2": 112200,
+  "col3": "Known",
+  "_row": 5
+ },
+ {
+  "Known Assets": "Other pre-Apr fixed assets / equipment",
+  "col2": 0,
+  "col3": "USER INPUT",
+  "_row": 6
+ },
+ {
+  "Known Assets": "Other opening assets / deposits",
+  "col2": 0,
+  "col3": "USER INPUT",
+  "_row": 7
+ },
+ {
+  "Known Assets": "Cash before Apr-1 capital contribution",
+  "col2": 0,
+  "col3": "Assumed / confirmed via Apr opening cash",
+  "_row": 8
+ },
+ {
+  "Known Assets": "Total Opening Assets",
+  "col2": 223400,
+  "_row": 9
+ },
+ {
+  "Known Assets": "Known Liabilities",
+  "_row": 11
+ },
+ {
+  "Known Assets": "Prior company dues / deficiency",
+  "col2": 151500,
+  "_row": 12
+ },
+ {
+  "Known Assets": "Remaining AC financing",
+  "col2": 33000,
+  "_row": 13
+ },
+ {
+  "Known Assets": "Other opening liabilities",
+  "col2": 0,
+  "_row": 14
+ },
+ {
+  "Known Assets": "Total Opening Liabilities",
+  "col2": 184500,
+  "_row": 15
+ },
+ {
+  "Known Assets": "Opening Equity",
+  "_row": 17
+ },
+ {
+  "Known Assets": "Opi paid-in capital",
+  "col2": 1333000,
+  "_row": 18
+ },
+ {
+  "Known Assets": "Mamun paid-in capital through Mar-31",
+  "col2": 616600,
+  "_row": 19
+ },
+ {
+  "Known Assets": "Total pre-Apr paid-in capital",
+  "col2": 1949600,
+  "_row": 20
+ },
+ {
+  "Known Assets": "Provisional Opening Historical Balance",
+  "col2": -1910700,
+  "col3": "AUTO-BALANCING / PROVISIONAL",
+  "_row": 21
+ },
+ {
+  "Known Assets": "Balance Check",
+  "col2": 0,
+  "col3": "Should be 0",
+  "_row": 23
+ },
+ {
+  "Known Assets": "Important",
+  "col2": "Add the value of pre-April equipment/assets in the yellow input rows above. The provisional historical balance will automatically update without breaking later monthly balance sheets.",
+  "_row": 25
+ }
+]

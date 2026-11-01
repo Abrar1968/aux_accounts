@@ -1,0 +1,36 @@
+[
+ {
+  "Collaborator ID": "COL-0001",
+  "Collaborator / Company Name": "Paperless Education",
+  "Status": "Active",
+  "Notes": "Confirmed collaboration; enter signed agreement start date before activation.",
+  "Entry Check (Auto)": "START DATE REQUIRED",
+  "_row": 4
+ },
+ {
+  "Collaborator ID": "COL-0002",
+  "Collaborator / Company Name": "Ehub",
+  "Status": "Draft",
+  "Notes": "Example collaborator: verify legal identity and agreement.",
+  "Entry Check (Auto)": "OK",
+  "_row": 5
+ },
+ {
+  "Collaborator ID": "COL-0003",
+  "Collaborator / Company Name": "Asthaonline",
+  "Status": "Draft",
+  "Notes": "Example collaborator: verify legal identity and agreement.",
+  "Entry Check (Auto)": "OK",
+  "_row": 6
+ },
+ {
+  "Collaborator ID": "COL-0004",
+  "Collaborator / Company Name": "WTBL",
+  "Status": "Active",
+  "Agreement Start": "2026-08-01",
+  "Agreement End": "2027-07-31",
+  "Notes": "Example collaborator: verify legal identity and agreement.",
+  "Entry Check (Auto)": "OK",
+  "_row": 7
+ }
+]

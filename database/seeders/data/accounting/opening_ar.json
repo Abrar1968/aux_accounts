@@ -1,0 +1,57 @@
+[
+ {
+  "Revenue ID": "LEG-SHAOWN",
+  "Customer / Portfolio": "Shaown legacy portfolio",
+  "Opening A/R": 80200,
+  "Pre-Apr Details": "3 projects total ৳102,000; pre-Apr payments ৳26,800",
+  "Apr–Sep Cash Collections": 19000,
+  "Current Balance": 56200,
+  "Status": "Open",
+  "Notes": "Includes the old Bottola Bazar project inside LEG-SHAOWN. Do not create a separate Bottola project, revenue-recognition row, receivable, or referral entry. Fablix and old Bottola ultimately paid; remaining customer-level due relates to Ehub/Reseller. Ending known due ৳56,200.",
+  "_row": 4
+ },
+ {
+  "Revenue ID": "LEG-BIKOLPOO",
+  "Customer / Portfolio": "Bikolpoo",
+  "Opening A/R": 2000,
+  "Pre-Apr Details": "Old project due",
+  "Apr–Sep Cash Collections": 2000,
+  "Current Balance": 0,
+  "Status": "Settled",
+  "Notes": "Paid May.",
+  "_row": 5
+ },
+ {
+  "Revenue ID": "LEG-WOW",
+  "Customer / Portfolio": "Wow Gadget",
+  "Opening A/R": 7000,
+  "Pre-Apr Details": "Old project due",
+  "Apr–Sep Cash Collections": 7000,
+  "Current Balance": 0,
+  "Status": "Settled",
+  "Notes": "Paid June.",
+  "_row": 6
+ },
+ {
+  "Revenue ID": "LEG-GADGET-HRID",
+  "Customer / Portfolio": "Gadget Hridoy",
+  "Opening A/R": 2000,
+  "Pre-Apr Details": "Old project due",
+  "Apr–Sep Cash Collections": 2000,
+  "Current Balance": 0,
+  "Status": "Settled",
+  "Notes": "Paid July.",
+  "_row": 7
+ },
+ {
+  "Revenue ID": "LEG-RIDER",
+  "Customer / Portfolio": "Rider",
+  "Opening A/R": 20000,
+  "Pre-Apr Details": "Old project due",
+  "Apr–Sep Cash Collections": 20000,
+  "Current Balance": 0,
+  "Status": "Settled",
+  "Notes": "Paid July.",
+  "_row": 8
+ }
+]

@@ -1,0 +1,18 @@
+[
+ {
+  "Asset ID": "AST-AC-001",
+  "Asset Name": "Office Air Conditioner",
+  "Category": "Office Equipment",
+  "Acquisition Date": "2025-07-01",
+  "In-Service Date": "2025-07-01",
+  "Cost": 132000,
+  "Residual Value": 0,
+  "Useful Life (Months)": 60,
+  "Monthly Depreciation": 2200,
+  "Opening Accum. Dep. 31-Mar": 19800,
+  "Status": "Active",
+  "Cash Paid Current Model": 0,
+  "Source / Notes": "12 installments × ৳11,000 Jul-2025 to Jun-2026; Apr-Jun remaining liability payments.",
+  "_row": 4
+ }
+]

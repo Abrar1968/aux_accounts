@@ -1,0 +1,85 @@
+[
+ {
+  "Investor": "Opi",
+  "Role": "Equity owner",
+  "Ownership Apr–Aug": 0.4,
+  "Ownership From Sep-1": 0.4,
+  "Capital Commitment": 1333000,
+  "Paid Through Mar-31": 1333000,
+  "Apr Contribution": 0,
+  "May Contribution": 0,
+  "Aug Contribution": 0,
+  "Current Paid-in Capital": 1333000,
+  "_row": 4
+ },
+ {
+  "Investor": "Mamun",
+  "Role": "Equity owner → exited Sep-1",
+  "Ownership Apr–Aug": 0.3,
+  "Ownership From Sep-1": 0,
+  "Capital Commitment": 1000000,
+  "Paid Through Mar-31": 616600,
+  "Apr Contribution": 0,
+  "May Contribution": 0,
+  "Aug Contribution": 383400,
+  "Current Paid-in Capital": 0,
+  "_row": 5
+ },
+ {
+  "Investor": "Abrar",
+  "Role": "Equity owner",
+  "Ownership Apr–Aug": 0.3,
+  "Ownership From Sep-1": 0.3,
+  "Capital Commitment": 1000000,
+  "Paid Through Mar-31": 0,
+  "Apr Contribution": 300000,
+  "May Contribution": 700000,
+  "Aug Contribution": 0,
+  "Current Paid-in Capital": 1000000,
+  "_row": 6
+ },
+ {
+  "Investor": "Roxy",
+  "Role": "Equity owner from Sep-1",
+  "Ownership Apr–Aug": 0,
+  "Ownership From Sep-1": 0.15,
+  "Capital Commitment": 500000,
+  "Paid Through Mar-31": 0,
+  "Apr Contribution": 0,
+  "May Contribution": 0,
+  "Aug Contribution": 0,
+  "Current Paid-in Capital": 500000,
+  "_row": 7
+ },
+ {
+  "Investor": "Rakib",
+  "Role": "Equity owner from Sep-1",
+  "Ownership Apr–Aug": 0,
+  "Ownership From Sep-1": 0.15,
+  "Capital Commitment": 500000,
+  "Paid Through Mar-31": 0,
+  "Apr Contribution": 0,
+  "May Contribution": 0,
+  "Aug Contribution": 0,
+  "Current Paid-in Capital": 500000,
+  "_row": 8
+ },
+ {
+  "Investor": "Siam",
+  "Role": "Revenue-share partner; not equity",
+  "Ownership Apr–Aug": 0,
+  "Ownership From Sep-1": 0,
+  "Capital Commitment": 500000,
+  "Paid Through Mar-31": 0,
+  "Apr Contribution": 0,
+  "May Contribution": 0,
+  "Aug Contribution": 0,
+  "Current Paid-in Capital": 0,
+  "_row": 9
+ },
+ {
+  "Investor": "Share transfer note",
+  "Role": "On 1-Sep-2026 Mamun transferred his 30% interest to Roxy (15%) and Rakib (15%). They paid Mamun personally; Auxtech receives no cash and total company equity does not change.",
+  "_row": 12
+ }
+]
