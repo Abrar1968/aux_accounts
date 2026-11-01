@@ -15,7 +15,7 @@ const form = useForm({ token: props.token, email: props.email ?? '', password: '
             <TextField v-model="form.email" label="Email" type="email" :error="form.errors.email" />
             <TextField v-model="form.password" label="New password" type="password" autocomplete="new-password" :error="form.errors.password" />
             <TextField v-model="form.password_confirmation" label="Confirm password" type="password" autocomplete="new-password" />
-            <button :disabled="form.processing" class="h-10 w-full rounded-lg bg-brand-600 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-60">Update password</button>
+            <button type="submit" :disabled="form.processing" class="h-10 w-full rounded-lg bg-brand-600 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-60">Update password</button>
         </form>
     </GuestLayout>
 </template>

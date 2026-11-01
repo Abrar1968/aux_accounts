@@ -15,5 +15,6 @@
 | 11 | [Environment setup](11-environment-setup.md) | XAMPP local, cloud "garp" environment, hosting |
 | 12 | [Data migration](12-data-migration.md) | workbook → JSON → seeders, verification |
 | 13 | [Backend status](13-backend-status.md) | what Phase 1 delivered and verified |
+| 14 | [Frontend status](14-frontend-status.md) | what Phase 3 delivered, QA method and results |
 
-Current state: **Phase 1 (backend) complete** — see 13. Next: Prompt B (frontend) in 10-prompts.md.
+Current state: **Phases 0, 1 and 3 complete** (backend + frontend). Next: Prompt C (new features) or Prompt D (deploy) in 10-prompts.md.

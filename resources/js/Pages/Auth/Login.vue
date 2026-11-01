@@ -18,7 +18,7 @@ const submit = () => form.post('/login', { onFinish: () => form.reset('password'
                 <label class="flex items-center gap-2"><input v-model="form.remember" type="checkbox" class="size-4 rounded border-line" /> Remember me</label>
                 <Link href="/forgot-password" class="font-medium text-brand-600 hover:underline">Forgot password?</Link>
             </div>
-            <button :disabled="form.processing" class="h-10 w-full rounded-lg bg-brand-600 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60">Sign in</button>
+            <button type="submit" :disabled="form.processing" class="h-10 w-full rounded-lg bg-brand-600 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60">Sign in</button>
         </form>
     </GuestLayout>
 </template>
