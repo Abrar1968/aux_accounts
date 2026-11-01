@@ -10,7 +10,7 @@ Accrual accounting + Lead CRM replacing two Google-Sheets workbooks. **Read `doc
 - Only third-party packages allowed: `inertiajs/inertia-laravel`, `@inertiajs/vue3`, `pusher/pusher-php-server`,
   `pusher-js` (+ first-party `laravel-echo`). No UI kits, chart/icon/date libs, Ziggy, dompdf, Intervention.
 - Images via PHP **GD**; PDFs in the **browser** (print views / in-house `resources/js/lib/pdf.js`).
-- Pusher app 2208649, cluster ap2. Secret only in `.env` / environment variables — never commit it.
+- Pusher app 2208649, cluster ap2, credentials (incl. secret) already set in local `.env` (git-ignored); keep the secret out of committed files.
 
 ## Architecture rules
 - Controller → FormRequest → **one Service call** → Repository interface → Model. Controllers return

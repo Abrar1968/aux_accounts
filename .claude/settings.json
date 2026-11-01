@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php artisan:*)",
+      "Bash(php -l:*)",
+      "Bash(php -v)",
+      "Bash(composer install:*)",
+      "Bash(composer dump-autoload:*)",
+      "Bash(composer require:*)",
+      "Bash(npm ci:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run dev:*)",
+      "Bash(vendor/bin/pint:*)",
+      "Bash(vendor/bin/phpunit:*)",
+      "Bash(bash scripts/cloud/setup.sh)",
+      "Bash(bash scripts/cloud/bootstrap.sh)",
+      "Bash(mariadb:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push -u origin claude/eager-bardeen-qu7nti)"
+    ]
+  }
+}
