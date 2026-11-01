@@ -15,7 +15,7 @@ class SalaryPayment extends Model
     protected function casts(): array
     {
         return [
-            'paid_on' => 'date',
+            'paid_on' => \App\Casts\DateOnly::class,
             'amount' => 'decimal:2',
             'posted_at' => 'datetime',
         ];

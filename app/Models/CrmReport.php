@@ -13,8 +13,8 @@ class CrmReport extends Model
     protected function casts(): array
     {
         return [
-            'period_start' => 'date',
-            'period_end' => 'date',
+            'period_start' => \App\Casts\DateOnly::class,
+            'period_end' => \App\Casts\DateOnly::class,
             'payload' => 'array',
         ];
     }

@@ -15,8 +15,8 @@ class Collaborator extends Model
     protected function casts(): array
     {
         return [
-            'agreement_start' => 'date',
-            'agreement_end' => 'date',
+            'agreement_start' => \App\Casts\DateOnly::class,
+            'agreement_end' => \App\Casts\DateOnly::class,
         ];
     }
 

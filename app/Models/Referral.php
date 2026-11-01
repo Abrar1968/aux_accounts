@@ -15,7 +15,7 @@ class Referral extends Model
     protected function casts(): array
     {
         return [
-            'paid_on' => 'date',
+            'paid_on' => \App\Casts\DateOnly::class,
             'memo_amount' => 'decimal:2',
             'paid_amount' => 'decimal:2',
         ];

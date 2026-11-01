@@ -15,7 +15,7 @@ class PartnershipRevenue extends Model
     protected function casts(): array
     {
         return [
-            'earned_month' => 'date',
+            'earned_month' => \App\Casts\DateOnly::class,
             'share_percent' => 'decimal:4',
             'gross_sales' => 'decimal:2',
             'direct_amount' => 'decimal:2',

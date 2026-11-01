@@ -15,10 +15,10 @@ class Project extends Model
     protected function casts(): array
     {
         return [
-            'source_month' => 'date',
-            'start_date' => 'date',
-            'est_delivery_date' => 'date',
-            'actual_delivery_date' => 'date',
+            'source_month' => \App\Casts\DateOnly::class,
+            'start_date' => \App\Casts\DateOnly::class,
+            'est_delivery_date' => \App\Casts\DateOnly::class,
+            'actual_delivery_date' => \App\Casts\DateOnly::class,
             'base_value' => 'decimal:2',
             'change_orders' => 'decimal:2',
         ];

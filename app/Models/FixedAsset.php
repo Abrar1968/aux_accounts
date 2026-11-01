@@ -15,10 +15,10 @@ class FixedAsset extends Model
     protected function casts(): array
     {
         return [
-            'acquisition_date' => 'date',
-            'in_service_date' => 'date',
-            'disposal_date' => 'date',
-            'cash_payment_date' => 'date',
+            'acquisition_date' => \App\Casts\DateOnly::class,
+            'in_service_date' => \App\Casts\DateOnly::class,
+            'disposal_date' => \App\Casts\DateOnly::class,
+            'cash_payment_date' => \App\Casts\DateOnly::class,
             'cost' => 'decimal:2',
             'residual_value' => 'decimal:2',
             'opening_accumulated_dep' => 'decimal:2',

@@ -15,8 +15,8 @@ class RevenueRecognition extends Model
     protected function casts(): array
     {
         return [
-            'period' => 'date',
-            'recognition_month' => 'date',
+            'period' => \App\Casts\DateOnly::class,
+            'recognition_month' => \App\Casts\DateOnly::class,
             'opening_progress' => 'decimal:4',
             'ending_progress' => 'decimal:4',
             'contract_value' => 'decimal:2',

@@ -15,7 +15,7 @@ class Payroll extends Model
     protected function casts(): array
     {
         return [
-            'period' => 'date',
+            'period' => \App\Casts\DateOnly::class,
             'gross_salary' => 'decimal:2',
             'source_net_paid' => 'decimal:2',
             'legacy_referral_snapshot' => 'decimal:2',

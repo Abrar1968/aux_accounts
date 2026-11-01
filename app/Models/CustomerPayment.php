@@ -16,7 +16,7 @@ class CustomerPayment extends Model
     {
         return [
             'paid_at' => 'datetime',
-            'period' => 'date',
+            'period' => \App\Casts\DateOnly::class,
             'cash_received' => 'decimal:2',
             'processing_fee' => 'decimal:2',
         ];

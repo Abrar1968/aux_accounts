@@ -13,7 +13,7 @@ class InvestorOwnership extends Model
     protected function casts(): array
     {
         return [
-            'effective_from' => 'date',
+            'effective_from' => \App\Casts\DateOnly::class,
             'percent' => 'decimal:4',
         ];
     }

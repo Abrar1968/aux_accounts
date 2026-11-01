@@ -15,7 +15,7 @@ class MarketingService extends Model
     protected function casts(): array
     {
         return [
-            'service_month' => 'date',
+            'service_month' => \App\Casts\DateOnly::class,
             'revenue' => 'decimal:2',
         ];
     }

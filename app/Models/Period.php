@@ -15,7 +15,7 @@ class Period extends Model
     protected function casts(): array
     {
         return [
-            'month' => 'date',
+            'month' => \App\Casts\DateOnly::class,
             'closed_at' => 'datetime',
         ];
     }

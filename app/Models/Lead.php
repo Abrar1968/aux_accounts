@@ -15,12 +15,12 @@ class Lead extends Model
     protected function casts(): array
     {
         return [
-            'lead_date' => 'date',
+            'lead_date' => \App\Casts\DateOnly::class,
             'followup_override' => 'datetime',
             'next_followup' => 'datetime',
             'meeting_at' => 'datetime',
             'last_activity_at' => 'datetime',
-            'closed_date' => 'date',
+            'closed_date' => \App\Casts\DateOnly::class,
             'quoted_price' => 'decimal:2',
             'deal_value' => 'decimal:2',
         ];

@@ -15,8 +15,8 @@ class PartnershipAssignment extends Model
     protected function casts(): array
     {
         return [
-            'effective_from' => 'date',
-            'effective_through' => 'date',
+            'effective_from' => \App\Casts\DateOnly::class,
+            'effective_through' => \App\Casts\DateOnly::class,
             'share_percent' => 'decimal:4',
         ];
     }

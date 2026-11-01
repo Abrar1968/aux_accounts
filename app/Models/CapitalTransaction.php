@@ -15,8 +15,8 @@ class CapitalTransaction extends Model
     protected function casts(): array
     {
         return [
-            'txn_date' => 'date',
-            'period' => 'date',
+            'txn_date' => \App\Casts\DateOnly::class,
+            'period' => \App\Casts\DateOnly::class,
             'cash_impact' => 'decimal:2',
             'equity_impact' => 'decimal:2',
         ];

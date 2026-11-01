@@ -16,8 +16,8 @@ class Employee extends Model
     {
         return [
             'base_salary' => 'decimal:2',
-            'joined_on' => 'date',
-            'left_on' => 'date',
+            'joined_on' => \App\Casts\DateOnly::class,
+            'left_on' => \App\Casts\DateOnly::class,
             'is_active' => 'boolean',
         ];
     }

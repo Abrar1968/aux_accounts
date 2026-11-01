@@ -15,8 +15,8 @@ class EmployeeAdvance extends Model
     protected function casts(): array
     {
         return [
-            'txn_date' => 'date',
-            'related_salary_period' => 'date',
+            'txn_date' => \App\Casts\DateOnly::class,
+            'related_salary_period' => \App\Casts\DateOnly::class,
             'amount' => 'decimal:2',
         ];
     }
