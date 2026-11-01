@@ -43,8 +43,15 @@ the CRM Settings tab values documented in 01 §3.
 1. `php artisan migrate:fresh --seed`
 2. `php artisan test --filter=GoldenStatementsTest` → 0 differences Apr–Nov 2026.
 3. Spot checks: Shaown legacy A/R 56,200; Siam liability 300,000; Oct payables 38,621; Oct overdraft 62,160.
-4. Known data issues (do not "fix" in the seeder): Rajib's Oct-2026 payroll row is missing; 16 historical
-   projects lack delivery dates; opening balance is provisional (−1,910,700).
+4. Known data issues (do not "fix" in the seeder), all surfaced by the Controls page:
+   - Oct-2026 payroll rows missing for **Rajib Vai** and **Graphics Designer** (the workbook only reported Rajib).
+   - 16 historical projects lack delivery dates (recognised provisionally in the source month).
+   - Opening balance is provisional (−1,910,700).
+   - Partnership assignment ASM-0003 (WTBL Maintenance) is *Active* from 2026-08-01 although its note says
+     "example until agreement confirmed"; the daily automation creates Aug→current monthly rows with a blank
+     earned amount (no revenue until an amount is entered). Set it to Draft if the agreement is not signed.
+   - Lead `20261008-…` phone stored as the number 85586892617 (invalid → CHECK PHONE), as in the workbook.
+   - Partnership_Settings uses the header "Status" twice (package C and assignment L); the seeder maps them explicitly.
 
 ## 4. Privacy
 Seed files contain real customer names, phone numbers and staff salaries. Keep the repository private.

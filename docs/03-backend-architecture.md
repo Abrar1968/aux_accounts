@@ -88,9 +88,11 @@ tests/Unit, tests/Feature, tests/Fixtures/golden_monthly_statements.json
 | `NotificationService` | event → recipients → channels by preference | new |
 | `ImageService` | GD resize/thumbnail/re-encode | new |
 
-Status of the head-start code already in the repo: migrations, models, repositories, `Support/*`,
-`Services/Shared/*`, engine calculators and the main accounting services are drafted and must be
-verified/finished by the Phase-1 backend prompt ([10-prompts.md](10-prompts.md)).
+Status: all services above are implemented and tested (Phase 1 complete — see
+[13-backend-status.md](13-backend-status.md)). Additional services: `MarketingRevenueService`, `EmployeeService`,
+`AssetService`, `CrmSettingsService`, `ListingService` (uniform index filters through repositories),
+`ReminderService`, `AutomationMonitorService`, `BackupService` (PDO, no mysqldump), `AuthService`, `UserService`,
+`SearchService`. Business dates use the `App\Casts\DateOnly` cast (stored `Y-m-d` on MySQL and SQLite).
 
 ## 4. Cross-cutting
 

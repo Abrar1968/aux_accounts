@@ -30,13 +30,19 @@ public function test_statements_match_workbook(): void
 }
 ```
 
-## 3. Rules
+## 3. Environment isolation
+The cloud environment exports `DB_*`, `MAIL_*`, `APP_ENV` as process variables (`$_SERVER`), which Laravel reads
+before `$_ENV`. `phpunit.xml` therefore forces both `<env>` and `<server>` values so tests always run on SQLite in
+memory. To run the suite on MariaDB/MySQL once: copy `phpunit.xml`, set `DB_CONNECTION=mysql` and
+`DB_DATABASE=auxtech_test` (both `env` and `server`), create that database and run `vendor/bin/phpunit -c <copy>`.
+
+## 4. Rules
 * Every bug fix starts with a failing test. Coverage target ≥ 85 % for `app/Services`.
 * No test touches Pusher/SMTP (`BROADCAST_CONNECTION=null`, `MAIL_MAILER=array` in phpunit.xml).
 * Time-dependent tests use `$this->travelTo('2026-11-01 10:00:00')` (Asia/Dhaka).
 * CI (`.github/workflows/tests.yml`): PHP 8.2, `composer install`, `npm ci && npm run build`, `php artisan test`.
 
-## 4. Manual QA checklist (per release)
+## 5. Manual QA checklist (per release)
 Phone 360 px + desktop: login, dashboard, record payment (retry same request → no duplicate),
 pay expense installment, close/reopen period, lead create with duplicate phone, save call, pipeline drag,
 print statement to PDF, dark mode, realtime toast across two browsers.
