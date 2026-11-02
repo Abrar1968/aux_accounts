@@ -57,6 +57,7 @@ return [
             'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
             'prefix' => '',
             'prefix_indexes' => true,
+            'timezone' => '+06:00', // MySQL session time = Asia/Dhaka (NOW(), CURRENT_TIMESTAMP)
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
@@ -77,6 +78,7 @@ return [
             'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
             'prefix' => '',
             'prefix_indexes' => true,
+            'timezone' => '+06:00', // MySQL session time = Asia/Dhaka (NOW(), CURRENT_TIMESTAMP)
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([

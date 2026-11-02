@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import PageHeader from '@/Components/ui/PageHeader.vue';
 import Card from '@/Components/ui/Card.vue';
@@ -34,6 +34,10 @@ const columns = [
 ];
 const open = ref(false);
 const form = useForm({ name: '', customer: '', kind: 'project', start_date: todayIso(), est_delivery_date: '', revenue_method: 'Point in Time', base_value: '', change_orders: 0, referrer: '', notes: '', client_signature: null });
+const referrers = computed(() => [...new Set(form.referrer.split(/[,;&+/]+/).map((n) => n.trim()).filter(Boolean))]);
+const referrerHint = computed(() => (referrers.value.length > 1
+    ? `${referrers.value.length} referrers — the tier memo is split equally (${referrers.value.join(' · ')})`
+    : 'Separate several people with commas; the referral memo is split equally between them'));
 const submit = () => form.post('/accounting/projects', { forceFormData: true, preserveScroll: true, onSuccess: () => { open.value = false; form.reset(); } });
 </script>
 
@@ -73,7 +77,7 @@ const submit = () => form.post('/accounting/projects', { forceFormData: true, pr
                 <MoneyInput v-model="form.base_value" label="Base contract value" required :error="form.errors.base_value" />
                 <MoneyInput v-model="form.change_orders" label="Change orders" />
             </div>
-            <Input v-model="form.referrer" label="Referrer" hint="Referral memo is calculated from the policy tiers" />
+            <Input v-model="form.referrer" label="Referrer(s)" placeholder="e.g. Rizwan, Abrar" :hint="referrerHint" :error="form.errors.referrer" />
             <Textarea v-model="form.notes" label="Notes" />
             <ImagePicker v-model="form.client_signature" label="Client signature (optional)" hint="Printed on this client's invoices and statements only" :error="form.errors.client_signature" />
         </form>

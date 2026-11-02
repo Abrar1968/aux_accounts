@@ -16,7 +16,7 @@ class RouteSecurityTest extends TestCase
     use SeedsWorkbook;
 
     /** Routes that are intentionally reachable without login. */
-    private const PUBLIC = ['login', 'password.request', 'password.email', 'password.reset', 'password.update', 'attachments.show', 'storage.local', 'storage.local.upload', 'branding.show'];
+    private const PUBLIC = ['login', 'password.request', 'password.email', 'password.reset', 'password.update', 'attachments.show', 'storage.local', 'storage.local.upload', 'branding.show', 'branding.icon'];
 
     /** Authenticated routes every signed-in user may use (own profile / notifications / search). */
     private const ANY_USER = ['logout', 'notifications.index', 'notifications.read-all', 'notifications.read', 'profile.edit', 'profile.update',

@@ -30,6 +30,7 @@ class ProjectService
     {
         $signature = $data['client_signature'] ?? null; // optional image, stored after the row exists
         unset($data['client_signature']);
+        $data = $this->normaliseReferrers($data);
 
         return DB::transaction(function () use ($data, $signature) {
             $kind = $data['kind'] ?? 'project';
@@ -61,11 +62,25 @@ class ProjectService
         if (isset($data['actual_delivery_date'])) {
             $this->periods->assertOpen($data['actual_delivery_date']);
         }
-        $project = $this->repo->update($project, $data);
-        $this->referrals->syncForProject($project);
+        $project = DB::transaction(function () use ($project, $data) {
+            $project = $this->repo->update($project, $this->normaliseReferrers($data));
+            $this->referrals->syncForProject($project); // may refuse removing an already-paid referrer
+
+            return $project;
+        });
         $this->recognition->recalculateProject($project);
 
         return $project;
+    }
+
+    /** "Rizwan & abrar ,Rizwan" → "Rizwan, abrar" (one canonical list; null when empty). */
+    private function normaliseReferrers(array $data): array
+    {
+        if (array_key_exists('referrer', $data)) {
+            $data['referrer'] = implode(', ', Project::parseReferrers($data['referrer'])) ?: null;
+        }
+
+        return $data;
     }
 
     /** Projects!O:AC derived columns. */

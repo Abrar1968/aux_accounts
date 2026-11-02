@@ -50,13 +50,16 @@ class BrandingInvoiceTest extends TestCase
         app(SettingsService::class)->flush();
         $logo = app(SettingsService::class)->get('branding.logo');
         $this->assertSame(300, $logo['width']);
-        $this->assertCount(4, Storage::disk('local')->allFiles('branding'), 'old logo files are deleted on replace');
+        $this->assertCount(6, Storage::disk('local')->allFiles('branding'), 'old logo files are deleted on replace (logo png/jpg/favicon/touch + seal png/jpg)');
 
         $this->get('/branding/logo.jpg')->assertOk()->assertHeader('Content-Type', 'image/jpeg');
+        $fav = $this->get('/branding/icon/favicon.png')->assertOk()->assertHeader('Content-Type', 'image/png');
+        $this->assertSame([64, 64], array_slice(getimagesizefromstring($fav->streamedContent() ?: file_get_contents($fav->baseResponse->getFile()->getPathname())), 0, 2), 'square favicon from the logo');
         $this->get('/branding/seal.png')->assertOk()->assertHeader('Content-Type', 'image/png');
         auth()->logout();
         $this->get('/branding/logo.png')->assertOk(); // public, used in emails
         $this->get('/branding/seal.png')->assertForbidden();
+        $this->get('/login')->assertSee('/branding/icon/favicon.png', false);
     }
 
     public function test_non_image_is_rejected(): void

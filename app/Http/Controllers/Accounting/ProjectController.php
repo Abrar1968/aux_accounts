@@ -12,6 +12,7 @@ use App\Http\Resources\ProjectResource;
 use App\Http\Resources\RecordResource;
 use App\Models\Project;
 use App\Services\Accounting\ProjectService;
+use App\Services\Accounting\ReferralService;
 use App\Services\Shared\ListingService;
 use App\Services\System\BrandingService;
 use Illuminate\Http\Request;
@@ -33,13 +34,13 @@ class ProjectController extends Controller
 
     public function show(Project $project): Response
     {
-        $project->load(['recognitions', 'referral', 'payments']);
+        $project->load(['recognitions', 'referrals', 'payments']);
 
         return Inertia::render('Accounting/Projects/Show', [
             'project' => new ProjectResource($project),
             'recognitions' => RecordResource::collection($project->recognitions),
             'payments' => PaymentResource::collection($project->payments),
-            'referral' => $project->referral ? new RecordResource($project->referral) : null,
+            'referrals' => $project->referrals->map(fn ($r) => (new RecordResource($r))->resolve() + ['status' => app(ReferralService::class)->status($r)])->values(),
         ]);
     }
 

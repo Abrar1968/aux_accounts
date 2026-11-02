@@ -19,7 +19,8 @@ class ReferralController extends Controller
     public function index(Request $request, ListingService $list): Response
     {
         $page = $list->page('referrals', $request->query());
-        $page->through(fn ($r) => (new RecordResource($r))->resolve() + ['status' => $this->referrals->status($r), 'project' => $r->project?->only('id', 'code', 'name')]);
+        $page->through(fn ($r) => (new RecordResource($r))->resolve() + ['status' => $this->referrals->status($r), 'project' => $r->project?->only('id', 'code', 'name'),
+            'split' => $r->project ? $r->project->referrals()->count() : 1]);
 
         return Inertia::render('Accounting/Referrals/Index', ['referrals' => $page]);
     }

@@ -14,7 +14,7 @@ import { router } from '@inertiajs/vue3';
 import { usePermissions } from '@/Composables/usePermissions';
 import { date, dateTime, money, pct, todayIso } from '@/lib/format';
 
-const props = defineProps({ project: Object, recognitions: Object, payments: Object, referral: Object });
+const props = defineProps({ project: Object, recognitions: Object, payments: Object, referrals: Array });
 const p = computed(() => props.project.data);
 const { can } = usePermissions();
 const deliver = ref(false);
@@ -26,7 +26,7 @@ const removeSig = () => router.delete(`/accounting/projects/${p.value.id}/signat
 const facts = computed(() => [
     ['Code', p.value.code], ['Customer', p.value.customer], ['Register', p.value.type_label], ['Revenue method', p.value.revenue_method],
     ['Source month', date(p.value.source_month)], ['Start', date(p.value.start_date)], ['Est. delivery', date(p.value.est_delivery_date)],
-    ['Actual delivery', date(p.value.actual_delivery_date)], ['Referrer', p.value.referrer ?? '—'], ['Referral memo', money(p.value.referral_memo)],
+    ['Actual delivery', date(p.value.actual_delivery_date)], ['Referrers', p.value.referrer ?? '—'], ['Referral memo', money(p.value.referral_memo)],
     ['Last payment', dateTime(p.value.last_payment)], ['Fully paid', dateTime(p.value.fully_paid_date)],
 ]);
 </script>
@@ -68,6 +68,11 @@ const facts = computed(() => [
                 <DataTable dense :rows="recognitions.data" empty="Not recognised yet — point-in-time projects are recognised automatically on delivery."
                     :columns="[{ key: 'period', label: 'Period', primary: true, format: date }, { key: 'recognized_amount', label: 'Recognised', align: 'right', secondary: true, format: (v) => money(v) }, { key: 'method_label', label: 'Method' }, { key: 'ending_progress', label: 'Progress', align: 'right', format: (v) => (v === null ? '—' : pct(v)) }, { key: 'entry_check', label: 'Check' }]">
                     <template #cell-entry_check="{ value }"><Badge :label="value" /></template>
+                </DataTable>
+            </Card>
+            <Card v-if="referrals.length" title="Referral split" :subtitle="referrals.length > 1 ? `Memo split equally between ${referrals.length} people` : 'Single referrer'" :padded="false">
+                <DataTable dense :rows="referrals" :columns="[{ key: 'referrer', label: 'Referrer', primary: true }, { key: 'memo_amount', label: 'Share', align: 'right', secondary: true, format: (v) => money(v, { decimals: true }) }, { key: 'paid_amount', label: 'Paid', align: 'right', format: (v) => money(v) }, { key: 'status', label: 'Status' }, { key: 'code', label: 'ID' }]">
+                    <template #cell-status="{ value }"><Badge :label="value" /></template>
                 </DataTable>
             </Card>
             <Card title="Customer payments" :padded="false">

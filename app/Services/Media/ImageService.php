@@ -88,6 +88,24 @@ class ImageService
         return ['png' => $this->encode($img, 'image/png'), 'jpg' => $this->encode($img, 'image/jpeg'), 'width' => imagesx($img), 'height' => imagesy($img)];
     }
 
+    /** Square, transparent-padded PNG icon (favicon / apple-touch-icon) from any image bytes. */
+    public function squareIcon(string $bytes, int $edge): string
+    {
+        $src = @imagecreatefromstring($bytes);
+        if (! $src instanceof GdImage) {
+            throw new DomainException('Unsupported or corrupt image.');
+        }
+        $fit = $this->fit($src, $edge);
+        $out = imagecreatetruecolor($edge, $edge);
+        imagealphablending($out, false);
+        imagesavealpha($out, true);
+        imagefill($out, 0, 0, imagecolorallocatealpha($out, 255, 255, 255, 127));
+        imagealphablending($out, true);
+        imagecopy($out, $fit, intdiv($edge - imagesx($fit), 2), intdiv($edge - imagesy($fit), 2), 0, 0, imagesx($fit), imagesy($fit));
+
+        return $this->encode($out, 'image/png');
+    }
+
     private function orient(GdImage $img, int $o): GdImage
     {
         $rotated = match ($o) {

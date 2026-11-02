@@ -32,6 +32,13 @@ class BrandingService
         }
         $old = $this->settings->get('branding.'.$asset);
         $meta = $this->store($file, 'branding', $asset);
+        if ($asset === 'logo') { // browser tab icon + home-screen icon from the logo
+            $png = (string) Storage::disk('local')->get($meta['png']);
+            foreach (['favicon' => 64, 'touch' => 180] as $key => $edge) {
+                $meta[$key] = preg_replace('/\.png$/', "-{$key}.png", $meta['png']);
+                Storage::disk('local')->put($meta[$key], $this->images->squareIcon($png, $edge));
+            }
+        }
         $this->settings->set('branding.'.$asset, $meta, 'branding');
         $this->settings->flush();
         $this->deleteFiles($old);
@@ -89,6 +96,7 @@ class BrandingService
             'phone' => $this->settings->get('company.phone'), 'website' => $this->settings->get('company.website'),
             'email' => config('mail.from.address'), 'signature_title' => $this->settings->get('company.signature_title'),
             'logo' => $asset('logo'), 'seal' => $asset('seal'),
+            'favicon' => $this->faviconUrl(),
         ];
     }
 
@@ -99,6 +107,14 @@ class BrandingService
 
         return is_array($m) ? ['png' => route('projects.signature', [$project, 'png']).'?v='.$m['v'], 'jpg' => route('projects.signature', [$project, 'jpg']).'?v='.$m['v'],
             'width' => $m['width'], 'height' => $m['height'], 'name' => $project->customer ?: $project->name] : null;
+    }
+
+    /** Logo-derived browser icon (cache-busted), or the default /favicon.ico. */
+    public function faviconUrl(string $kind = 'favicon'): string
+    {
+        $m = $this->settings->get('branding.logo');
+
+        return is_array($m) && isset($m[$kind]) ? route('branding.icon', $kind).'?v='.$m['v'] : '/favicon.ico';
     }
 
     /** Absolute public logo URL for emails, or null. */
@@ -119,17 +135,17 @@ class BrandingService
 
     private function pick(mixed $meta, string $format): ?array
     {
-        if (! is_array($meta) || ! in_array($format, ['png', 'jpg'], true) || ! Storage::disk('local')->exists($meta[$format])) {
+        if (! is_array($meta) || ! in_array($format, ['png', 'jpg', 'favicon', 'touch'], true) || ! isset($meta[$format]) || ! Storage::disk('local')->exists($meta[$format])) {
             return null;
         }
 
-        return ['path' => Storage::disk('local')->path($meta[$format]), 'mime' => $format === 'png' ? 'image/png' : 'image/jpeg'];
+        return ['path' => Storage::disk('local')->path($meta[$format]), 'mime' => $format === 'jpg' ? 'image/jpeg' : 'image/png'];
     }
 
     private function deleteFiles(mixed $meta): void
     {
         if (is_array($meta)) {
-            Storage::disk('local')->delete(array_filter([$meta['png'] ?? null, $meta['jpg'] ?? null]));
+            Storage::disk('local')->delete(array_filter([$meta['png'] ?? null, $meta['jpg'] ?? null, $meta['favicon'] ?? null, $meta['touch'] ?? null]));
         }
     }
 }

@@ -22,6 +22,14 @@ class BrandingController extends Controller
         return response()->file($file['path'], ['Content-Type' => $file['mime'], 'Cache-Control' => ($asset === 'logo' ? 'public' : 'private').', max-age=31536000, immutable']);
     }
 
+    /** Public favicon / apple-touch-icon generated from the logo. */
+    public function icon(string $kind): BinaryFileResponse
+    {
+        $file = $this->branding->file('logo', $kind) ?? abort(404);
+
+        return response()->file($file['path'], ['Content-Type' => 'image/png', 'Cache-Control' => 'public, max-age=31536000, immutable']);
+    }
+
     public function store(UploadBrandingRequest $request)
     {
         $this->branding->upload($request->validated('asset'), $request->file('image'));
