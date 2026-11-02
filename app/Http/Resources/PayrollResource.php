@@ -9,6 +9,6 @@ class PayrollResource extends RecordResource
 {
     public function toArray(Request $request): array
     {
-        return parent::toArray($request) + ['employee' => $this->resource->employee?->name] + app(PayrollService::class)->summary($this->resource);
+        return array_merge(parent::toArray($request), ['employee' => $this->resource->employee?->name], app(PayrollService::class)->summary($this->resource));
     }
 }

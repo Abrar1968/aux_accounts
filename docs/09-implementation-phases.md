@@ -22,5 +22,7 @@ every month), budgets vs actual, 90-day cash forecast, recurring bill templates 
 statements (print + PDF), caller targets & leaderboard, lead CSV import with duplicate preview; payslips, A/R aging
 and Won → Project were delivered earlier. 58 tests / 2,499 assertions green. See [15-new-features.md](15-new-features.md).
 
+**Verification (2026-11-02):** 66 tests green on SQLite + MariaDB, 32/32 E2E flows, 1,684 calculated values match the workbook, 8 bugs fixed. See [16-verification-report.md](16-verification-report.md).
+
 Order inside Phase 1 (dependency-driven): Seeders → golden test green → remaining accounting services →
 CRM services → auth/roles → controllers/routes → notifications/scheduler → attachments.

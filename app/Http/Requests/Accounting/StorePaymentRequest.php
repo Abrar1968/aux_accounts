@@ -15,7 +15,7 @@ class StorePaymentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'paid_at' => ['required', 'date', 'before_or_equal:now'],
+            'paid_at' => ['required', 'date', 'before:tomorrow'],
             'receivable_type' => ['required', 'in:project,marketing,opening,partnership'],
             'receivable_id' => ['required', 'integer'],
             'cash_received' => ['required', 'numeric', 'gt:0', 'decimal:0,2'],

@@ -9,9 +9,9 @@ class PaymentResource extends RecordResource
 {
     public function toArray(Request $request): array
     {
-        return parent::toArray($request) + [
+        return array_merge(parent::toArray($request), [
             'gross_settlement' => $this->resource->gross_settlement,
             'revenue_type' => app(CustomerPaymentService::class)->revenueType($this->resource),
-        ];
+        ]);
     }
 }

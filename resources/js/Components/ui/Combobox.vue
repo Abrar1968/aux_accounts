@@ -5,6 +5,7 @@ import Field from './Field.vue';
 
 const props = defineProps({ label: String, error: String, placeholder: String, fetcher: { type: Function, required: true }, display: String });
 const model = defineModel(); // selected option object
+const id = `cb-${Math.random().toString(36).slice(2, 9)}`;
 const q = ref(props.display ?? '');
 const items = ref([]);
 const open = ref(false);
@@ -26,9 +27,9 @@ function onKey(e) {
 </script>
 
 <template>
-    <Field :label="label" :error="error">
+    <Field :label="label" :error="error" :for="id">
         <div class="relative">
-            <input v-model="q" type="text" role="combobox" :aria-expanded="open" :placeholder="placeholder" autocomplete="off"
+            <input :id="id" v-model="q" type="text" role="combobox" :aria-expanded="open" :placeholder="placeholder" autocomplete="off"
                 :class="error ? 'border-negative' : 'border-line focus:border-brand-500'" class="h-10 w-full rounded-lg border bg-surface px-3 text-sm outline-none"
                 @focus="open = true; load()" @blur="blur" @keydown="onKey" />
             <ul v-if="open && items.length" role="listbox" class="card absolute z-40 mt-1 max-h-64 w-full overflow-y-auto p-1 shadow-[var(--shadow-pop)]">

@@ -18,7 +18,7 @@ import ReceivablePicker from '@/Components/accounting/ReceivablePicker.vue';
 import { useFilters } from '@/Composables/useFilters';
 import { usePermissions } from '@/Composables/usePermissions';
 import { newRequestId } from '@/Composables/useRequestId';
-import { dateTime, money, todayIso } from '@/lib/format';
+import { dateTime, money, nowLocalIso } from '@/lib/format';
 
 const props = defineProps({ payments: Object, filters: Object });
 const { filters } = useFilters({ q: props.filters.q ?? '', type: props.filters.type ?? '' });
@@ -34,7 +34,7 @@ const columns = [
 const open = ref(false);
 const receivable = ref(null);
 const form = useForm({ paid_at: '', receivable_type: '', receivable_id: '', cash_received: '', processing_fee: '', method: 'Bank Transfer', account: 'DBBL', notes: '', request_id: '' });
-function start() { form.reset(); form.clearErrors(); receivable.value = null; form.paid_at = `${todayIso()}T12:00`; form.request_id = newRequestId(); open.value = true; }
+function start() { form.reset(); form.clearErrors(); receivable.value = null; form.paid_at = nowLocalIso(); form.request_id = newRequestId(); open.value = true; }
 const submit = () => form.transform((d) => ({ ...d, receivable_type: receivable.value?.type, receivable_id: receivable.value?.id }))
     .post('/accounting/payments', { preserveScroll: true, onSuccess: () => (open.value = false) });
 </script>

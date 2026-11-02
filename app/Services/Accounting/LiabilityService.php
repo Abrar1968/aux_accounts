@@ -32,6 +32,9 @@ class LiabilityService
     public function create(array $data): Liability
     {
         $this->periods->assertOpen($data['txn_date']);
+        foreach (['increase', 'decrease', 'cash_impact'] as $k) {
+            $data[$k] = (float) ($data[$k] ?? 0);
+        }
         if ((float) ($data['increase'] ?? 0) < 0 || (float) ($data['decrease'] ?? 0) < 0) {
             throw new DomainException('Increase and decrease must be non-negative; use cash impact for direction.');
         }
