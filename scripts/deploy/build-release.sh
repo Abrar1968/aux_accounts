@@ -17,7 +17,9 @@ echo "→ building frontend assets"
 cp -r "$ROOT/public/build" "$STAGE/public/build"
 
 echo "→ installing production PHP dependencies (platform PHP 8.2)"
-(cd "$STAGE" && COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-interaction --no-progress --quiet)
+(cd "$STAGE" && COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction --no-progress --quiet)
+# packages installed from source carry their whole git history — not needed at runtime
+find "$STAGE/vendor" -type d -name .git -prune -exec rm -rf {} +
 
 echo "→ trimming dev-only files"
 rm -rf "$STAGE"/{tests,.github,.claude,scripts/cloud,node_modules,phpunit.xml,.editorconfig,.gitattributes,CLAUDE.md}
