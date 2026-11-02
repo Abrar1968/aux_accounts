@@ -40,8 +40,7 @@ class CapitalService
     public function delete(CapitalTransaction $t, string $reason): void
     {
         $this->periods->assertOpen($t->txn_date);
-        app(AuditService::class)->record('deleted', $t, $t->toArray(), null, $reason);
-        $t->delete();
+        app(AuditService::class)->withReason($reason, fn () => $t->delete());
     }
 
     /** Cap table at a date: paid-in capital and effective ownership per investor. */

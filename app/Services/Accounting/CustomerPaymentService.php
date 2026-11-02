@@ -134,7 +134,6 @@ class CustomerPaymentService
     public function delete(CustomerPayment $p, string $reason): void
     {
         $this->periods->assertOpen($p->paid_at);
-        app(AuditService::class)->record('deleted', $p, $p->toArray(), null, $reason);
-        $p->delete();
+        app(AuditService::class)->withReason($reason, fn () => $p->delete());
     }
 }

@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import PageHeader from '@/Components/ui/PageHeader.vue';
 import StatCard from '@/Components/ui/StatCard.vue';
+import Icon from '@/Components/ui/Icon.vue';
 import Card from '@/Components/ui/Card.vue';
 import Button from '@/Components/ui/Button.vue';
 import BottomBar from '@/Components/ui/BottomBar.vue';
@@ -21,14 +22,15 @@ const adding = ref(false);
         <Button icon="plus" class="hidden sm:inline-flex" @click="adding = true">Add lead</Button>
     </PageHeader>
     <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <div class="card col-span-2 flex flex-col gap-3 p-4 lg:col-span-1">
-            <div class="flex items-baseline justify-between"><p class="text-xs font-medium uppercase tracking-wide text-ink-3">Daily target</p><p class="num text-sm text-ink-2">{{ progress.created }} / {{ progress.target }}</p></div>
-            <div class="h-2 overflow-hidden rounded-full bg-surface-2"><div class="h-full rounded-full bg-brand-500" :style="{ width: `${Math.min(100, (progress.created / progress.target) * 100)}%` }" /></div>
-            <p class="text-xs text-ink-2">{{ progress.remaining }} leads to go today</p>
+        <div class="col-span-2 flex flex-col gap-3 overflow-hidden rounded-[var(--radius-card)] bg-brand-gradient p-4 text-white shadow-[var(--shadow-brand)] ring-1 ring-inset ring-white/10 sm:p-5 lg:col-span-1">
+            <div class="flex items-center gap-2.5"><span class="grid size-8 place-items-center rounded-lg bg-white/18 ring-1 ring-inset ring-white/20"><Icon name="target" :size="16" /></span><p class="text-[13px] font-medium text-white/85">Daily target</p><p class="num ml-auto rounded-full bg-white/20 px-2 py-0.5 text-[11px] font-semibold">{{ Math.round(Math.min(100, (progress.created / progress.target) * 100)) }}%</p></div>
+            <p class="num text-[26px] font-bold leading-none">{{ progress.created }}<span class="text-base font-semibold text-white/70"> / {{ progress.target }}</span></p>
+            <div class="h-2 overflow-hidden rounded-full bg-white/20"><div class="h-full rounded-full bg-white shadow-[0_0_12px_rgb(255_255_255/0.7)]" :style="{ width: `${Math.min(100, (progress.created / progress.target) * 100)}%` }" /></div>
+            <p class="text-xs text-white/80">{{ progress.remaining }} leads to go today</p>
         </div>
-        <StatCard label="Due / overdue" :value="String(summary.due_or_overdue)" tone="warning" />
-        <StatCard label="Active leads" :value="String(summary.active_leads)" :hint="`${summary.total_leads} total · ${summary.lost} lost`" />
-        <StatCard label="Won" :value="String(summary.won)" :hint="`Conversion ${pct(summary.conversion_rate, 1)}`" tone="positive" />
+        <StatCard icon="bell" label="Due / overdue" :value="String(summary.due_or_overdue)" tone="warning" hint="Call these first" />
+        <StatCard icon="phone" label="Active leads" :value="String(summary.active_leads)" :hint="`${summary.total_leads} total · ${summary.lost} lost`" />
+        <StatCard icon="sparkles" label="Won" :value="String(summary.won)" :hint="`Conversion ${pct(summary.conversion_rate, 1)}`" tone="positive" />
     </div>
     <div class="mt-4 grid gap-4 lg:grid-cols-3">
         <Card title="Call these next" subtitle="Overdue and due today, oldest first" :padded="false" class="lg:col-span-2">
@@ -47,12 +49,12 @@ const adding = ref(false);
                 </dl>
                 <Link href="/crm/meetings" class="mt-3 inline-block text-xs font-medium text-brand-600">Open meetings →</Link>
             </Card>
-            <Card title="Quick links">
+            <Card title="Quick links" icon="bolt">
                 <div class="grid grid-cols-2 gap-2">
-                    <Button variant="secondary" size="sm" href="/crm/leads">Leads</Button>
-                    <Button variant="secondary" size="sm" href="/crm/pipeline">Pipeline</Button>
-                    <Button variant="secondary" size="sm" href="/crm/reports">Reports</Button>
-                    <Button variant="secondary" size="sm" href="/crm/analytics">Analytics</Button>
+                    <Button variant="secondary" size="sm" icon="phone" href="/crm/leads">Leads</Button>
+                    <Button variant="secondary" size="sm" icon="columns" href="/crm/pipeline">Pipeline</Button>
+                    <Button variant="secondary" size="sm" icon="chart" href="/crm/reports">Reports</Button>
+                    <Button variant="secondary" size="sm" icon="trend" href="/crm/analytics">Analytics</Button>
                 </div>
             </Card>
         </div>

@@ -40,10 +40,10 @@ const payable = computed(() => can('accounting.expenses.pay') && e.value.payable
         <Button v-if="payable" icon="wallet" class="hidden sm:inline-flex" @click="pay = true">Record payment</Button>
     </PageHeader>
     <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard label="Incurred" :value="money(e.amount)" :hint="`Accrual ${monthLabel(e.accrual_month)}`" />
-        <StatCard label="Settled" :value="money(e.total_settled)" />
-        <StatCard label="Payable" :value="money(e.payable)" :tone="e.payable > 0 ? 'warning' : 'positive'" />
-        <StatCard label="Entry check" :value="e.entry_check" :tone="e.entry_check === 'OK' ? 'positive' : 'negative'" :hint="`Expense date ${date(e.expense_date)}`" />
+        <StatCard icon="receipt" label="Incurred" :value="money(e.amount)" :hint="`Accrual ${monthLabel(e.accrual_month)}`" />
+        <StatCard icon="check" label="Settled" :value="money(e.total_settled)" />
+        <StatCard icon="clock" label="Payable" :value="money(e.payable)" :tone="e.payable > 0 ? 'warning' : 'positive'" />
+        <StatCard icon="shield" label="Entry check" :value="e.entry_check" :tone="e.entry_check === 'OK' ? 'positive' : 'negative'" :hint="`Expense date ${date(e.expense_date)}`" />
     </div>
     <div class="mt-4 grid gap-4 lg:grid-cols-3">
         <Card title="Payments" :padded="false" class="lg:col-span-2">

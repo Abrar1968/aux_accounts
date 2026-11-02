@@ -62,7 +62,6 @@ class MarketingRevenueService
         if (CustomerPayment::query()->where('receivable_type', 'marketing')->where('receivable_id', $m->id)->exists()) {
             throw new DomainException("{$m->code} has customer receipts. Delete those receipts first.");
         }
-        app(AuditService::class)->record('deleted', $m, $m->toArray(), null, $reason);
-        $m->delete();
+        app(AuditService::class)->withReason($reason, fn () => $m->delete());
     }
 }

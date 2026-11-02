@@ -55,8 +55,7 @@ class AdvanceService
     public function delete(EmployeeAdvance $a, string $reason): void
     {
         $this->periods->assertOpen($a->txn_date);
-        app(AuditService::class)->record('deleted', $a, $a->toArray(), null, $reason);
-        $a->delete();
+        app(AuditService::class)->withReason($reason, fn () => $a->delete());
     }
 
     /** Recovery rows link to the payroll row of the related salary month (Employee_Advances!J). */

@@ -70,8 +70,7 @@ class LiabilityService
     public function delete(Liability $l, string $reason): void
     {
         $this->periods->assertOpen($l->txn_date);
-        app(AuditService::class)->record('deleted', $l, $l->toArray(), null, $reason);
-        $l->delete();
+        app(AuditService::class)->withReason($reason, fn () => $l->delete());
     }
 
     /** Running balance per liability (Liabilities!L). */

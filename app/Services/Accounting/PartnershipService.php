@@ -110,8 +110,7 @@ class PartnershipService
         }
         DB::transaction(function () use ($a, $ids, $reason) {
             PartnershipRevenue::query()->whereIn('id', $ids)->delete();
-            app(AuditService::class)->record('deleted', $a, $a->toArray(), null, $reason);
-            $a->delete();
+            app(AuditService::class)->withReason($reason, fn () => $a->delete());
         });
     }
 

@@ -44,7 +44,7 @@ onMounted(async () => {
         <EmptyState v-if="!rows.length" :title="emptyTitle" :message="empty" />
         <template v-else>
             <!-- desktop / tablet -->
-            <div class="hidden overflow-x-auto sm:block">
+            <div class="relative hidden overflow-x-auto sm:block">
                 <table class="w-full text-left text-sm">
                     <thead>
                         <tr class="border-b border-line bg-surface-2/60">

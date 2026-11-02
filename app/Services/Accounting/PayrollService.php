@@ -102,7 +102,6 @@ class PayrollService
         if ($pr->payments()->exists() || $pr->recoveries()->exists()) {
             throw new DomainException("{$pr->code} has salary payments or advance recoveries. Reverse those first.");
         }
-        app(AuditService::class)->record('deleted', $pr, $pr->toArray(), null, $reason);
-        $pr->delete();
+        app(AuditService::class)->withReason($reason, fn () => $pr->delete());
     }
 }

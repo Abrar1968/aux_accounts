@@ -60,6 +60,8 @@ class CrudTest extends TestCase
         $this->delete("/accounting/projects/{$p->id}", [])->assertSessionHasErrors('reason');
         $this->ok($this->delete("/accounting/projects/{$p->id}", self::WHY));
         $this->assertNull(Project::query()->find($p->id));
+        $log = \App\Models\AuditLog::query()->where(['action' => 'deleted', 'auditable_type' => 'Project', 'auditable_id' => $p->id])->get();
+        $this->assertSame(['Entered by mistake'], $log->pluck('reason')->all(), 'exactly one audit entry, carrying the reason');
         $this->assertSame(0, \App\Models\Referral::query()->where('project_id', $p->id)->count());
 
         $paid = Project::query()->whereHas('payments')->firstOrFail();

@@ -45,9 +45,9 @@ const facts = computed(() => [
         <Button v-if="can('accounting.projects.delete')" variant="danger-soft" size="sm" icon="trash" @click="crud.askDelete(p)">Delete</Button>
     </PageHeader>
     <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard label="Contract value" :value="money(p.total_value)" :hint="p.change_orders ? `Incl. change orders ${money(p.change_orders)}` : null" />
-        <StatCard label="Revenue recognised" :value="money(p.revenue_recognized)" :hint="`Progress ${pct(p.progress)}`" />
-        <StatCard label="Collected (gross)" :value="money(p.gross_settlement)" :hint="`${pct(p.collection_percent)} · fees ${money(p.processing_fees)}`" />
+        <StatCard icon="briefcase" label="Contract value" :value="money(p.total_value)" :hint="p.change_orders ? `Incl. change orders ${money(p.change_orders)}` : null" />
+        <StatCard icon="trend" label="Revenue recognised" :value="money(p.revenue_recognized)" :hint="`Progress ${pct(p.progress)}`" />
+        <StatCard icon="inbox" label="Collected (gross)" :value="money(p.gross_settlement)" :hint="`${pct(p.collection_percent)} · fees ${money(p.processing_fees)}`" />
         <StatCard :label="p.customer_advance ? 'Customer advance' : 'Receivable'" :value="money(p.customer_advance || p.current_ar)" :tone="p.current_ar ? 'warning' : 'neutral'" />
     </div>
     <div class="mt-4 grid gap-4 lg:grid-cols-3">

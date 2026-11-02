@@ -72,7 +72,6 @@ class AssetService
     public function delete(FixedAsset $a, string $reason): void
     {
         $this->periods->assertOpen($a->acquisition_date, $a->cash_payment_date);
-        app(AuditService::class)->record('deleted', $a, $a->toArray(), null, $reason);
-        $a->delete();
+        app(AuditService::class)->withReason($reason, fn () => $a->delete());
     }
 }

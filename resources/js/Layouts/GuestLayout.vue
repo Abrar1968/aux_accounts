@@ -16,7 +16,7 @@ const features = [
 </script>
 
 <template>
-    <div class="relative grid min-h-full lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
+    <div class="relative grid min-h-dvh lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
         <!-- Brand panel -->
         <section class="relative hidden overflow-hidden bg-gradient-to-br from-side-2 via-side to-side p-12 text-white lg:flex lg:flex-col">
             <div class="pointer-events-none absolute -left-32 -top-32 size-[28rem] rounded-full bg-brand-500/35 blur-3xl" aria-hidden="true" />
@@ -57,7 +57,7 @@ const features = [
         </section>
 
         <!-- Form -->
-        <section class="relative flex min-h-full items-center justify-center px-5 py-12 sm:px-8">
+        <section class="relative flex min-h-dvh items-center justify-center px-5 py-12 sm:px-8">
             <div class="pointer-events-none absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-brand-50 to-transparent opacity-70 lg:hidden" aria-hidden="true" />
             <div class="relative w-full max-w-[400px] animate-in">
                 <div class="mb-8 flex items-center gap-3 lg:hidden">

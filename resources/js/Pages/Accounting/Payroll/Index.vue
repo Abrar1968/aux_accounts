@@ -36,10 +36,10 @@ const draft = () => router.post(`/accounting/payroll/${props.month}/draft`, {}, 
         <Button v-if="can('accounting.payroll.create')" size="sm" variant="secondary" icon="plus" @click="draft">Draft from base salaries</Button>
     </PageHeader>
     <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard label="Gross salary" :value="money(total('gross_salary'))" :hint="`${rows.length} employees`" />
-        <StatCard label="Advance recoveries" :value="money(total('advance_recovery'))" />
-        <StatCard label="Cash settled" :value="money(total('salary_cash_settled'))" />
-        <StatCard label="Unpaid" :value="money(total('unpaid'))" :tone="total('unpaid') > 0 ? 'warning' : 'positive'" />
+        <StatCard icon="users" label="Gross salary" :value="money(total('gross_salary'))" :hint="`${rows.length} employees`" />
+        <StatCard icon="reverse" label="Advance recoveries" :value="money(total('advance_recovery'))" />
+        <StatCard icon="cash" label="Cash settled" :value="money(total('salary_cash_settled'))" />
+        <StatCard icon="alert" label="Unpaid" :value="money(total('unpaid'))" :tone="total('unpaid') > 0 ? 'warning' : 'positive'" />
     </div>
     <Card :padded="false" class="mt-4">
         <DataTable :rows="rows" empty="No payroll rows for this month — draft them from base salaries."

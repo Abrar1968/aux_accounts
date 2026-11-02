@@ -46,9 +46,9 @@ const reconcile = () => form.post(`/accounting/banking/${props.account.id}/recon
         <Button v-if="account && can('accounting.banking.reconcile')" size="sm" icon="check" @click="rec = true">Reconcile</Button>
     </PageHeader>
     <div class="grid grid-cols-2 gap-3 lg:grid-cols-3">
-        <StatCard label="Opening" :value="money(ledger.opening)" :hint="date(from)" />
-        <StatCard label="Closing" :value="money(ledger.closing)" :hint="date(to)" :tone="ledger.closing < 0 ? 'negative' : 'neutral'" />
-        <StatCard label="Movements" :value="String(ledger.rows.length)" class="col-span-2 lg:col-span-1" />
+        <StatCard icon="wallet" label="Opening" :value="money(ledger.opening)" :hint="date(from)" />
+        <StatCard icon="cash" label="Closing" :value="money(ledger.closing)" :hint="date(to)" :tone="ledger.closing < 0 ? 'negative' : 'neutral'" />
+        <StatCard icon="layers" label="Movements" :value="String(ledger.rows.length)" class="col-span-2 lg:col-span-1" />
     </div>
     <div class="mt-4 grid gap-4" :class="account && 'xl:grid-cols-3'">
         <Card title="Ledger" :padded="false" class="xl:col-span-2">

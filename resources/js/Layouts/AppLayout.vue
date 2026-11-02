@@ -57,7 +57,7 @@ const roleLabel = computed(() => ({ owner: 'Owner', accountant: 'Accountant', sa
 
 <template>
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-md focus:bg-surface focus:px-3 focus:py-2">Skip to content</a>
-    <div class="app-shell min-h-full lg:grid lg:grid-cols-[272px_minmax(0,1fr)]">
+    <div class="app-shell min-h-dvh lg:grid lg:grid-cols-[272px_minmax(0,1fr)]">
         <Transition enter-from-class="opacity-0" enter-active-class="transition" leave-to-class="opacity-0" leave-active-class="transition">
             <div v-if="drawer" class="fixed inset-0 z-30 bg-[#05070f]/60 backdrop-blur-sm lg:hidden" @click="drawer = false" />
         </Transition>

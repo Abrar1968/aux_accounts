@@ -159,8 +159,7 @@ class ProjectService
             }
             $project->referrals()->delete();
             $this->branding->setClientSignature($project, null);
-            app(AuditService::class)->record('deleted', $project, $project->toArray(), null, $reason);
-            $project->delete();
+            app(AuditService::class)->withReason($reason, fn () => $project->delete());
         });
     }
 }
