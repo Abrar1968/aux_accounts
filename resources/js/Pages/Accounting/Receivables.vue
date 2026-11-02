@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue';
-import { Head, router } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import PageHeader from '@/Components/ui/PageHeader.vue';
 import Card from '@/Components/ui/Card.vue';
 import StatCard from '@/Components/ui/StatCard.vue';
@@ -53,7 +53,7 @@ const exportPdf = () => exportTablePdf(`Receivables ${monthLabel(props.month)}`,
     <div class="mt-5 mb-3"><Tabs v-model="tab" :tabs="[{ key: 'balances', label: 'Month-end balances', count: balances.length }, { key: 'aging', label: 'Aging', count: aging.length }]" /></div>
     <Card v-if="tab === 'balances'" :padded="false">
         <DataTable :columns="cols" :rows="balances" row-key="code">
-            <template #cell-name="{ row }"><span class="block truncate font-medium">{{ row.name }}</span><span class="block truncate text-xs text-ink-3">{{ row.code }}</span></template>
+            <template #cell-name="{ row }"><Link :href="`/accounting/receivables/${row.type}/${row.id}/statement`" class="block truncate font-medium hover:underline">{{ row.name }}</Link><span class="block truncate text-xs text-ink-3">{{ row.code }}</span></template>
         </DataTable>
     </Card>
     <template v-else>

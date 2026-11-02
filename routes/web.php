@@ -85,6 +85,24 @@ Route::middleware('auth')->group(function () {
         Route::get('/capital', [Accounting\CapitalController::class, 'index'])->middleware('permission:accounting.ledger.view')->name('capital.index');
         Route::post('/capital', [Accounting\CapitalController::class, 'store'])->middleware('permission:accounting.ledger.create')->name('capital.store');
 
+        Route::get('/receivables/{type}/{id}/statement', [Accounting\ReceivableController::class, 'statement'])->whereIn('type', ['project', 'marketing', 'opening', 'partnership'])->middleware('permission:accounting.payments.view')->name('receivables.statement');
+
+        Route::get('/banking', [Accounting\BankingController::class, 'index'])->middleware('permission:accounting.banking.view')->name('banking.index');
+        Route::get('/banking/{account}', [Accounting\BankingController::class, 'show'])->middleware('permission:accounting.banking.view')->name('banking.show');
+        Route::post('/banking', [Accounting\BankingController::class, 'store'])->middleware('permission:accounting.banking.manage')->name('banking.store');
+        Route::put('/banking/{account}', [Accounting\BankingController::class, 'update'])->middleware('permission:accounting.banking.manage')->name('banking.update');
+        Route::post('/banking/{account}/reconcile', [Accounting\BankingController::class, 'reconcile'])->middleware('permission:accounting.banking.reconcile')->name('banking.reconcile');
+
+        Route::get('/budgets', [Accounting\BudgetController::class, 'index'])->middleware('permission:accounting.budgets.view')->name('budgets.index');
+        Route::put('/budgets/{month}', [Accounting\BudgetController::class, 'update'])->where('month', '\d{4}-\d{2}')->middleware('permission:accounting.budgets.manage')->name('budgets.update');
+        Route::post('/budgets/{month}/copy', [Accounting\BudgetController::class, 'copy'])->where('month', '\d{4}-\d{2}')->middleware('permission:accounting.budgets.manage')->name('budgets.copy');
+        Route::get('/forecast', Accounting\ForecastController::class)->middleware('permission:accounting.reports.view')->name('forecast');
+
+        Route::get('/recurring', [Accounting\RecurringExpenseController::class, 'index'])->middleware('permission:accounting.expenses.view')->name('recurring.index');
+        Route::post('/recurring', [Accounting\RecurringExpenseController::class, 'store'])->middleware('permission:accounting.expenses.create')->name('recurring.store');
+        Route::put('/recurring/{recurring}', [Accounting\RecurringExpenseController::class, 'update'])->middleware('permission:accounting.expenses.create')->name('recurring.update');
+        Route::post('/recurring/generate/{month}', [Accounting\RecurringExpenseController::class, 'generate'])->where('month', '\d{4}-\d{2}')->middleware('permission:accounting.expenses.create')->name('recurring.generate');
+
         Route::get('/periods', [Accounting\PeriodController::class, 'index'])->middleware('permission:accounting.reports.view')->name('periods.index');
         Route::post('/periods/{month}/close', [Accounting\PeriodController::class, 'close'])->where('month', '\d{4}-\d{2}')->middleware('permission:accounting.periods.manage')->name('periods.close');
         Route::post('/periods/{month}/reopen', [Accounting\PeriodController::class, 'reopen'])->where('month', '\d{4}-\d{2}')->middleware('permission:accounting.periods.reopen')->name('periods.reopen');
@@ -113,6 +131,14 @@ Route::middleware('auth')->group(function () {
             Route::post('/reports', [Crm\ReportController::class, 'store'])->name('crm.reports.store');
             Route::get('/reports/{report}', [Crm\ReportController::class, 'show'])->name('crm.reports.show');
             Route::get('/analytics', [Crm\ReportController::class, 'analytics'])->name('crm.analytics');
+        });
+        Route::get('/leaderboard', [Crm\LeaderboardController::class, 'index'])->middleware('permission:crm.reports.view')->name('crm.leaderboard');
+        Route::post('/leaderboard/targets', [Crm\LeaderboardController::class, 'target'])->middleware('permission:crm.targets.manage')->name('crm.targets');
+        Route::middleware('permission:crm.leads.import')->group(function () {
+            Route::get('/import', [Crm\ImportController::class, 'create'])->name('crm.import');
+            Route::post('/import/preview', [Crm\ImportController::class, 'preview'])->name('crm.import.preview');
+            Route::post('/import/commit', [Crm\ImportController::class, 'commit'])->name('crm.import.commit');
+            Route::get('/import/template', [Crm\ImportController::class, 'template'])->name('crm.import.template');
         });
         Route::middleware('permission:crm.settings.manage')->group(function () {
             Route::post('/settings/outcomes', [Crm\CrmSettingController::class, 'saveOutcome'])->name('crm.settings.outcomes');

@@ -7,7 +7,7 @@ import { money } from '@/lib/format';
 
 const props = defineProps({ labels: Array, series: Array, height: { type: Number, default: 220 }, area: Boolean, title: String });
 const { el, width: W } = useChartWidth();
-const P = { l: 44, r: 10, t: 10, b: 26 };
+const P = { l: 44, r: 22, t: 10, b: 26 };
 const hover = ref(null);
 const all = computed(() => props.series.flatMap((s) => s.values.map(Number)));
 const ticks = computed(() => niceTicks(Math.min(0, ...all.value), Math.max(0, ...all.value)));
