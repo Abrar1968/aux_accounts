@@ -5,10 +5,9 @@ const model = defineModel();
 
 <template>
     <label class="block">
-        <span class="mb-1.5 block text-sm font-medium">{{ label }}</span>
+        <span class="mb-1.5 block text-[13px] font-semibold text-ink">{{ label }}</span>
         <input v-model="model" :type="type" :autocomplete="autocomplete"
-            :class="error ? 'border-negative' : 'border-line focus:border-brand-500'"
-            class="h-10 w-full rounded-lg border bg-surface px-3 text-sm outline-none transition placeholder:text-ink-3" />
+            :class="error && '!border-negative'" class="field !h-11 px-3.5" />
         <span v-if="error" class="mt-1 block text-xs text-negative">{{ error }}</span>
     </label>
 </template>

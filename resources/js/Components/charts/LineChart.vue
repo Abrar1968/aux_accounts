@@ -14,6 +14,7 @@ const ticks = computed(() => niceTicks(Math.min(0, ...all.value), Math.max(0, ..
 const x = (i) => P.l + (props.labels.length < 2 ? 0 : (i / (props.labels.length - 1)) * (W.value - P.l - P.r));
 const y = (v) => { const [lo, hi] = [ticks.value[0], ticks.value.at(-1)]; return P.t + (1 - (v - lo) / (hi - lo || 1)) * (props.height - P.t - P.b); };
 const line = (vals) => vals.map((v, i) => `${i ? 'L' : 'M'}${x(i)},${y(v)}`).join(' ');
+const gid = `lc-${Math.random().toString(36).slice(2, 8)}`;
 const fill = (vals) => `${line(vals)} L${x(vals.length - 1)},${y(0)} L${x(0)},${y(0)} Z`;
 function move(e) {
     const r = e.currentTarget.getBoundingClientRect();
@@ -25,14 +26,17 @@ function move(e) {
 <template>
     <figure ref="el" class="relative min-w-0">
         <svg :viewBox="`0 0 ${W} ${height}`" class="h-auto w-full touch-pan-y" role="img" :aria-label="title" @mousemove="move" @mouseleave="hover = null">
+            <defs>
+                <linearGradient v-for="(s, si) in series" :id="`${gid}-${si}`" :key="si" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" :stop-color="s.color ?? SERIES[si]" stop-opacity=".22" /><stop offset="100%" :stop-color="s.color ?? SERIES[si]" stop-opacity="0" /></linearGradient>
+            </defs>
             <g class="text-[10px]" fill="var(--color-ink-3)">
                 <g v-for="t in ticks" :key="t"><line :x1="P.l" :x2="W - P.r" :y1="y(t)" :y2="y(t)" stroke="var(--color-line)" :stroke-dasharray="t === 0 ? '' : '3 3'" /><text :x="P.l - 6" :y="y(t) + 3" text-anchor="end">{{ compact(t) }}</text></g>
                 <text v-for="(l, i) in labels" :key="l" :x="x(i)" :y="height - 8" text-anchor="middle">{{ l }}</text>
             </g>
             <g v-for="(s, si) in series" :key="s.name">
-                <path v-if="area" :d="fill(s.values)" :fill="s.color ?? SERIES[si]" opacity="0.08" />
-                <path :d="line(s.values)" fill="none" :stroke="s.color ?? SERIES[si]" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" />
-                <circle v-for="(v, i) in s.values" :key="i" :cx="x(i)" :cy="y(v)" :r="hover === i ? 4 : 2.5" :fill="s.color ?? SERIES[si]" />
+                <path v-if="area" :d="fill(s.values)" :fill="`url(#${gid}-${si})`" />
+                <path :d="line(s.values)" fill="none" :stroke="s.color ?? SERIES[si]" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />
+                <circle v-for="(v, i) in s.values" :key="i" :cx="x(i)" :cy="y(v)" :r="hover === i ? 5 : 0" fill="var(--color-surface)" :stroke="s.color ?? SERIES[si]" stroke-width="2.5" />
             </g>
             <line v-if="hover !== null" :x1="x(hover)" :x2="x(hover)" :y1="P.t" :y2="height - P.b" stroke="var(--color-ink-3)" stroke-dasharray="2 3" />
         </svg>
@@ -40,8 +44,8 @@ function move(e) {
             <p class="font-semibold">{{ labels[hover] }}</p>
             <p v-for="(s, si) in series" :key="s.name" class="num flex justify-between gap-4"><span class="text-ink-2">{{ s.name }}</span><span>{{ money(s.values[hover]) }}</span></p>
         </div>
-        <figcaption class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-ink-2">
-            <span v-for="(s, si) in series" :key="s.name" class="inline-flex items-center gap-1.5"><span class="h-0.5 w-3 rounded" :style="{ background: s.color ?? SERIES[si] }" />{{ s.name }}</span>
+        <figcaption class="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-xs font-medium text-ink-2">
+            <span v-for="(s, si) in series" :key="s.name" class="inline-flex items-center gap-1.5"><span class="size-2.5 rounded-full" :style="{ background: s.color ?? SERIES[si] }" />{{ s.name }}</span>
         </figcaption>
     </figure>
 </template>

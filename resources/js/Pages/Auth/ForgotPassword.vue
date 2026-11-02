@@ -2,6 +2,7 @@
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import TextField from '@/Components/ui/TextField.vue';
+import Button from '@/Components/ui/Button.vue';
 
 defineOptions({ layout: null });
 const form = useForm({ email: '' });
@@ -10,9 +11,9 @@ const form = useForm({ email: '' });
 <template>
     <Head title="Reset password" />
     <GuestLayout title="Reset password" subtitle="We will email you a reset link.">
-        <form class="space-y-4" @submit.prevent="form.post('/forgot-password')">
+        <form class="space-y-5" @submit.prevent="form.post('/forgot-password')">
             <TextField v-model="form.email" label="Email" type="email" :error="form.errors.email" />
-            <button type="submit" :disabled="form.processing" class="h-10 w-full rounded-lg bg-brand-600 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-60">Send link</button>
+            <Button type="submit" size="lg" block :loading="form.processing" icon-right="arrow-right">Send link</Button>
             <Link href="/login" class="block text-center text-sm text-ink-2 hover:text-ink">Back to sign in</Link>
         </form>
     </GuestLayout>

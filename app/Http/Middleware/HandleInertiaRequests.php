@@ -32,6 +32,7 @@ class HandleInertiaRequests extends Middleware
             ],
             // letterhead for print views / PDFs (logo, seal, company details)
             'brand' => fn () => $user ? app(BrandingService::class)->brand() : null,
+            'guestBrand' => fn () => $user ? null : app(BrandingService::class)->guestBrand(),
             'auth' => [
                 'user' => $user ? [
                     'id' => $user->id,

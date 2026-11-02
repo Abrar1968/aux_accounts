@@ -20,6 +20,9 @@ class BrandingService
 {
     public const ASSETS = ['logo' => 'Company logo', 'seal' => 'Accounts seal / signature'];
 
+    /** Accent palettes defined in resources/css/app.css ([data-accent]). */
+    public const ACCENTS = ['indigo', 'blue', 'violet', 'emerald', 'teal', 'rose', 'amber'];
+
     public function __construct(
         private readonly ImageService $images,
         private readonly SettingsService $settings,
@@ -97,6 +100,7 @@ class BrandingService
             'email' => config('mail.from.address'), 'signature_title' => $this->settings->get('company.signature_title'),
             'logo' => $asset('logo'), 'seal' => $asset('seal'),
             'favicon' => $this->faviconUrl(),
+            'accent' => $this->accent(),
         ];
     }
 
@@ -107,6 +111,30 @@ class BrandingService
 
         return is_array($m) ? ['png' => route('projects.signature', [$project, 'png']).'?v='.$m['v'], 'jpg' => route('projects.signature', [$project, 'jpg']).'?v='.$m['v'],
             'width' => $m['width'], 'height' => $m['height'], 'name' => $project->customer ?: $project->name] : null;
+    }
+
+    public function accent(): string
+    {
+        $a = (string) $this->settings->get('branding.accent', 'indigo');
+
+        return in_array($a, self::ACCENTS, true) ? $a : 'indigo';
+    }
+
+    public function setAccent(string $accent): void
+    {
+        if (! in_array($accent, self::ACCENTS, true)) {
+            throw new DomainException('Unknown accent colour.');
+        }
+        $this->settings->set('branding.accent', $accent, 'branding');
+        $this->settings->flush();
+    }
+
+    /** Public letterhead for the sign-in pages (no seal / private data). */
+    public function guestBrand(): array
+    {
+        $logo = $this->settings->get('branding.logo');
+
+        return ['company' => $this->settings->get('company.name'), 'logo' => is_array($logo) ? route('branding.show', ['logo', 'png']).'?v='.$logo['v'] : null];
     }
 
     /** Logo-derived browser icon (cache-busted), or the default /favicon.ico. */
