@@ -21,7 +21,7 @@ watch(open, (v) => {
     form.clearErrors();
     Object.assign(form, blank, props.lead ? Object.fromEntries(Object.keys(blank).map((k) => [k, props.lead[k] ?? ''])) : {});
     if (props.lead?.meeting_at) form.meeting_at = String(props.lead.meeting_at).slice(0, 16);
-});
+}, { immediate: true });
 const clean = (d) => Object.fromEntries(Object.entries(d).map(([k, v]) => [k, v === '' ? null : v]).filter(([k, v]) => !(props.lead === undefined && v === null)));
 const submit = () => (props.lead
     ? form.transform(clean).put(`/crm/leads/${props.lead.id}`, { preserveScroll: true, onSuccess: () => (open.value = false) })

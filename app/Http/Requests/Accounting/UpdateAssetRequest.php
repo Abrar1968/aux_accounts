@@ -17,6 +17,14 @@ class UpdateAssetRequest extends FormRequest
         return [
             'name' => ['sometimes', 'string', 'max:190'],
             'category' => ['nullable', 'string', 'max:120'],
+            'acquisition_date' => ['sometimes', 'date'],
+            'in_service_date' => ['sometimes', 'date', 'after_or_equal:acquisition_date'],
+            'cost' => ['sometimes', 'numeric', 'min:0', 'max:9999999999999', 'decimal:0,2'],
+            'residual_value' => ['nullable', 'numeric', 'min:0'],
+            'useful_life_months' => ['sometimes', 'integer', 'min:1', 'max:600'],
+            'opening_accumulated_dep' => ['nullable', 'numeric', 'min:0'],
+            'cash_paid' => ['nullable', 'numeric', 'min:0'],
+            'cash_payment_date' => ['nullable', 'date'],
             'disposal_date' => ['nullable', 'date'],
             'notes' => ['nullable', 'string', 'max:2000'],
         ];

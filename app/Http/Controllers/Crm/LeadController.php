@@ -72,7 +72,7 @@ class LeadController extends Controller
         $this->authorize('delete', $lead);
         $this->leads->archive($lead);
 
-        return $this->toast("Lead {$lead->code} archived.");
+        return redirect('/crm/leads')->with('toast', ['type' => 'success', 'title' => 'Archived', 'message' => "Lead {$lead->code} archived."]);
     }
 
     public function storeCall(StoreCallRequest $request, Lead $lead, CallLogService $calls)

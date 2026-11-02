@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import PageHeader from '@/Components/ui/PageHeader.vue';
 import Card from '@/Components/ui/Card.vue';
 import Button from '@/Components/ui/Button.vue';
@@ -9,25 +9,33 @@ import Drawer from '@/Components/ui/Drawer.vue';
 import Input from '@/Components/ui/Input.vue';
 import MoneyInput from '@/Components/ui/MoneyInput.vue';
 import Textarea from '@/Components/ui/Textarea.vue';
+import RowActions from '@/Components/ui/RowActions.vue';
+import ConfirmDialog from '@/Components/ui/ConfirmDialog.vue';
+import { useCrud } from '@/Composables/useCrud';
 import BottomBar from '@/Components/ui/BottomBar.vue';
 import { usePermissions } from '@/Composables/usePermissions';
 import { date, money, monthLabel, todayIso } from '@/lib/format';
 
 defineProps({ schedule: Array });
 const { can } = usePermissions();
-const open = ref(false);
-const form = useForm({ name: '', category: 'Office Equipment', acquisition_date: todayIso(), in_service_date: todayIso(), cost: '', residual_value: 0, useful_life_months: 60, opening_accumulated_dep: 0, cash_paid: '', cash_payment_date: '', notes: '' });
-const submit = () => form.post('/accounting/assets', { preserveScroll: true, onSuccess: () => { open.value = false; form.reset(); } });
+const d10 = (v) => (v ? String(v).slice(0, 10) : '');
+const crud = useCrud({
+    base: '/accounting/assets',
+    blank: { name: '', category: 'Office Equipment', acquisition_date: todayIso(), in_service_date: todayIso(), cost: '', residual_value: 0, useful_life_months: 60, opening_accumulated_dep: 0, cash_paid: '', cash_payment_date: '', disposal_date: '', notes: '' },
+    toForm: (a) => ({ ...a, acquisition_date: d10(a.acquisition_date), in_service_date: d10(a.in_service_date), cash_payment_date: d10(a.cash_payment_date), disposal_date: d10(a.disposal_date), notes: a.notes ?? '' }),
+});
+const { open, editing, form } = crud;
+const submit = () => crud.submit();
 </script>
 
 <template>
     <Head title="Fixed assets" />
     <PageHeader title="Fixed assets" subtitle="Straight-line monthly depreciation, capped at cost − residual">
-        <Button v-if="can('accounting.ledger.create')" icon="plus" class="hidden sm:inline-flex" @click="open = true">Register asset</Button>
+        <Button v-if="can('accounting.ledger.create')" icon="plus" class="hidden sm:inline-flex" @click="crud.create()">Register asset</Button>
     </PageHeader>
     <div class="space-y-4">
         <Card v-for="s in schedule" :key="s.asset.id" :title="s.asset.name" :subtitle="`${s.asset.code} · ${s.asset.category}`">
-            <template #actions><Badge :label="s.asset.status" /></template>
+            <template #actions><Badge :label="s.asset.status" /><RowActions :edit="can('accounting.ledger.update')" :remove="can('accounting.ledger.delete')" @edit="crud.edit(s.asset)" @remove="crud.askDelete(s.asset)" /></template>
             <dl class="mb-4 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
                 <div><dt class="text-xs text-ink-3">Cost</dt><dd class="num font-semibold">{{ money(s.asset.cost) }}</dd></div>
                 <div><dt class="text-xs text-ink-3">Monthly depreciation</dt><dd class="num font-semibold">{{ money(s.asset.monthly_depreciation) }}</dd></div>
@@ -42,8 +50,8 @@ const submit = () => form.post('/accounting/assets', { preserveScroll: true, onS
             </div>
         </Card>
     </div>
-    <BottomBar v-if="can('accounting.ledger.create')"><Button icon="plus" @click="open = true">Register asset</Button></BottomBar>
-    <Drawer v-model="open" title="Register fixed asset">
+    <BottomBar v-if="can('accounting.ledger.create')"><Button icon="plus" @click="crud.create()">Register asset</Button></BottomBar>
+    <Drawer v-model="open" :icon="editing ? 'pencil' : 'box'" :title="editing ? `Edit ${editing.code}` : 'Register fixed asset'" subtitle="Unpaid cost must be financed through Liabilities to keep the balance check at 0">
         <form id="asset-form" class="space-y-4" @submit.prevent="submit">
             <Input v-model="form.name" label="Asset name" required :error="form.errors.name" />
             <Input v-model="form.category" label="Category" />
@@ -51,8 +59,11 @@ const submit = () => form.post('/accounting/assets', { preserveScroll: true, onS
             <div class="grid grid-cols-2 gap-3"><MoneyInput v-model="form.cost" label="Cost" required :error="form.errors.cost" /><MoneyInput v-model="form.residual_value" label="Residual value" /></div>
             <div class="grid grid-cols-2 gap-3"><Input v-model="form.useful_life_months" type="number" min="1" label="Useful life (months)" :error="form.errors.useful_life_months" /><MoneyInput v-model="form.opening_accumulated_dep" label="Opening accum. dep." /></div>
             <div class="grid grid-cols-2 gap-3"><MoneyInput v-model="form.cash_paid" label="Cash paid now" hint="Direct purchase cash. Any unpaid part must be posted as a liability (e.g. LIA-AC)." /><Input v-model="form.cash_payment_date" type="date" label="Cash date" :error="form.errors.cash_payment_date" /></div>
+            <Input v-if="editing" v-model="form.disposal_date" type="date" label="Disposal date" hint="Stops depreciation from the following month" :error="form.errors.disposal_date" />
             <Textarea v-model="form.notes" label="Notes" />
         </form>
-        <template #footer><Button variant="secondary" @click="open = false">Cancel</Button><Button type="submit" form="asset-form" :loading="form.processing">Register</Button></template>
+        <template #footer><Button variant="secondary" @click="open = false">Cancel</Button><Button type="submit" form="asset-form" :loading="form.processing">{{ editing ? 'Save changes' : 'Register' }}</Button></template>
     </Drawer>
+    <ConfirmDialog v-model="crud.confirm.open" danger reason :loading="crud.confirm.loading" title="Delete asset?" confirm-label="Delete asset"
+        :message="`${crud.confirm.row?.code} · ${crud.confirm.row?.name} and its depreciation schedule will be removed.`" @confirm="crud.doDelete" />
 </template>

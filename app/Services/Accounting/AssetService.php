@@ -43,6 +43,16 @@ class AssetService
     public function update(FixedAsset $a, array $data): FixedAsset
     {
         $this->periods->assertOpen($data['disposal_date'] ?? null, $data['cash_payment_date'] ?? null);
+        $financial = ['acquisition_date', 'in_service_date', 'cost', 'residual_value', 'useful_life_months', 'opening_accumulated_dep', 'cash_paid', 'cash_payment_date'];
+        $changes = array_filter(array_intersect_key($data, array_flip($financial)), fn ($v, $k) => (string) $v !== (string) ($a->{$k} instanceof \DateTimeInterface ? $a->{$k}->format('Y-m-d') : $a->{$k}), ARRAY_FILTER_USE_BOTH);
+        if ($changes) { // depreciation history would change: every affected month must still be open
+            $this->periods->assertOpen($a->acquisition_date, $a->cash_payment_date, $data['acquisition_date'] ?? null);
+        }
+        foreach (['residual_value', 'opening_accumulated_dep', 'cash_paid'] as $k) {
+            if (array_key_exists($k, $data)) {
+                $data[$k] = (float) ($data[$k] ?? 0);
+            }
+        }
 
         return $this->repo->update($a, $data);
     }

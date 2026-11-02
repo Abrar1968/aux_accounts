@@ -10,6 +10,9 @@ import Drawer from '@/Components/ui/Drawer.vue';
 import Input from '@/Components/ui/Input.vue';
 import MoneyInput from '@/Components/ui/MoneyInput.vue';
 import Switch from '@/Components/ui/Switch.vue';
+import RowActions from '@/Components/ui/RowActions.vue';
+import ConfirmDialog from '@/Components/ui/ConfirmDialog.vue';
+import { useCrud } from '@/Composables/useCrud';
 import BottomBar from '@/Components/ui/BottomBar.vue';
 import { usePermissions } from '@/Composables/usePermissions';
 import { money } from '@/lib/format';
@@ -25,6 +28,7 @@ function start(row = null) {
     if (row) Object.assign(form, { name: row.name, designation: row.designation ?? '', base_salary: row.base_salary ?? '', phone: row.phone ?? '', bank_account: row.bank_account ?? '', is_active: row.is_active });
     open.value = true;
 }
+const del = useCrud({ base: '/accounting/employees', blank: {}, reason: false });
 const submit = () => (editing.value ? form.put(`/accounting/employees/${editing.value.id}`, { onSuccess: () => (open.value = false) }) : form.post('/accounting/employees', { onSuccess: () => (open.value = false) }));
 </script>
 
@@ -37,10 +41,13 @@ const submit = () => (editing.value ? form.put(`/accounting/employees/${editing.
         <DataTable :rows="employees.data" clickable @row="(r) => can('accounting.payroll.update') && start(r)"
             :columns="[{ key: 'name', label: 'Name', primary: true }, { key: 'is_active', label: 'Status', secondary: true }, { key: 'designation', label: 'Designation' }, { key: 'base_salary', label: 'Base salary', align: 'right', format: (v) => money(v) }, { key: 'advance', label: 'Advance outstanding', align: 'right', format: (v, r) => money(advances_outstanding?.[r.name] ?? 0) }]">
             <template #cell-is_active="{ value }"><Badge :tone="value ? 'positive' : 'neutral'" :label="value ? 'Active' : 'Inactive'" /></template>
+            <template v-if="can('accounting.payroll.update') || can('accounting.payroll.delete')" #actions="{ row }">
+                <RowActions :edit="can('accounting.payroll.update')" :remove="can('accounting.payroll.delete')" @edit="start(row)" @remove="del.askDelete(row)" />
+            </template>
         </DataTable>
     </Card>
     <BottomBar v-if="can('accounting.payroll.create')"><Button icon="plus" @click="start()">Add employee</Button></BottomBar>
-    <Drawer v-model="open" :title="editing ? editing.name : 'Add employee'">
+    <Drawer v-model="open" :icon="editing ? 'pencil' : 'user'" :title="editing ? editing.name : 'Add employee'" :subtitle="editing ? 'Name is locked once payroll exists (payroll IDs use it)' : 'Base salary drafts monthly payroll automatically'">
         <form id="emp-form" class="space-y-4" @submit.prevent="submit">
             <Input v-model="form.name" label="Name" required :disabled="!!editing" :error="form.errors.name" />
             <Input v-model="form.designation" label="Designation" />
@@ -50,4 +57,6 @@ const submit = () => (editing.value ? form.put(`/accounting/employees/${editing.
         </form>
         <template #footer><Button variant="secondary" @click="open = false">Cancel</Button><Button type="submit" form="emp-form" :loading="form.processing">Save</Button></template>
     </Drawer>
+    <ConfirmDialog v-model="del.confirm.open" danger :loading="del.confirm.loading" title="Remove employee?" confirm-label="Remove"
+        :message="`${del.confirm.row?.name} will be removed. Employees with payroll or advance history can only be marked inactive.`" @confirm="del.doDelete" />
 </template>

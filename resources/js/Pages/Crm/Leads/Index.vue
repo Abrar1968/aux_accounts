@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
 import PageHeader from '@/Components/ui/PageHeader.vue';
 import Card from '@/Components/ui/Card.vue';
@@ -11,6 +11,9 @@ import Badge from '@/Components/ui/Badge.vue';
 import BottomBar from '@/Components/ui/BottomBar.vue';
 import PriorityBadge from '@/Components/crm/PriorityBadge.vue';
 import LeadFormDrawer from '@/Components/crm/LeadFormDrawer.vue';
+import RowActions from '@/Components/ui/RowActions.vue';
+import ConfirmDialog from '@/Components/ui/ConfirmDialog.vue';
+import { useCrud } from '@/Composables/useCrud';
 import { useFilters } from '@/Composables/useFilters';
 import { usePermissions } from '@/Composables/usePermissions';
 import { date, shortDate } from '@/lib/format';
@@ -19,6 +22,9 @@ const props = defineProps({ leads: Object, options: Object, filters: Object });
 const { filters } = useFilters({ q: props.filters.q ?? '', stage: props.filters.stage ?? '', owner: props.filters.owner ?? '', source: props.filters.source ?? '' });
 const { can } = usePermissions();
 const adding = ref(false);
+const editingLead = ref(null);
+const del = useCrud({ base: '/crm/leads', blank: {}, reason: false });
+onMounted(() => { if (new URLSearchParams(window.location.search).get('new') === '1') adding.value = true; });
 const stages = ['New', 'Contacted', 'Interested', 'Meeting', 'Proposal', 'Negotiation', 'Won', 'Lost'];
 const columns = [
     { key: 'phone', label: 'Lead', primary: true },
@@ -47,9 +53,15 @@ const columns = [
             <template #cell-phone="{ row }"><span class="num block font-medium">{{ row.phone }}</span><span class="block truncate text-xs text-ink-3">{{ row.business_type || '—' }}<template v-if="row.data_checks?.length"> · <span class="text-warning">{{ row.data_checks[0] }}</span></template></span></template>
             <template #cell-priority="{ value }"><PriorityBadge :priority="value" /></template>
             <template #cell-stage="{ value }"><Badge :label="value" /></template>
+            <template v-if="can('crm.leads.update') || can('crm.leads.delete')" #actions="{ row }">
+                <RowActions :edit="can('crm.leads.update')" :remove="can('crm.leads.delete')" remove-label="Archive" @edit="editingLead = row" @remove="del.askDelete(row)" />
+            </template>
         </DataTable>
         <Pagination :page="leads" />
     </Card>
     <BottomBar v-if="can('crm.leads.create')"><Button icon="plus" @click="adding = true">Add lead</Button></BottomBar>
     <LeadFormDrawer v-model="adding" :options="options" />
+    <LeadFormDrawer v-if="editingLead" :model-value="true" :lead="editingLead" :options="options" @update:model-value="(v) => !v && (editingLead = null)" />
+    <ConfirmDialog v-model="del.confirm.open" danger :loading="del.confirm.loading" title="Archive lead?" confirm-label="Archive lead"
+        :message="`Lead ${del.confirm.row?.phone} (${del.confirm.row?.code}) will be archived and hidden from lists, follow-ups and reports.`" @confirm="del.doDelete" />
 </template>
