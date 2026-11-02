@@ -21,4 +21,9 @@ class ReceivableController extends Controller
             'aging' => $receivables->aging(min($p->end(), now()->toDateString())),
         ]);
     }
+
+    public function statement(string $type, int $id, ReceivableService $receivables): Response
+    {
+        return Inertia::render('Accounting/CustomerStatement', ['statement' => $receivables->statement($type, $id)]);
+    }
 }

@@ -44,6 +44,11 @@ class RepositoryServiceProvider extends ServiceProvider
             Contracts\SettingRepositoryInterface::class => Eloquent\SettingRepository::class,
             Contracts\LeadOutcomeRepositoryInterface::class => Eloquent\LeadOutcomeRepository::class,
             Contracts\CrmOptionRepositoryInterface::class => Eloquent\CrmOptionRepository::class,
+            Contracts\BankAccountRepositoryInterface::class => Eloquent\BankAccountRepository::class,
+            Contracts\BankReconciliationRepositoryInterface::class => Eloquent\BankReconciliationRepository::class,
+            Contracts\BudgetRepositoryInterface::class => Eloquent\BudgetRepository::class,
+            Contracts\RecurringExpenseRepositoryInterface::class => Eloquent\RecurringExpenseRepository::class,
+            Contracts\CallerTargetRepositoryInterface::class => Eloquent\CallerTargetRepository::class,
         ];
     }
 }

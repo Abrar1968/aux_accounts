@@ -45,6 +45,7 @@ class SettingsService
         'crm.default_business_type' => 'E-commerce / Online Store',
         'crm.report_brand' => 'Sales & Marketing',
         'crm.phone_country_code' => '88',
+        'forecast.collection_rate' => 0.6,
     ];
 
     public function get(string $key, mixed $default = null): mixed
@@ -71,7 +72,7 @@ class SettingsService
     public const EDITABLE = [
         'assets.ac_useful_life', 'assets.ac_residual', 'siam.start', 'siam.months', 'siam.share', 'referral.tiers',
         'opening.other_fixed_assets', 'opening.other_assets', 'opening.cash', 'opening.other_liabilities',
-        'crm.daily_slots', 'crm.default_owner', 'crm.default_business_type', 'crm.report_brand',
+        'forecast.collection_rate', 'crm.daily_slots', 'crm.default_owner', 'crm.default_business_type', 'crm.report_brand',
     ];
 
     /** @param array<string,mixed> $values */

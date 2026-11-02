@@ -2,6 +2,7 @@
 
 namespace App\Services\Accounting;
 
+use App\Exceptions\Domain\DomainException;
 use App\Repositories\Contracts\CustomerPaymentRepositoryInterface;
 use App\Repositories\Contracts\MarketingServiceRepositoryInterface;
 use App\Repositories\Contracts\OpeningReceivableRepositoryInterface;
@@ -112,5 +113,52 @@ class ReceivableService
         return $this->balancesAt(null)
             ->filter(fn ($r) => $q === null || stripos($r['code'].' '.$r['name'], $q) !== false)
             ->values();
+    }
+
+    /**
+     * Customer statement (new): opening due, earned revenue and receipts in date order with a
+     * running balance, for one receivable. Used by the printable statement page.
+     */
+    public function statement(string $type, int $id): array
+    {
+        $class = CustomerPaymentService::MODELS[$type] ?? throw new DomainException('Unknown receivable type.');
+        $record = $class::query()->findOrFail($id);
+        $lines = [];
+        $opening = 0.0;
+        if ($type === 'opening') {
+            $opening = (float) $record->opening_amount;
+        } elseif ($type === 'project') {
+            foreach ($this->recognitions->query()->where('project_id', $id)->orderBy('period')->get() as $r) {
+                if ((float) $r->recognized_amount != 0.0) {
+                    $lines[] = ['date' => $r->period->toDateString(), 'type' => 'invoice', 'reference' => $r->code,
+                        'description' => 'Revenue recognised · '.($r->method_label ?? 'Project'), 'debit' => (float) $r->recognized_amount, 'credit' => 0.0];
+                }
+            }
+        } elseif ($type === 'marketing') {
+            $lines[] = ['date' => $record->service_month->toDateString(), 'type' => 'invoice', 'reference' => $record->code,
+                'description' => 'Marketing service '.$record->service_month->format('M Y'), 'debit' => (float) $record->revenue, 'credit' => 0.0];
+        } elseif ($type === 'partnership' && $record->recognized_revenue !== null) {
+            $lines[] = ['date' => $record->earned_month->toDateString(), 'type' => 'invoice', 'reference' => $record->code,
+                'description' => 'Partnership revenue', 'debit' => (float) $record->recognized_revenue, 'credit' => 0.0];
+        }
+        foreach ($this->payments->query()->where('receivable_type', $type)->where('receivable_id', $id)->orderBy('paid_at')->get() as $p) {
+            $lines[] = ['date' => substr((string) $p->paid_at, 0, 10), 'type' => 'payment', 'reference' => $p->code,
+                'description' => 'Payment received'.($p->method ? ' · '.$p->method : '').((float) $p->processing_fee > 0 ? ' (incl. fee ৳'.number_format((float) $p->processing_fee, 2).')' : ''),
+                'debit' => 0.0, 'credit' => Money::round((float) $p->cash_received + (float) $p->processing_fee)];
+        }
+        usort($lines, fn ($a, $b) => [$a['date'], $a['type'] === 'payment'] <=> [$b['date'], $b['type'] === 'payment']);
+        $balance = $opening;
+        foreach ($lines as &$l) {
+            $balance = Money::round($balance + $l['debit'] - $l['credit']);
+            $l['balance'] = $balance;
+        }
+        unset($l);
+
+        return [
+            'customer' => $record->name ?? $record->client ?? $record->customer ?? $record->code,
+            'code' => $record->code, 'type' => $type, 'opening' => Money::round($opening), 'lines' => $lines,
+            'total_debit' => Money::sum(array_column($lines, 'debit')), 'total_credit' => Money::sum(array_column($lines, 'credit')),
+            'closing' => Money::round($balance), 'as_of' => now()->toDateString(),
+        ];
     }
 }

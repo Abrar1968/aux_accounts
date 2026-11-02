@@ -29,6 +29,7 @@ class AccountingAutomationService
             'periods_created' => $this->periods->ensureThrough($current),
             'partnership_rows' => $this->partnerships->generateThrough($current),
             'recognition' => $this->recognition->addProgressRows($current),
+            'recurring_bills' => app(RecurringExpenseService::class)->generate($current),
         ];
         $this->statements->flush();
         $controls = collect($this->controls->run($current));

@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
                 UserSeeder::class,
                 SettingsSeeder::class,
                 AccountingWorkbookSeeder::class,
+                BankingSeeder::class,
                 CrmWorkbookSeeder::class,
             ]);
         });
