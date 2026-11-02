@@ -100,18 +100,10 @@ empty password like XAMPP, creates `auxtech_ops` and `garp` databases). Inside a
 (Composer dists), `registry.npmjs.org`, and `api-ap2.pusher.com` (realtime tests). All were reachable
 during setup.
 
-## 3. Production hosting (shared host with cron + SMTP)
-1. PHP 8.2+, MySQL database + user, document root → `public/`.
-2. Upload the repo (or `git pull`), `composer install --no-dev --optimize-autoloader`, upload built
-   `public/build` (build locally with `npm run build`; Node is not needed on the server).
-3. `.env`: `APP_ENV=production`, `APP_DEBUG=false`, real `APP_URL`, DB credentials, SMTP, Pusher, `ADMIN_*`.
-4. `php artisan migrate --force && php artisan db:seed --force` (first deploy only),
-   `php artisan storage:link`, `php artisan optimize`.
-5. Cron (single line):
-```bash
-* * * * * cd /home/USER/aux_accounts && php artisan schedule:run >> /dev/null 2>&1
-```
-6. Pusher dashboard → app `2208649` → App settings: enable *client events* off, *authorised connections*
-   on; add the production domain to allowed origins.
-7. Backups: `backup:database` writes `storage/app/backups/*.sql.gz` daily (30-day retention); download
-   weekly off-site.
+## 3. Production hosting
+See **[17-deployment.md](17-deployment.md)** for the cPanel deployment of accounts.auxtechsoftware.com:
+- the release zip;
+- the exact terminal commands and the cron line;
+- SMTP / Pusher env;
+- backup and restore;
+- the smoke test.
