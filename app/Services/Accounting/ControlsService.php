@@ -89,8 +89,9 @@ class ControlsService
         $refNoDate = Referral::query()->where('paid_amount', '>', 0)->whereNull('paid_on')->count();
         $add('referral_dates', 'Referral payments without dates', $refNoDate, $refNoDate === 0, 'A commission payment must have its actual payment date.', 'INPUT REQUIRED');
 
-        $refSync = Project::query()->whereNotNull('referrer')->whereDoesntHave('referral')->count();
-        $add('referral_sync', 'Referral tracker sync integrity', $refSync, $refSync === 0, 'Every project with a referrer has exactly one referral row.');
+        $refSync = Project::query()->whereNotNull('referrer')->withCount('referrals')->get()
+            ->filter(fn (Project $p) => $p->referrals_count < count($p->referrerNames()))->count();
+        $add('referral_sync', 'Referral tracker sync integrity', $refSync, $refSync === 0, 'Every referrer of a project has a referral row (shared referrals are split equally).');
 
         $evidence = Project::query()->whereNull('actual_delivery_date')->where('revenue_method', '!=', 'Over Time')
             ->whereHas('recognitions', fn ($q) => $q->where('recognized_amount', '>', 0))->count();

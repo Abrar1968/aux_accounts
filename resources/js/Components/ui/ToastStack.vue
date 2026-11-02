@@ -1,6 +1,6 @@
 <script setup>
 import { watch } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
 import { useToasts } from '@/Composables/useToasts';
 import Icon from './Icon.vue';
 
@@ -23,6 +23,7 @@ const tone = {
                 <div class="min-w-0 flex-1">
                     <p v-if="t.title" class="text-sm font-semibold">{{ t.title }}</p>
                     <p class="text-sm text-ink-2">{{ t.message }}</p>
+                    <button v-if="t.url" class="mt-1.5 text-sm font-semibold text-brand-600 hover:underline dark:text-white" @click="dismiss(t.id); t.onOpen ? t.onOpen() : router.visit(t.url)">Open →</button>
                 </div>
                 <button class="rounded p-1 text-ink-3 hover:bg-surface-2 hover:text-ink" aria-label="Dismiss" @click="dismiss(t.id)"><Icon name="x" :size="16" /></button>
             </div>

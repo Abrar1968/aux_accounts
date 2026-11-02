@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import PageHeader from '@/Components/ui/PageHeader.vue';
 import Card from '@/Components/ui/Card.vue';
@@ -9,6 +9,7 @@ import FilterBar from '@/Components/ui/FilterBar.vue';
 import Pagination from '@/Components/ui/Pagination.vue';
 import Badge from '@/Components/ui/Badge.vue';
 import Drawer from '@/Components/ui/Drawer.vue';
+import ImagePicker from '@/Components/ui/ImagePicker.vue';
 import Input from '@/Components/ui/Input.vue';
 import MoneyInput from '@/Components/ui/MoneyInput.vue';
 import Select from '@/Components/ui/Select.vue';
@@ -32,8 +33,12 @@ const columns = [
     { key: 'work_status', label: 'Work' },
 ];
 const open = ref(false);
-const form = useForm({ name: '', customer: '', kind: 'project', start_date: todayIso(), est_delivery_date: '', revenue_method: 'Point in Time', base_value: '', change_orders: 0, referrer: '', notes: '' });
-const submit = () => form.post('/accounting/projects', { preserveScroll: true, onSuccess: () => { open.value = false; form.reset(); } });
+const form = useForm({ name: '', customer: '', kind: 'project', start_date: todayIso(), est_delivery_date: '', revenue_method: 'Point in Time', base_value: '', change_orders: 0, referrer: '', notes: '', client_signature: null });
+const referrers = computed(() => [...new Set(form.referrer.split(/[,;&+/]+/).map((n) => n.trim()).filter(Boolean))]);
+const referrerHint = computed(() => (referrers.value.length > 1
+    ? `${referrers.value.length} referrers — the tier memo is split equally (${referrers.value.join(' · ')})`
+    : 'Separate several people with commas; the referral memo is split equally between them'));
+const submit = () => form.post('/accounting/projects', { forceFormData: true, preserveScroll: true, onSuccess: () => { open.value = false; form.reset(); } });
 </script>
 
 <template>
@@ -72,8 +77,9 @@ const submit = () => form.post('/accounting/projects', { preserveScroll: true, o
                 <MoneyInput v-model="form.base_value" label="Base contract value" required :error="form.errors.base_value" />
                 <MoneyInput v-model="form.change_orders" label="Change orders" />
             </div>
-            <Input v-model="form.referrer" label="Referrer" hint="Referral memo is calculated from the policy tiers" />
+            <Input v-model="form.referrer" label="Referrer(s)" placeholder="e.g. Rizwan, Abrar" :hint="referrerHint" :error="form.errors.referrer" />
             <Textarea v-model="form.notes" label="Notes" />
+            <ImagePicker v-model="form.client_signature" label="Client signature (optional)" hint="Printed on this client's invoices and statements only" :error="form.errors.client_signature" />
         </form>
         <template #footer><Button variant="secondary" @click="open = false">Cancel</Button><Button type="submit" form="project-form" :loading="form.processing">Create project</Button></template>
     </Drawer>

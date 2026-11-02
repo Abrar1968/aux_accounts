@@ -21,6 +21,7 @@ class Project extends BaseModel
             'start_date' => DateOnly::class,
             'est_delivery_date' => DateOnly::class,
             'actual_delivery_date' => DateOnly::class,
+            'client_signature' => 'array',
             'base_value' => 'decimal:2',
             'change_orders' => 'decimal:2',
         ];
@@ -38,9 +39,34 @@ class Project extends BaseModel
         return $this->hasMany(CustomerPayment::class, 'receivable_id')->where('receivable_type', 'project');
     }
 
-    public function referral()
+    /** One row per referrer; the tier memo is split equally between them. */
+    public function referrals()
     {
-        return $this->hasOne(Referral::class);
+        return $this->hasMany(Referral::class)->orderBy('id');
+    }
+
+    /**
+     * Referrer names from the comma-separated field ("Rizwan, Abrar" or "Rizwan & Abrar").
+     *
+     * @return list<string>
+     */
+    public function referrerNames(): array
+    {
+        return self::parseReferrers($this->referrer);
+    }
+
+    /** @return list<string> */
+    public static function parseReferrers(?string $value): array
+    {
+        $names = array_map(fn ($n) => preg_replace('/\s+/', ' ', trim($n)), preg_split('/[,;&+\/]+/', (string) $value) ?: []);
+        $out = [];
+        foreach (array_filter($names, fn ($n) => $n !== '') as $n) {
+            if (! in_array(mb_strtolower($n), array_map('mb_strtolower', $out), true)) {
+                $out[] = $n;
+            }
+        }
+
+        return $out;
     }
 
     public function lead()

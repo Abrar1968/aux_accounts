@@ -42,6 +42,7 @@ export const navigation = [
         { label: 'Import leads', href: '/crm/import', icon: 'upload', perm: 'crm.leads.import' },
     ]},
     { section: 'System', items: [
+        { label: 'Send email', href: '/system/email', icon: 'mail', perm: 'email.send' },
         { label: 'Settings', href: '/settings', icon: 'cog', perm: 'settings.manage' },
         { label: 'Users & roles', href: '/system/users', icon: 'users', perm: 'users.manage' },
         { label: 'Automation', href: '/system/automation', icon: 'bolt', perm: 'settings.manage' },

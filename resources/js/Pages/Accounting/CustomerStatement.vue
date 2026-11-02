@@ -4,25 +4,23 @@ import { Head } from '@inertiajs/vue3';
 import PageHeader from '@/Components/ui/PageHeader.vue';
 import Button from '@/Components/ui/Button.vue';
 import PrintLayout from '@/Components/print/PrintLayout.vue';
-import { exportTablePdf } from '@/lib/exports';
+import { exportCustomerStatementPdf } from '@/lib/exports';
 import { printPage } from '@/lib/pdf';
 import { date, money } from '@/lib/format';
 
 const props = defineProps({ statement: Object });
 const s = computed(() => props.statement);
-const pdf = () => exportTablePdf(`Statement of account - ${s.value.customer}`,
-    [{ label: 'Date', width: 70 }, { label: 'Description', width: 215 }, { label: 'Debit', width: 75, align: 'right' }, { label: 'Credit', width: 75, align: 'right' }, { label: 'Balance', width: 80, align: 'right' }],
-    [['', 'Opening balance', '', '', money(s.value.opening)], ...s.value.lines.map((l) => [date(l.date), `${l.description} (${l.reference})`, l.debit ? money(l.debit) : '', l.credit ? money(l.credit) : '', money(l.balance)]), ['', 'Balance due', '', '', money(s.value.closing)]],
-    `statement-${s.value.code}.pdf`);
+const pdf = () => exportCustomerStatementPdf(s.value);
 </script>
 
 <template>
     <Head :title="`Statement ${s.customer}`" />
     <PageHeader :title="`Statement of account — ${s.customer}`" :subtitle="s.code" back="/accounting/receivables">
+        <Button variant="secondary" size="sm" icon="receipt" :href="`/accounting/receivables/${s.type}/${s.id}/invoice`">Invoice</Button>
         <Button variant="secondary" size="sm" icon="download" @click="pdf">PDF</Button>
         <Button size="sm" icon="printer" @click="printPage(`Statement ${s.customer} ${s.as_of}`)">Print</Button>
     </PageHeader>
-    <PrintLayout title="Statement of account" :subtitle="s.customer" :meta="[{ label: 'Reference', value: s.code }, { label: 'Date', value: date(s.as_of) }, { label: 'Balance due', value: money(s.closing, { decimals: true }) }]">
+    <PrintLayout title="Statement of account" :subtitle="s.customer" :watermark="s.status" :client="s.client_signature" :client-label="s.client_signature ? 'Client signature' : null" :meta="[{ label: 'Reference', value: s.code }, { label: 'Date', value: date(s.as_of) }, { label: 'Balance due', value: money(s.closing, { decimals: true }) }]">
         <div class="overflow-x-auto">
             <table class="w-full min-w-[34rem] text-sm">
                 <thead class="text-[11px] uppercase tracking-wider text-ink-3"><tr><th class="py-2 text-left">Date</th><th class="py-2 text-left">Description</th><th class="py-2 text-right">Debit</th><th class="py-2 text-right">Credit</th><th class="py-2 text-right">Balance</th></tr></thead>

@@ -65,7 +65,9 @@ return [
     |
     */
 
-    'timezone' => env('APP_TIMEZONE', 'Asia/Dhaka'),
+    // Fixed: the business runs on Bangladesh time (UTC+6, no DST). Not overridable from .env so
+    // dates, period cut-offs and the scheduler can never drift on a host with a different default.
+    'timezone' => 'Asia/Dhaka',
 
     /*
     |--------------------------------------------------------------------------

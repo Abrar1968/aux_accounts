@@ -18,6 +18,9 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::get('/attachments/{attachment}', [System\AttachmentController::class, 'show'])->middleware('signed')->name('attachments.show');
+// Letterhead images: logo is public (emails); seal is checked for a signed-in user inside the controller.
+Route::get('/branding/icon/{kind}.png', [System\BrandingController::class, 'icon'])->whereIn('kind', ['favicon', 'touch'])->name('branding.icon');
+Route::get('/branding/{asset}.{format}', [System\BrandingController::class, 'show'])->whereIn('asset', ['logo', 'seal'])->whereIn('format', ['png', 'jpg'])->name('branding.show');
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
@@ -35,6 +38,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/projects/{project}', [Accounting\ProjectController::class, 'show'])->middleware('permission:accounting.projects.view')->name('projects.show');
         Route::post('/projects', [Accounting\ProjectController::class, 'store'])->middleware('permission:accounting.projects.create')->name('projects.store');
         Route::put('/projects/{project}', [Accounting\ProjectController::class, 'update'])->middleware('permission:accounting.projects.update')->name('projects.update');
+        Route::get('/projects/{project}/signature.{format}', [Accounting\ProjectController::class, 'signature'])->whereIn('format', ['png', 'jpg'])->middleware('permission:accounting.projects.view')->name('projects.signature');
+        Route::post('/projects/{project}/signature', [Accounting\ProjectController::class, 'storeSignature'])->middleware('permission:accounting.projects.update')->name('projects.signature.store');
+        Route::delete('/projects/{project}/signature', [Accounting\ProjectController::class, 'destroySignature'])->middleware('permission:accounting.projects.update')->name('projects.signature.destroy');
         Route::post('/projects/{project}/deliver', [Accounting\ProjectController::class, 'deliver'])->middleware('permission:accounting.projects.update')->name('projects.deliver');
 
         Route::get('/recognition', [Accounting\RecognitionController::class, 'index'])->middleware('permission:accounting.projects.view')->name('recognition.index');
@@ -85,6 +91,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/capital', [Accounting\CapitalController::class, 'index'])->middleware('permission:accounting.ledger.view')->name('capital.index');
         Route::post('/capital', [Accounting\CapitalController::class, 'store'])->middleware('permission:accounting.ledger.create')->name('capital.store');
 
+        Route::get('/receivables/{type}/{id}/invoice', [Accounting\ReceivableController::class, 'invoice'])->whereIn('type', ['project', 'marketing', 'opening', 'partnership'])->middleware('permission:accounting.payments.view')->name('receivables.invoice');
         Route::get('/receivables/{type}/{id}/statement', [Accounting\ReceivableController::class, 'statement'])->whereIn('type', ['project', 'marketing', 'opening', 'partnership'])->middleware('permission:accounting.payments.view')->name('receivables.statement');
 
         Route::get('/banking', [Accounting\BankingController::class, 'index'])->middleware('permission:accounting.banking.view')->name('banking.index');
@@ -152,7 +159,15 @@ Route::middleware('auth')->group(function () {
     Route::middleware('permission:settings.manage')->group(function () {
         Route::get('/settings', [System\SettingController::class, 'index'])->name('settings.index');
         Route::put('/settings', [System\SettingController::class, 'update'])->name('settings.update');
+        Route::post('/settings/branding', [System\BrandingController::class, 'store'])->name('branding.store');
+        Route::delete('/settings/branding/{asset}', [System\BrandingController::class, 'destroy'])->whereIn('asset', ['logo', 'seal'])->name('branding.destroy');
         Route::get('/system/automation', [System\AutomationController::class, 'index'])->name('automation');
+    });
+    Route::middleware('permission:email.send')->group(function () {
+        Route::get('/system/email', [System\EmailController::class, 'index'])->name('email.index');
+        Route::get('/system/email/records', [System\EmailController::class, 'records'])->name('email.records');
+        Route::post('/system/email/preview', [System\EmailController::class, 'preview'])->name('email.preview');
+        Route::post('/system/email', [System\EmailController::class, 'send'])->middleware('throttle:30,1')->name('email.send');
     });
     Route::get('/system/audit', [System\AutomationController::class, 'audit'])->middleware('permission:audit.view')->name('audit');
     Route::middleware('permission:users.manage')->group(function () {

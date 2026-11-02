@@ -1,0 +1,18 @@
+# Shared hosting fallback: when the (sub)domain's document root is the project folder instead of
+# public/, send every request into public/ and never expose source, .env, storage or vendor.
+# Preferred setup: point the document root at  <project>/public  (then this file is unused).
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Block dotfiles (.env, .git …) and project internals
+    RewriteRule (^|/)\.(?!well-known/) - [F,L]
+    RewriteRule ^(app|bootstrap|config|database|docs|resources|routes|scripts|storage|tests|vendor|node_modules)(/|$) - [F,L]
+    RewriteRule ^(artisan|composer\.(json|lock)|package(-lock)?\.json|vite\.config\.js|phpunit\.xml|README\.md|DEPLOY\.md)$ - [F,L]
+
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>

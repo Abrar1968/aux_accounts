@@ -89,7 +89,7 @@ class CustomerPaymentService
                 'request_id' => $data['request_id'] ?? null,
                 'posted_by' => Auth::id(),
             ]);
-            event(new PaymentPosted('customer', $payment->code, $cash));
+            event(new PaymentPosted('customer', $payment->code, $cash, '/accounting/payments?q='.rawurlencode($payment->code).'&highlight='.rawurlencode($payment->code)));
 
             return $payment;
         });

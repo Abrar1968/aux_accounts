@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\System;
 
+use App\Services\Media\ImageService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreAttachmentRequest extends FormRequest
@@ -17,7 +18,7 @@ class StoreAttachmentRequest extends FormRequest
         return [
             'attachable_type' => ['required', 'string'],
             'attachable_id' => ['required', 'integer'],
-            'file' => ['required', 'file', 'max:10240', 'mimetypes:image/jpeg,image/png,image/webp,image/gif,application/pdf'],
+            'file' => ['required', 'file', 'max:10240', 'mimes:'.ImageService::EXTENSIONS.',pdf'],
         ];
     }
 }

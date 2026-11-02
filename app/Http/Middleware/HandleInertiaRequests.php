@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\System\BrandingService;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -29,6 +30,8 @@ class HandleInertiaRequests extends Middleware
                 'timezone' => config('app.timezone'),
                 'currency' => 'BDT',
             ],
+            // letterhead for print views / PDFs (logo, seal, company details)
+            'brand' => fn () => $user ? app(BrandingService::class)->brand() : null,
             'auth' => [
                 'user' => $user ? [
                     'id' => $user->id,

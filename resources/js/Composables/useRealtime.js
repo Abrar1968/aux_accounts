@@ -19,7 +19,11 @@ export function useRealtime(user, onNotification) {
             .listen('.automation.finished', (e) => push({ type: 'success', title: 'Automation finished', message: e.command }));
         window.Echo.private(`App.Models.User.${user.value.id}`).notification((n) => {
             onNotification?.(n);
-            push({ type: n.level ?? 'info', title: n.title, message: n.message, timeout: n.level === 'error' ? 0 : 6000 });
+            push({
+                type: n.level ?? 'info', title: n.title, message: n.message, timeout: n.level === 'error' ? 0 : 8000, url: n.url,
+                // open = mark read + go to the exact record
+                onOpen: () => router.post(`/notifications/${n.id}/read`, {}, { preserveScroll: true, onSuccess: () => n.url && router.visit(n.url) }),
+            });
         });
     });
     onBeforeUnmount(() => {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Accounting;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Accounting\ClientSignatureRequest;
 use App\Http\Requests\Accounting\DeliverProjectRequest;
 use App\Http\Requests\Accounting\StoreProjectRequest;
 use App\Http\Requests\Accounting\UpdateProjectRequest;
@@ -11,10 +12,13 @@ use App\Http\Resources\ProjectResource;
 use App\Http\Resources\RecordResource;
 use App\Models\Project;
 use App\Services\Accounting\ProjectService;
+use App\Services\Accounting\ReferralService;
 use App\Services\Shared\ListingService;
+use App\Services\System\BrandingService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ProjectController extends Controller
 {
@@ -30,13 +34,13 @@ class ProjectController extends Controller
 
     public function show(Project $project): Response
     {
-        $project->load(['recognitions', 'referral', 'payments']);
+        $project->load(['recognitions', 'referrals', 'payments']);
 
         return Inertia::render('Accounting/Projects/Show', [
             'project' => new ProjectResource($project),
             'recognitions' => RecordResource::collection($project->recognitions),
             'payments' => PaymentResource::collection($project->payments),
-            'referral' => $project->referral ? new RecordResource($project->referral) : null,
+            'referrals' => $project->referrals->map(fn ($r) => (new RecordResource($r))->resolve() + ['status' => app(ReferralService::class)->status($r)])->values(),
         ]);
     }
 
@@ -52,6 +56,27 @@ class ProjectController extends Controller
         $this->projects->update($project, $request->validated());
 
         return $this->toast("Project {$project->code} updated.");
+    }
+
+    public function signature(Project $project, string $format, BrandingService $branding): BinaryFileResponse
+    {
+        $file = $branding->signatureFile($project, $format) ?? abort(404);
+
+        return response()->file($file['path'], ['Content-Type' => $file['mime'], 'Cache-Control' => 'private, max-age=31536000, immutable']);
+    }
+
+    public function storeSignature(ClientSignatureRequest $request, Project $project, BrandingService $branding)
+    {
+        $branding->setClientSignature($project, $request->file('client_signature'));
+
+        return $this->toast("Client signature saved for {$project->code} — printed on this client's invoices and statements.");
+    }
+
+    public function destroySignature(Project $project, BrandingService $branding)
+    {
+        $branding->setClientSignature($project, null);
+
+        return $this->toast("Client signature removed from {$project->code}.");
     }
 
     public function deliver(DeliverProjectRequest $request, Project $project)

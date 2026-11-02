@@ -12,7 +12,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 class ListingService
 {
     private const REPOS = [
-        'projects' => [Contracts\ProjectRepositoryInterface::class, ['referral']],
+        'projects' => [Contracts\ProjectRepositoryInterface::class, ['referrals']],
         'recognitions' => [Contracts\RevenueRecognitionRepositoryInterface::class, ['project:id,code,name']],
         'payments' => [Contracts\CustomerPaymentRepositoryInterface::class, []],
         'marketing' => [Contracts\MarketingServiceRepositoryInterface::class, []],

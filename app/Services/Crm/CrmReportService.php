@@ -4,7 +4,9 @@ namespace App\Services\Crm;
 
 use App\Exceptions\Domain\DomainException;
 use App\Models\CrmReport;
+use App\Notifications\CrmReportReady;
 use App\Repositories\Contracts\CrmReportRepositoryInterface;
+use App\Services\Notifications\NotificationService;
 use App\Services\Shared\SettingsService;
 use Carbon\CarbonImmutable;
 
@@ -51,10 +53,18 @@ class CrmReportService
             return $existing;
         }
 
-        return $this->reports->create([
+        $report = $this->reports->create([
             'type' => $type, 'period_start' => $p['start'], 'period_end' => $p['end'], 'status' => $p['status'],
             'hash' => $hash, 'mode' => $mode, 'payload' => $payload,
         ]);
+        if ($mode === 'Automatic') { // manual snapshots are opened directly by the person who generated them
+            app(NotificationService::class)->send(new CrmReportReady(
+                $type.' CRM report ready', $p['start'].' – '.$p['end'].' · '.$payload['new_leads'].' new leads, '.$payload['calls'].' calls, '.$payload['wins'].' won',
+                'info', '/crm/reports/'.$report->id,
+            ));
+        }
+
+        return $report;
     }
 
     /** Cursor-driven automatic reports: previous days, closed months, closed years. */

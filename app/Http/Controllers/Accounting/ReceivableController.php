@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Accounting;
 
 use App\Http\Controllers\Controller;
+use App\Services\Accounting\InvoiceService;
 use App\Services\Accounting\ReceivableService;
 use App\Support\Period;
 use Illuminate\Http\Request;
@@ -24,6 +25,13 @@ class ReceivableController extends Controller
 
     public function statement(string $type, int $id, ReceivableService $receivables): Response
     {
-        return Inertia::render('Accounting/CustomerStatement', ['statement' => $receivables->statement($type, $id)]);
+        $statement = $receivables->statement($type, $id);
+
+        return Inertia::render('Accounting/CustomerStatement', ['statement' => $statement + app(InvoiceService::class)->statementExtras($type, $id, $statement)]);
+    }
+
+    public function invoice(string $type, int $id, InvoiceService $invoices): Response
+    {
+        return Inertia::render('Accounting/Invoice', ['invoice' => $invoices->invoice($type, $id)]);
     }
 }

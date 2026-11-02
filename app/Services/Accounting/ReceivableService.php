@@ -156,7 +156,7 @@ class ReceivableService
 
         return [
             'customer' => $record->name ?? $record->client ?? $record->customer ?? $record->code,
-            'code' => $record->code, 'type' => $type, 'opening' => Money::round($opening), 'lines' => $lines,
+            'code' => $record->code, 'type' => $type, 'id' => $id, 'opening' => Money::round($opening), 'lines' => $lines,
             'total_debit' => Money::sum(array_column($lines, 'debit')), 'total_credit' => Money::sum(array_column($lines, 'credit')),
             'closing' => Money::round($balance), 'as_of' => now()->toDateString(),
         ];

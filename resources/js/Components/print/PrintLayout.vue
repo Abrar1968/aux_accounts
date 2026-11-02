@@ -1,20 +1,61 @@
 <script setup>
-// A4 document frame for print / "Save as PDF" (statements, payslips, CRM reports).
-defineProps({ title: String, subtitle: String, meta: Array }); // meta: [{label, value}]
+// A4 document frame for print / "Save as PDF" (invoices, statements, payslips, CRM reports).
+// Letterhead (logo + company) and the accounts seal come from Settings → Branding; the client's
+// signature is passed only on that client's documents; `watermark` = PAID | PARTIALLY PAID | UNPAID.
+import { computed } from 'vue';
+import { usePage } from '@inertiajs/vue3';
+
+const props = defineProps({
+    title: String, subtitle: String, meta: Array, // meta: [{label, value}]
+    watermark: String,
+    signatures: { type: Boolean, default: true },
+    sealLabel: { type: String, default: 'Authorised signature' },
+    client: Object, // { png, name } client signature
+    clientLabel: String, // shows an (empty or signed) client line even without an image
+});
+const brand = computed(() => usePage().props.brand ?? {});
+const tones = { PAID: 'text-positive', 'PARTIALLY PAID': 'text-warning', UNPAID: 'text-negative' };
+const contact = computed(() => [brand.value.address, brand.value.phone, brand.value.email, (brand.value.website || '').replace(/^https?:\/\//, '')].filter(Boolean));
 </script>
 
 <template>
-    <article class="print-doc card mx-auto max-w-[210mm] bg-surface p-5 sm:p-10 print:max-w-none print:border-0 print:p-0">
-        <header class="flex flex-col gap-4 border-b border-line pb-5 sm:flex-row sm:items-start sm:justify-between">
-            <div class="flex items-center gap-3">
-                <div class="grid size-10 place-items-center rounded-lg bg-brand-600 font-bold text-white print:bg-black">A</div>
-                <div><p class="text-xs font-semibold uppercase tracking-wider text-ink-3">Auxtech</p><h1 class="text-lg font-semibold">{{ title }}</h1><p v-if="subtitle" class="text-sm text-ink-2">{{ subtitle }}</p></div>
+    <article class="print-doc card relative mx-auto max-w-[210mm] overflow-hidden bg-surface p-5 sm:p-10 print:max-w-none print:border-0 print:p-0">
+        <div v-if="watermark" aria-hidden="true" class="watermark pointer-events-none absolute inset-0 z-0 flex items-center justify-center select-none">
+            <span :class="tones[watermark] ?? 'text-ink-3'" class="-rotate-[32deg] whitespace-nowrap border-[6px] border-current px-6 py-2 text-5xl font-black tracking-widest opacity-[0.13] sm:text-7xl">{{ watermark }}</span>
+        </div>
+        <div class="relative z-10">
+            <header class="flex flex-col gap-4 border-b border-line pb-5 sm:flex-row sm:items-start sm:justify-between">
+                <div class="flex items-center gap-3">
+                    <img v-if="brand.logo" :src="brand.logo.png" :alt="`${brand.company} logo`" class="h-12 w-auto max-w-[9rem] object-contain" />
+                    <div v-else class="grid size-10 place-items-center rounded-lg bg-brand-600 font-bold text-white print:bg-black">{{ (brand.company || 'A').charAt(0) }}</div>
+                    <div class="min-w-0">
+                        <p class="text-sm font-semibold">{{ brand.company || 'Auxtech' }}</p>
+                        <p v-for="c in contact.slice(0, 3)" :key="c" class="text-[11px] leading-4 text-ink-3">{{ c }}</p>
+                    </div>
+                </div>
+                <div class="sm:text-right">
+                    <h1 class="text-lg font-semibold uppercase tracking-wide">{{ title }}</h1>
+                    <p v-if="subtitle" class="text-sm text-ink-2">{{ subtitle }}</p>
+                    <dl v-if="meta" class="mt-1 grid grid-cols-[auto_auto] gap-x-4 gap-y-0.5 text-xs sm:justify-end">
+                        <template v-for="m in meta" :key="m.label"><dt class="text-ink-3">{{ m.label }}</dt><dd class="num font-medium">{{ m.value }}</dd></template>
+                    </dl>
+                </div>
+            </header>
+            <div class="pt-5"><slot /></div>
+
+            <div v-if="signatures" class="mt-12 grid grid-cols-2 gap-10 text-xs text-ink-3 break-inside-avoid">
+                <div>
+                    <div class="flex h-16 items-end"><img v-if="brand.seal" :src="brand.seal.png" alt="Accounts seal" class="max-h-16 w-auto max-w-[11rem] object-contain" /></div>
+                    <p class="border-t border-line pt-2">{{ sealLabel }}</p>
+                    <p>{{ [brand.signature_title, brand.company].filter(Boolean).join(', ') }}</p>
+                </div>
+                <div v-if="client || clientLabel" class="text-right">
+                    <div class="flex h-16 items-end justify-end"><img v-if="client" :src="client.png" alt="Client signature" class="max-h-16 w-auto max-w-[11rem] object-contain" /></div>
+                    <p class="border-t border-line pt-2">{{ clientLabel || 'Client signature' }}</p>
+                    <p v-if="client?.name">{{ client.name }}</p>
+                </div>
             </div>
-            <dl v-if="meta" class="grid grid-cols-[auto_auto] gap-x-4 gap-y-0.5 text-xs sm:text-right">
-                <template v-for="m in meta" :key="m.label"><dt class="text-ink-3">{{ m.label }}</dt><dd class="num font-medium">{{ m.value }}</dd></template>
-            </dl>
-        </header>
-        <div class="pt-5"><slot /></div>
-        <footer class="mt-8 border-t border-line pt-3 text-[11px] text-ink-3">Generated by Auxtech Ops · accrual basis · figures in BDT · Asia/Dhaka</footer>
+            <footer class="mt-8 border-t border-line pt-3 text-[11px] text-ink-3">{{ brand.company || 'Auxtech' }} · generated by Auxtech Ops · accrual basis · figures in BDT · Asia/Dhaka</footer>
+        </div>
     </article>
 </template>

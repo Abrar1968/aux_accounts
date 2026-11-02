@@ -10,8 +10,14 @@ import { navigation, can } from '@/lib/nav';
 import { initials } from '@/lib/format';
 import { useHotkey } from '@/Composables/useHotkey';
 import { useRealtime } from '@/Composables/useRealtime';
+import { setPdfBrand } from '@/lib/pdf';
 
 const page = usePage();
+watch(() => page.props.brand, (b) => {
+    setPdfBrand(b); // letterhead for every PDF export
+    const icon = document.getElementById('app-favicon'); // logo changes show in the tab without reload
+    if (icon && b?.favicon && icon.getAttribute('href') !== b.favicon) icon.setAttribute('href', b.favicon);
+}, { immediate: true });
 const user = computed(() => page.props.auth?.user);
 const unread = ref(page.props.notifications?.unread ?? 0);
 watch(() => page.props.notifications?.unread, (v) => (unread.value = v ?? 0));

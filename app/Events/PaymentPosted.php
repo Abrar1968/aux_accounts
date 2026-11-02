@@ -12,7 +12,8 @@ class PaymentPosted implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets;
 
-    public function __construct(public string $kind, public string $code, public float $amount) {}
+    /** @param ?string $url deep link to the exact record (row is highlighted via ?highlight=) */
+    public function __construct(public string $kind, public string $code, public float $amount, public ?string $url = null) {}
 
     public function broadcastOn(): array
     {
