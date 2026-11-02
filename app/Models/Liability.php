@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Casts\DateOnly;
+use App\Models\Concerns\Auditable;
 
-class Liability extends Model
+class Liability extends BaseModel
 {
-    use \App\Models\Concerns\Auditable;
+    use Auditable;
 
     protected $table = 'liabilities';
 
@@ -15,12 +16,11 @@ class Liability extends Model
     protected function casts(): array
     {
         return [
-            'txn_date' => 'date',
-            'period' => 'date',
+            'txn_date' => DateOnly::class,
+            'period' => DateOnly::class,
             'increase' => 'decimal:2',
             'decrease' => 'decimal:2',
             'cash_impact' => 'decimal:2',
         ];
     }
-
 }

@@ -9,6 +9,8 @@ class CrmReportRepository extends BaseRepository implements CrmReportRepositoryI
 {
     protected string $model = CrmReport::class;
 
+    protected array $filterable = ['type' => 'type'];
+
     protected array $searchable = ['type'];
 
     protected function periodFilterColumns(): array

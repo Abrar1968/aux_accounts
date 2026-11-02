@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Casts\DateOnly;
+use App\Models\Concerns\Auditable;
 
-class ExpensePayment extends Model
+class ExpensePayment extends BaseModel
 {
-    use \App\Models\Concerns\Auditable;
+    use Auditable;
 
     protected $table = 'expense_payments';
 
@@ -15,13 +16,19 @@ class ExpensePayment extends Model
     protected function casts(): array
     {
         return [
-            'paid_on' => 'date',
+            'paid_on' => DateOnly::class,
             'amount' => 'decimal:2',
             'posted_at' => 'datetime',
         ];
     }
 
-    public function expense() { return $this->belongsTo(OperatingExpense::class, 'operating_expense_id'); }
+    public function expense()
+    {
+        return $this->belongsTo(OperatingExpense::class, 'operating_expense_id');
+    }
 
-    public function cashOut(): float { return $this->origin === 'Withheld fee' ? 0.0 : (float) $this->amount; }
+    public function cashOut(): float
+    {
+        return $this->origin === 'Withheld fee' ? 0.0 : (float) $this->amount;
+    }
 }

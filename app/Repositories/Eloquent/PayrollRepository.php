@@ -9,6 +9,8 @@ class PayrollRepository extends BaseRepository implements PayrollRepositoryInter
 {
     protected string $model = Payroll::class;
 
+    protected array $filterable = ['employee' => 'employee_id', 'month' => 'period'];
+
     protected array $searchable = ['code'];
 
     protected function periodFilterColumns(): array

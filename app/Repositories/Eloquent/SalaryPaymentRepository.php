@@ -9,7 +9,9 @@ class SalaryPaymentRepository extends BaseRepository implements SalaryPaymentRep
 {
     protected string $model = SalaryPayment::class;
 
-    protected array $searchable = ['code','notes'];
+    protected array $filterable = ['payroll' => 'payroll_id'];
+
+    protected array $searchable = ['code', 'notes'];
 
     protected function periodFilterColumns(): array
     {

@@ -64,9 +64,26 @@
     box-shadow: var(--shadow-card);
 }
 
-/* Print / browser-PDF: hide app chrome, keep the document. */
+/* Print / browser-PDF (docs/06 §7): A4, light palette, app chrome hidden; pages that contain a
+   .print-doc print only that document. */
 @media print {
+    @page { size: A4; margin: 12mm; }
+    :root, .dark {
+        --color-canvas: #ffffff; --color-surface: #ffffff; --color-surface-2: #f3f4f6; --color-line: #d9dde3;
+        --color-ink: #0b1220; --color-ink-2: #374151; --color-ink-3: #6b7280; --color-brand-50: #eef4ff; --color-brand-100: #d9e6ff;
+    }
+    html, body { background: #fff !important; }
     .no-print { display: none !important; }
-    body { background: #fff; }
-    .card { box-shadow: none; }
+    .app-shell { display: block !important; }
+    main { padding: 0 !important; max-width: none !important; }
+    main:has(.print-doc) > :not(.print-doc) { display: none !important; }
+    .card { box-shadow: none !important; }
+    table { page-break-inside: auto; }
+    tr, .break-inside-avoid { break-inside: avoid; }
+    thead { display: table-header-group; }
+    a { color: inherit; text-decoration: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }

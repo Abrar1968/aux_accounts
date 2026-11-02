@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Casts\DateOnly;
+use App\Models\Concerns\Auditable;
 
-class CapitalTransaction extends Model
+class CapitalTransaction extends BaseModel
 {
-    use \App\Models\Concerns\Auditable;
+    use Auditable;
 
     protected $table = 'capital_transactions';
 
@@ -15,12 +16,15 @@ class CapitalTransaction extends Model
     protected function casts(): array
     {
         return [
-            'txn_date' => 'date',
-            'period' => 'date',
+            'txn_date' => DateOnly::class,
+            'period' => DateOnly::class,
             'cash_impact' => 'decimal:2',
             'equity_impact' => 'decimal:2',
         ];
     }
 
-    public function investor() { return $this->belongsTo(Investor::class); }
+    public function investor()
+    {
+        return $this->belongsTo(Investor::class);
+    }
 }

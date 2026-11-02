@@ -12,6 +12,8 @@ use App\Models\Project;
 use App\Models\Referral;
 use App\Models\RevenueRecognition;
 use App\Models\SalaryPayment;
+use App\Services\Shared\PeriodService;
+use App\Services\Shared\SettingsService;
 use App\Support\Money;
 use App\Support\Period;
 
@@ -25,16 +27,15 @@ class ControlsService
         private readonly FinancialStatementService $statements,
         private readonly ProjectService $projects,
         private readonly PayrollService $payroll,
-    ) {
-    }
+    ) {}
 
     /** @return list<array{key:string,label:string,result:mixed,status:string,note:string}> */
     public function run(Period $through): array
     {
-        $months = Period::range(app(\App\Services\Shared\PeriodService::class)->modelStart(), $through);
+        $months = Period::range(app(PeriodService::class)->modelStart(), $through);
         $balanceDiff = 0.0;
         $siamEarly = 0.0;
-        $siamStart = Period::of(app(\App\Services\Shared\SettingsService::class)->get('siam.start'));
+        $siamStart = Period::of(app(SettingsService::class)->get('siam.start'));
         foreach ($months as $m) {
             $s = $this->statements->forPeriod($m);
             $balanceDiff = max($balanceDiff, abs($s['balance_check']));
@@ -64,7 +65,7 @@ class ControlsService
             $paid = Payroll::query()->where('period', $m->date())->pluck('employee_id')->all();
             $prev = Payroll::query()->where('period', $m->previous()->date())->where('gross_salary', '>', 0)->pluck('employee_id')->all();
             foreach (array_diff($prev, $paid) as $id) {
-                if ($m->lte(Period::current())) {
+                if ($m->lt(Period::current())) { // the running month is not due yet
                     $missing[] = Employee::query()->find($id)?->name.' '.$m->label();
                 }
             }

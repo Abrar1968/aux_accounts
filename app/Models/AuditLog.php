@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class AuditLog extends Model
+class AuditLog extends BaseModel
 {
     protected $table = 'audit_logs';
 
@@ -21,5 +19,8 @@ class AuditLog extends Model
 
     public $timestamps = false;
 
-    public function user() { return $this->belongsTo(User::class); }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

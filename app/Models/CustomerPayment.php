@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Casts\DateOnly;
+use App\Models\Concerns\Auditable;
 
-class CustomerPayment extends Model
+class CustomerPayment extends BaseModel
 {
-    use \App\Models\Concerns\Auditable;
+    use Auditable;
 
     protected $table = 'customer_payments';
 
@@ -16,11 +17,14 @@ class CustomerPayment extends Model
     {
         return [
             'paid_at' => 'datetime',
-            'period' => 'date',
+            'period' => DateOnly::class,
             'cash_received' => 'decimal:2',
             'processing_fee' => 'decimal:2',
         ];
     }
 
-    public function getGrossSettlementAttribute(): float { return round((float) $this->cash_received + (float) $this->processing_fee, 2); }
+    public function getGrossSettlementAttribute(): float
+    {
+        return round((float) $this->cash_received + (float) $this->processing_fee, 2);
+    }
 }

@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Casts\DateOnly;
 
-class CrmReport extends Model
+class CrmReport extends BaseModel
 {
     protected $table = 'crm_reports';
 
@@ -13,10 +13,9 @@ class CrmReport extends Model
     protected function casts(): array
     {
         return [
-            'period_start' => 'date',
-            'period_end' => 'date',
+            'period_start' => DateOnly::class,
+            'period_end' => DateOnly::class,
             'payload' => 'array',
         ];
     }
-
 }

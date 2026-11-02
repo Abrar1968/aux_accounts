@@ -9,7 +9,9 @@ class CustomerPaymentRepository extends BaseRepository implements CustomerPaymen
 {
     protected string $model = CustomerPayment::class;
 
-    protected array $searchable = ['code','source_name','canonical_name','revenue_code'];
+    protected array $filterable = ['type' => 'receivable_type'];
+
+    protected array $searchable = ['code', 'source_name', 'canonical_name', 'revenue_code'];
 
     protected function periodFilterColumns(): array
     {

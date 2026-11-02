@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Casts\DateOnly;
+use App\Models\Concerns\Auditable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Project extends Model
+class Project extends BaseModel
 {
-    use \App\Models\Concerns\Auditable;
+    use Auditable;
 
     protected $table = 'projects';
 
@@ -15,28 +17,51 @@ class Project extends Model
     protected function casts(): array
     {
         return [
-            'source_month' => 'date',
-            'start_date' => 'date',
-            'est_delivery_date' => 'date',
-            'actual_delivery_date' => 'date',
+            'source_month' => DateOnly::class,
+            'start_date' => DateOnly::class,
+            'est_delivery_date' => DateOnly::class,
+            'actual_delivery_date' => DateOnly::class,
             'base_value' => 'decimal:2',
             'change_orders' => 'decimal:2',
         ];
     }
 
-    use \Illuminate\Database\Eloquent\SoftDeletes;
+    use SoftDeletes;
 
-    public function recognitions() { return $this->hasMany(RevenueRecognition::class); }
+    public function recognitions()
+    {
+        return $this->hasMany(RevenueRecognition::class);
+    }
 
-    public function payments() { return $this->hasMany(CustomerPayment::class, 'receivable_id')->where('receivable_type', 'project'); }
+    public function payments()
+    {
+        return $this->hasMany(CustomerPayment::class, 'receivable_id')->where('receivable_type', 'project');
+    }
 
-    public function referral() { return $this->hasOne(Referral::class); }
+    public function referral()
+    {
+        return $this->hasOne(Referral::class);
+    }
 
-    public function lead() { return $this->belongsTo(Lead::class); }
+    public function lead()
+    {
+        return $this->belongsTo(Lead::class);
+    }
 
-    public function getTotalValueAttribute(): float { return round((float) $this->base_value + (float) $this->change_orders, 2); }
+    public function getTotalValueAttribute(): float
+    {
+        return round((float) $this->base_value + (float) $this->change_orders, 2);
+    }
 
-    public function isLead(): bool { return $this->kind === 'lead' || $this->revenue_method === 'Lead / No Revenue'; }
+    public function isLead(): bool
+    {
+        return $this->kind === 'lead' || $this->revenue_method === 'Lead / No Revenue';
+    }
 
-    public function typeLabel(): string { return match ($this->kind) { 'international' => 'International Project', 'lead' => 'Lead', default => 'Project' }; }
+    public function typeLabel(): string
+    {
+        return match ($this->kind) {
+            'international' => 'International Project', 'lead' => 'Lead', default => 'Project'
+        };
+    }
 }

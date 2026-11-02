@@ -12,9 +12,7 @@ class PaymentPosted implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets;
 
-    public function __construct(public string $kind, public string $code, public float $amount)
-    {
-    }
+    public function __construct(public string $kind, public string $code, public float $amount) {}
 
     public function broadcastOn(): array
     {

@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Attachment extends Model
+class Attachment extends BaseModel
 {
     protected $table = 'attachments';
 
     protected $guarded = ['id'];
 
-    public function attachable() { return $this->morphTo(); }
+    public function attachable()
+    {
+        return $this->morphTo();
+    }
 }

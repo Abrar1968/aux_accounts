@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Casts\DateOnly;
+use App\Models\Concerns\Auditable;
 
-class Employee extends Model
+class Employee extends BaseModel
 {
-    use \App\Models\Concerns\Auditable;
+    use Auditable;
 
     protected $table = 'employees';
 
@@ -16,13 +17,19 @@ class Employee extends Model
     {
         return [
             'base_salary' => 'decimal:2',
-            'joined_on' => 'date',
-            'left_on' => 'date',
+            'joined_on' => DateOnly::class,
+            'left_on' => DateOnly::class,
             'is_active' => 'boolean',
         ];
     }
 
-    public function payrolls() { return $this->hasMany(Payroll::class); }
+    public function payrolls()
+    {
+        return $this->hasMany(Payroll::class);
+    }
 
-    public function advances() { return $this->hasMany(EmployeeAdvance::class); }
+    public function advances()
+    {
+        return $this->hasMany(EmployeeAdvance::class);
+    }
 }

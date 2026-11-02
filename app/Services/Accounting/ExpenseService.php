@@ -18,8 +18,7 @@ class ExpenseService
         private readonly OperatingExpenseRepositoryInterface $repo,
         private readonly SequenceService $sequences,
         private readonly PeriodService $periods,
-    ) {
-    }
+    ) {}
 
     public function create(array $data): OperatingExpense
     {

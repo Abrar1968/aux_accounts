@@ -23,8 +23,7 @@ class RevenueRecognitionService
         private readonly SettingsService $settings,
         private readonly SequenceService $sequences,
         private readonly PeriodService $periods,
-    ) {
-    }
+    ) {}
 
     /** @param array{period:string, project_id:int, ending_progress?:?float, override_amount?:mixed, notes?:?string} $data */
     public function create(array $data, bool $auto = false): RevenueRecognition

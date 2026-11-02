@@ -14,5 +14,8 @@
 | 10 | [Prompts](10-prompts.md) | copy-paste prompts: full backend, frontend, features, deploy |
 | 11 | [Environment setup](11-environment-setup.md) | XAMPP local, cloud "garp" environment, hosting |
 | 12 | [Data migration](12-data-migration.md) | workbook → JSON → seeders, verification |
+| 13 | [Backend status](13-backend-status.md) | what Phase 1 delivered and verified |
+| 14 | [Frontend status](14-frontend-status.md) | what Phase 3 delivered, QA method and results |
+| 15 | [New features](15-new-features.md) | Phase 4: banking, budgets, forecast, recurring bills, statements, leaderboard, CSV import |
 
-Current state: **Phase 0 complete** (foundation). Next: Prompt A in 10-prompts.md.
+Current state: **Phases 0, 1, 3 and 4 complete**. Next: Prompt D (deploy) in 10-prompts.md, and Phase 2 hardening items.

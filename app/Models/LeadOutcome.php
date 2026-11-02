@@ -2,12 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class LeadOutcome extends Model
+class LeadOutcome extends BaseModel
 {
     protected $table = 'lead_outcomes';
 
     protected $guarded = ['id'];
-
 }

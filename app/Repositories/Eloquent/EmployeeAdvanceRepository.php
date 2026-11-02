@@ -9,7 +9,9 @@ class EmployeeAdvanceRepository extends BaseRepository implements EmployeeAdvanc
 {
     protected string $model = EmployeeAdvance::class;
 
-    protected array $searchable = ['code','notes'];
+    protected array $filterable = ['employee' => 'employee_id', 'type' => 'type'];
+
+    protected array $searchable = ['code', 'notes'];
 
     protected function periodFilterColumns(): array
     {

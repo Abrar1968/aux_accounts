@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class SourceAlias extends Model
+class SourceAlias extends BaseModel
 {
     protected $table = 'source_aliases';
 
@@ -16,5 +14,4 @@ class SourceAlias extends Model
             'confirmed' => 'boolean',
         ];
     }
-
 }

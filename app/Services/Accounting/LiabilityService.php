@@ -27,8 +27,7 @@ class LiabilityService
         private readonly LiabilityRepositoryInterface $repo,
         private readonly RevenueRecognitionRepositoryInterface $recognitions,
         private readonly PeriodService $periods,
-    ) {
-    }
+    ) {}
 
     public function create(array $data): Liability
     {

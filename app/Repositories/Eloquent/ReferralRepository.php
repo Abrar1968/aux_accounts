@@ -9,7 +9,7 @@ class ReferralRepository extends BaseRepository implements ReferralRepositoryInt
 {
     protected string $model = Referral::class;
 
-    protected array $searchable = ['code','referrer'];
+    protected array $searchable = ['code', 'referrer'];
 
     protected function periodFilterColumns(): array
     {

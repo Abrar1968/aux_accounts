@@ -14,8 +14,7 @@ class DashboardService
         private readonly FinancialStatementService $statements,
         private readonly PeriodService $periods,
         private readonly ReceivableService $receivables,
-    ) {
-    }
+    ) {}
 
     public function overview(Period $through): array
     {

@@ -24,13 +24,11 @@ use Illuminate\Support\Str;
  */
 class PaymentPostingService
 {
-    public function __construct(private readonly PeriodService $periods)
-    {
-    }
+    public function __construct(private readonly PeriodService $periods) {}
 
     /**
-     * @param 'expense'|'salary' $kind
-     * @param array{amount: float|string, paid_on: string, method?: ?string, account?: ?string, notes?: ?string, request_id?: ?string} $draft
+     * @param  'expense'|'salary'  $kind
+     * @param  array{amount: float|string, paid_on: string, method?: ?string, account?: ?string, notes?: ?string, request_id?: ?string}  $draft
      * @return array{action: 'saved'|'already_saved', payment: Model, remaining: float}
      */
     public function post(string $kind, int $sourceId, array $draft): array

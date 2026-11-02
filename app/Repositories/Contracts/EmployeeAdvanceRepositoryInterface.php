@@ -2,6 +2,4 @@
 
 namespace App\Repositories\Contracts;
 
-interface EmployeeAdvanceRepositoryInterface extends RepositoryInterface
-{
-}
+interface EmployeeAdvanceRepositoryInterface extends RepositoryInterface {}

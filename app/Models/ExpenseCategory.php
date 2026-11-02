@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class ExpenseCategory extends Model
+class ExpenseCategory extends BaseModel
 {
     protected $table = 'expense_categories';
 
@@ -16,5 +14,4 @@ class ExpenseCategory extends Model
             'statement_line' => 'boolean',
         ];
     }
-
 }

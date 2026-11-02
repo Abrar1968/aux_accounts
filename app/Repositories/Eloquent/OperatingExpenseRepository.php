@@ -9,7 +9,9 @@ class OperatingExpenseRepository extends BaseRepository implements OperatingExpe
 {
     protected string $model = OperatingExpense::class;
 
-    protected array $searchable = ['code','category','subcategory','description'];
+    protected array $filterable = ['category' => 'category'];
+
+    protected array $searchable = ['code', 'category', 'subcategory', 'description'];
 
     protected function periodFilterColumns(): array
     {

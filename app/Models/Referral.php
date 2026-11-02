@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Casts\DateOnly;
+use App\Models\Concerns\Auditable;
 
-class Referral extends Model
+class Referral extends BaseModel
 {
-    use \App\Models\Concerns\Auditable;
+    use Auditable;
 
     protected $table = 'referrals';
 
@@ -15,11 +16,14 @@ class Referral extends Model
     protected function casts(): array
     {
         return [
-            'paid_on' => 'date',
+            'paid_on' => DateOnly::class,
             'memo_amount' => 'decimal:2',
             'paid_amount' => 'decimal:2',
         ];
     }
 
-    public function project() { return $this->belongsTo(Project::class); }
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
 }

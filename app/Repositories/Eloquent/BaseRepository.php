@@ -4,6 +4,7 @@ namespace App\Repositories\Eloquent;
 
 use App\Repositories\Contracts\RepositoryInterface;
 use App\Support\Money;
+use App\Support\Period;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -16,6 +17,9 @@ abstract class BaseRepository implements RepositoryInterface
 
     /** Columns searched by the `q` filter. */
     protected array $searchable = ['code'];
+
+    /** Equality filters: query-string key => column (month values are normalised to the 1st). */
+    protected array $filterable = [];
 
     /** Default ordering for listings. */
     protected array $orderBy = ['id', 'desc'];
@@ -85,6 +89,11 @@ abstract class BaseRepository implements RepositoryInterface
                     $w->orWhere($col, 'like', $term);
                 }
             });
+        }
+        foreach ($this->filterable as $key => $col) {
+            if (isset($filters[$key]) && $filters[$key] !== '') {
+                $q->where($col, $key === 'month' ? Period::of($filters[$key])->date() : $filters[$key]);
+            }
         }
         foreach ($this->periodFilterColumns() as $col) {
             if (! empty($filters['from'])) {

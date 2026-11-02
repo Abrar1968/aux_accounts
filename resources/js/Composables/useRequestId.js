@@ -1,0 +1,6 @@
+// A fresh UUID per form opening makes postings idempotent: a retried submit reuses it.
+export const newRequestId = () =>
+    crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        const r = (Math.random() * 16) | 0;
+        return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+    });

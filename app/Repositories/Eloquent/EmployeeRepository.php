@@ -9,7 +9,7 @@ class EmployeeRepository extends BaseRepository implements EmployeeRepositoryInt
 {
     protected string $model = Employee::class;
 
-    protected array $searchable = ['name','designation'];
+    protected array $searchable = ['name', 'designation'];
 
     protected function periodFilterColumns(): array
     {

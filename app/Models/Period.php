@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Casts\DateOnly;
+use App\Models\Concerns\Auditable;
 
-class Period extends Model
+class Period extends BaseModel
 {
-    use \App\Models\Concerns\Auditable;
+    use Auditable;
 
     protected $table = 'periods';
 
@@ -15,9 +16,8 @@ class Period extends Model
     protected function casts(): array
     {
         return [
-            'month' => 'date',
+            'month' => DateOnly::class,
             'closed_at' => 'datetime',
         ];
     }
-
 }

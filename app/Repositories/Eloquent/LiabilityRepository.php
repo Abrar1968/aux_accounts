@@ -9,7 +9,9 @@ class LiabilityRepository extends BaseRepository implements LiabilityRepositoryI
 {
     protected string $model = Liability::class;
 
-    protected array $searchable = ['liability_code','description','counterparty'];
+    protected array $filterable = ['code' => 'liability_code'];
+
+    protected array $searchable = ['liability_code', 'description', 'counterparty'];
 
     protected function periodFilterColumns(): array
     {

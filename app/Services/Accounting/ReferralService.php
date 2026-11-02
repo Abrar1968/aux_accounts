@@ -20,8 +20,7 @@ class ReferralService
         private readonly SettingsService $settings,
         private readonly SequenceService $sequences,
         private readonly PeriodService $periods,
-    ) {
-    }
+    ) {}
 
     public function memoFor(float $totalValue): float
     {

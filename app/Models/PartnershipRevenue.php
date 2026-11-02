@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Casts\DateOnly;
+use App\Models\Concerns\Auditable;
 
-class PartnershipRevenue extends Model
+class PartnershipRevenue extends BaseModel
 {
-    use \App\Models\Concerns\Auditable;
+    use Auditable;
 
     protected $table = 'partnership_revenues';
 
@@ -15,7 +16,7 @@ class PartnershipRevenue extends Model
     protected function casts(): array
     {
         return [
-            'earned_month' => 'date',
+            'earned_month' => DateOnly::class,
             'share_percent' => 'decimal:4',
             'gross_sales' => 'decimal:2',
             'direct_amount' => 'decimal:2',
@@ -23,5 +24,8 @@ class PartnershipRevenue extends Model
         ];
     }
 
-    public function assignment() { return $this->belongsTo(PartnershipAssignment::class, 'assignment_id'); }
+    public function assignment()
+    {
+        return $this->belongsTo(PartnershipAssignment::class, 'assignment_id');
+    }
 }

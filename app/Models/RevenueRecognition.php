@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Casts\DateOnly;
+use App\Models\Concerns\Auditable;
 
-class RevenueRecognition extends Model
+class RevenueRecognition extends BaseModel
 {
-    use \App\Models\Concerns\Auditable;
+    use Auditable;
 
     protected $table = 'revenue_recognitions';
 
@@ -15,8 +16,8 @@ class RevenueRecognition extends Model
     protected function casts(): array
     {
         return [
-            'period' => 'date',
-            'recognition_month' => 'date',
+            'period' => DateOnly::class,
+            'recognition_month' => DateOnly::class,
             'opening_progress' => 'decimal:4',
             'ending_progress' => 'decimal:4',
             'contract_value' => 'decimal:2',
@@ -30,5 +31,8 @@ class RevenueRecognition extends Model
         ];
     }
 
-    public function project() { return $this->belongsTo(Project::class); }
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
 }

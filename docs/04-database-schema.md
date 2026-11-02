@@ -45,8 +45,18 @@ Engine InnoDB, charset `utf8mb4_unicode_ci`. Money `DECIMAL(15,2)`, percentages 
 | `fixed_assets` | Assets | cost, residual, life months, opening accumulated dep., disposal, cash paid/date |
 | `liabilities` | Liabilities ledger | liability_code (LIA-DEF, LIA-AC, LIA-SIAM, LIA-SIAM-SHARE), increase, decrease, cash_impact, period |
 
-Planned (Phase 4, new features): `bank_accounts`, `bank_transactions` (reconciliation), `budgets`,
-`recurring_expense_templates`, `change_orders` (itemised), `employee_documents`.
+Phase 4 tables (migration `2026_11_02_000500`):
+
+| Table | Purpose | Columns |
+|---|---|---|
+| `bank_accounts` | bank / wallet / cash accounts | name, type, account_number, aliases JSON (matched against ledger account/method), opening_balance, opening_date, is_active |
+| `bank_reconciliations` | statement vs book | bank_account_id, statement_date (unique per account), statement_balance, book_balance, difference, status |
+| `budgets` | monthly budget per statement line | period, line_key (unique together), amount |
+| `recurring_expenses` | bill templates | name, category, subcategory, amount, day_of_month, start_month, end_month, is_active |
+| `operating_expenses.recurring_expense_id` | generated bill link | unique(recurring_expense_id, accrual_month) — idempotent generation |
+| `caller_targets` | monthly CRM targets | owner, period (unique together), calls_target, leads_target, wins_target |
+
+Still planned: `change_orders` (itemised), `employee_documents`.
 
 ## 3. CRM
 

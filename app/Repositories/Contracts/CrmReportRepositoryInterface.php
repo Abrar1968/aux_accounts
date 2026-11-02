@@ -2,6 +2,4 @@
 
 namespace App\Repositories\Contracts;
 
-interface CrmReportRepositoryInterface extends RepositoryInterface
-{
-}
+interface CrmReportRepositoryInterface extends RepositoryInterface {}

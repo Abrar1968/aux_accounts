@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Casts\DateOnly;
+use App\Models\Concerns\Auditable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class OperatingExpense extends Model
+class OperatingExpense extends BaseModel
 {
-    use \App\Models\Concerns\Auditable;
+    use Auditable;
 
     protected $table = 'operating_expenses';
 
@@ -15,17 +17,23 @@ class OperatingExpense extends Model
     protected function casts(): array
     {
         return [
-            'accrual_period' => 'date',
+            'accrual_period' => DateOnly::class,
             'expense_date' => 'datetime',
-            'accrual_month' => 'date',
+            'accrual_month' => DateOnly::class,
             'amount' => 'decimal:2',
             'legacy' => 'array',
         ];
     }
 
-    use \Illuminate\Database\Eloquent\SoftDeletes;
+    use SoftDeletes;
 
-    public function payments() { return $this->hasMany(ExpensePayment::class); }
+    public function payments()
+    {
+        return $this->hasMany(ExpensePayment::class);
+    }
 
-    public function attachments() { return $this->morphMany(Attachment::class, 'attachable'); }
+    public function attachments()
+    {
+        return $this->morphMany(Attachment::class, 'attachable');
+    }
 }

@@ -2,24 +2,23 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Services\Shared\AuditService;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
+    /** Imported history is not a user edit: auditing is muted while seeding. */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        app(AuditService::class)->mute(function () {
+            $this->call([
+                RoleSeeder::class,
+                UserSeeder::class,
+                SettingsSeeder::class,
+                AccountingWorkbookSeeder::class,
+                BankingSeeder::class,
+                CrmWorkbookSeeder::class,
+            ]);
+        });
     }
 }

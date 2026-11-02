@@ -17,8 +17,7 @@ class CapitalService
     public function __construct(
         private readonly CapitalTransactionRepositoryInterface $repo,
         private readonly PeriodService $periods,
-    ) {
-    }
+    ) {}
 
     public function create(array $data): CapitalTransaction
     {

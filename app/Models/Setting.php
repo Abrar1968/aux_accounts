@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\Auditable;
 
-class Setting extends Model
+class Setting extends BaseModel
 {
-    use \App\Models\Concerns\Auditable;
+    use Auditable;
 
     protected $table = 'settings';
 
@@ -19,5 +19,4 @@ class Setting extends Model
             'editable' => 'boolean',
         ];
     }
-
 }
