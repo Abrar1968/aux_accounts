@@ -18,10 +18,16 @@
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="outer" style="background:#f3f5f9;padding:24px 12px;">
 <tr><td align="center">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
+    @if(!empty($logo))
+    <tr><td class="pad" style="background:#ffffff;padding:20px 28px;border-bottom:3px solid #2b57db;">
+      <img src="{{ $logo }}" alt="{{ $company }}" height="44" style="display:block;height:44px;width:auto;max-width:220px;border:0;">
+    </td></tr>
+    @else
     <tr><td class="pad" style="background:#2b57db;padding:20px 28px;">
       <p style="margin:0;font-size:18px;font-weight:700;color:#ffffff;letter-spacing:.2px;">{{ $company }}</p>
       @if($website)<p style="margin:2px 0 0;font-size:12px;color:#d9e6ff;">{{ preg_replace('#^https?://#', '', $website) }}</p>@endif
     </td></tr>
+    @endif
     <tr><td class="pad" style="padding:28px 28px 8px;">
       <h1 style="margin:0 0 18px;font-size:19px;line-height:1.35;color:#0b1220;">{{ \Illuminate\Support\Str::beforeLast($subject, ' · ') ?: $subject }}</h1>
       @if($greeting)<p style="margin:0 0 12px;font-size:15px;line-height:1.6;">{{ $greeting }}</p>@endif

@@ -347,6 +347,7 @@ class EmailComposerService
             'company' => $this->settings->get('company.name'), 'website' => $this->settings->get('company.website'),
             'phone' => $this->settings->get('company.phone'), 'address' => $this->settings->get('company.address'),
             'replyTo' => config('mail.from.address'),
+            'logo' => app(BrandingService::class)->emailLogoUrl(),
         ];
     }
 

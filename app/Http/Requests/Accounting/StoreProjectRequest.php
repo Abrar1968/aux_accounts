@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Accounting;
 
+use App\Services\Media\ImageService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProjectRequest extends FormRequest
@@ -26,6 +27,7 @@ class StoreProjectRequest extends FormRequest
             'change_orders' => ['nullable', 'numeric', 'decimal:0,2'],
             'referrer' => ['nullable', 'string', 'max:120'],
             'notes' => ['nullable', 'string', 'max:5000'],
+            'client_signature' => ['nullable', 'file', 'max:10240', 'mimes:'.ImageService::EXTENSIONS],
         ];
     }
 }

@@ -17,9 +17,15 @@ class ImageService
 
     public const THUMB_EDGE = 320;
 
+    /** Every raster format GD can decode (SVG/HEIC/TIFF are converted to PNG in the browser first). */
+    public const MIMES = ['image/jpeg', 'image/jpg', 'image/pjpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp', 'image/x-ms-bmp', 'image/x-bmp', 'image/avif', 'image/x-tga', 'image/x-xbitmap', 'image/vnd.wap.wbmp'];
+
+    /** For FormRequest `mimes:` rules. */
+    public const EXTENSIONS = 'jpg,jpeg,jpe,jfif,pjpeg,png,webp,gif,bmp,avif,tga,xbm,wbmp';
+
     public function isImage(string $mime): bool
     {
-        return in_array($mime, ['image/jpeg', 'image/png', 'image/webp', 'image/gif'], true);
+        return in_array($mime, self::MIMES, true);
     }
 
     /** @return array{main:string, thumb:string, width:int, height:int, mime:string, ext:string} binary strings */
@@ -32,16 +38,24 @@ class ImageService
             throw new DomainException('Images must be 10 MB or smaller.');
         }
         $src = match ($mime) {
-            'image/jpeg' => @imagecreatefromjpeg($path),
+            'image/jpeg', 'image/jpg', 'image/pjpeg' => @imagecreatefromjpeg($path),
             'image/png' => @imagecreatefrompng($path),
-            'image/webp' => @imagecreatefromwebp($path),
+            'image/webp' => function_exists('imagecreatefromwebp') ? @imagecreatefromwebp($path) : false,
             'image/gif' => @imagecreatefromgif($path),
+            'image/bmp', 'image/x-ms-bmp', 'image/x-bmp' => function_exists('imagecreatefrombmp') ? @imagecreatefrombmp($path) : false,
+            'image/avif' => function_exists('imagecreatefromavif') ? @imagecreatefromavif($path) : false,
+            'image/x-tga' => function_exists('imagecreatefromtga') ? @imagecreatefromtga($path) : false,
+            'image/x-xbitmap' => @imagecreatefromxbm($path),
+            'image/vnd.wap.wbmp' => @imagecreatefromwbmp($path),
             default => false,
         };
+        if (! $src instanceof GdImage) { // wrong/unknown mime header: let GD sniff the bytes
+            $src = @imagecreatefromstring((string) file_get_contents($path));
+        }
         if (! $src instanceof GdImage) {
             throw new DomainException('Unsupported or corrupt image.');
         }
-        if ($mime === 'image/jpeg' && function_exists('exif_read_data')) {
+        if (in_array($mime, ['image/jpeg', 'image/jpg', 'image/pjpeg'], true) && function_exists('exif_read_data')) {
             $src = $this->orient($src, (int) (@exif_read_data($path)['Orientation'] ?? 1));
         }
         $main = $this->fit($src, self::MAX_EDGE);
@@ -54,6 +68,24 @@ class ImageService
         imagedestroy($src);
 
         return $result;
+    }
+
+    /**
+     * Letterhead assets (logo, seal, signatures): transparent PNG for screen/print and a flattened
+     * JPEG (white background) for the in-house PDF writer, which embeds JPEG only.
+     *
+     * @return array{png:string, jpg:string, width:int, height:int}
+     */
+    public function brandVariants(string $path, string $mime, int $edge = 800): array
+    {
+        $tmp = $this->process($path, $mime); // validates, orients, strips metadata
+        $src = @imagecreatefromstring($tmp['main']);
+        if (! $src instanceof GdImage) {
+            throw new DomainException('Unsupported or corrupt image.');
+        }
+        $img = $this->fit($src, $edge);
+
+        return ['png' => $this->encode($img, 'image/png'), 'jpg' => $this->encode($img, 'image/jpeg'), 'width' => imagesx($img), 'height' => imagesy($img)];
     }
 
     private function orient(GdImage $img, int $o): GdImage

@@ -10,8 +10,10 @@ import { navigation, can } from '@/lib/nav';
 import { initials } from '@/lib/format';
 import { useHotkey } from '@/Composables/useHotkey';
 import { useRealtime } from '@/Composables/useRealtime';
+import { setPdfBrand } from '@/lib/pdf';
 
 const page = usePage();
+watch(() => page.props.brand, (b) => setPdfBrand(b), { immediate: true }); // letterhead for every PDF export
 const user = computed(() => page.props.auth?.user);
 const unread = ref(page.props.notifications?.unread ?? 0);
 watch(() => page.props.notifications?.unread, (v) => (unread.value = v ?? 0));

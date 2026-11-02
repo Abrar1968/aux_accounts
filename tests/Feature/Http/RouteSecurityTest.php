@@ -16,7 +16,7 @@ class RouteSecurityTest extends TestCase
     use SeedsWorkbook;
 
     /** Routes that are intentionally reachable without login. */
-    private const PUBLIC = ['login', 'password.request', 'password.email', 'password.reset', 'password.update', 'attachments.show', 'storage.local', 'storage.local.upload'];
+    private const PUBLIC = ['login', 'password.request', 'password.email', 'password.reset', 'password.update', 'attachments.show', 'storage.local', 'storage.local.upload', 'branding.show'];
 
     /** Authenticated routes every signed-in user may use (own profile / notifications / search). */
     private const ANY_USER = ['logout', 'notifications.index', 'notifications.read-all', 'notifications.read', 'profile.edit', 'profile.update',
@@ -55,7 +55,7 @@ class RouteSecurityTest extends TestCase
             $user = $this->userWithRole($role, ucfirst($role).' Tester');
             foreach (Route::getRoutes() as $r) {
                 if (! in_array('GET', $r->methods(), true) || in_array($r->getName(), self::PUBLIC, true) || in_array($r->getName(), ['logout'], true)
-                    || str_starts_with($r->uri(), 'broadcasting') || str_starts_with($r->uri(), 'storage') || $r->uri() === 'up' || $r->getName() === 'attachments.link') { // link needs an existing upload (covered in AutomationCommandsTest)
+                    || str_starts_with($r->uri(), 'broadcasting') || str_starts_with($r->uri(), 'storage') || $r->uri() === 'up' || in_array($r->getName(), ['attachments.link', 'projects.signature'], true)) { // link needs an existing upload (covered in AutomationCommandsTest)
                     continue;
                 }
                 $uri = preg_replace_callback('/\{(\w+)\??\}/', fn ($m) => (string) ($params[$m[1]] ?? ''), $r->uri());

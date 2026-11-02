@@ -1,8 +1,9 @@
 <script setup>
 import { computed, ref } from 'vue';
-import { Head, router, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import PageHeader from '@/Components/ui/PageHeader.vue';
 import Card from '@/Components/ui/Card.vue';
+import ImagePicker from '@/Components/ui/ImagePicker.vue';
 import Tabs from '@/Components/ui/Tabs.vue';
 import Input from '@/Components/ui/Input.vue';
 import Button from '@/Components/ui/Button.vue';
@@ -25,6 +26,11 @@ const fields = computed(() => props.editable.filter((k) => LABELS[k]));
 const form = useForm({ settings: Object.fromEntries(fields.value.map((k) => [k, props.settings[k]])) });
 const save = () => form.put('/settings', { preserveScroll: true });
 const fixed = computed(() => Object.entries(props.settings).filter(([k]) => !props.editable.includes(k) && !k.startsWith('crm.cursor') && typeof props.settings[k] !== 'object'));
+// Branding: logo + accounts seal used on every invoice / PDF / email
+const brand = computed(() => usePage().props.brand ?? {});
+const brandForms = { logo: useForm({ asset: 'logo', image: null }), seal: useForm({ asset: 'seal', image: null }) };
+const saveBrand = (k) => brandForms[k].post('/settings/branding', { forceFormData: true, preserveScroll: true, onSuccess: () => brandForms[k].reset('image') });
+const removeBrand = (k) => router.delete(`/settings/branding/${k}`, { preserveScroll: true });
 const option = useForm({ type: 'service', value: '' });
 const addOption = () => option.post('/crm/settings/options', { preserveScroll: true, onSuccess: () => option.reset('value') });
 const removeOption = (type, value) => router.delete('/crm/settings/options', { data: { type, value }, preserveScroll: true });
@@ -33,7 +39,18 @@ const removeOption = (type, value) => router.delete('/crm/settings/options', { d
 <template>
     <Head title="Settings" />
     <PageHeader title="Settings" subtitle="Accounting policies and CRM lists — statements recalculate automatically after a change" />
-    <div class="mb-3"><Tabs v-model="tab" :tabs="[{ key: 'policies', label: 'Policies' }, { key: 'referrals', label: 'Referral tiers' }, { key: 'crm', label: 'CRM lists' }, { key: 'system', label: 'Model constants' }]" /></div>
+    <div class="mb-3"><Tabs v-model="tab" :tabs="[{ key: 'policies', label: 'Policies' }, { key: 'branding', label: 'Branding' }, { key: 'referrals', label: 'Referral tiers' }, { key: 'crm', label: 'CRM lists' }, { key: 'system', label: 'Model constants' }]" /></div>
+    <div v-if="tab === 'branding'" class="grid gap-4 lg:grid-cols-2">
+        <Card v-for="k in ['logo', 'seal']" :key="k" :title="k === 'logo' ? 'Company logo' : 'Accounts seal / signature'"
+            :subtitle="k === 'logo' ? 'Letterhead of every invoice, statement, payslip, report and email' : 'Printed as the authorised signature on every invoice and PDF'">
+            <ImagePicker v-model="brandForms[k].image" :current="brand[k]?.png" :label="k === 'logo' ? 'Logo image' : 'Seal / signature image'" :error="brandForms[k].errors.image" />
+            <div class="mt-3 flex gap-2">
+                <Button size="sm" :disabled="!brandForms[k].image" :loading="brandForms[k].processing" @click="saveBrand(k)">Save</Button>
+                <Button v-if="brand[k]" size="sm" variant="ghost" @click="removeBrand(k)">Remove</Button>
+            </div>
+        </Card>
+        <p class="text-xs text-ink-3 lg:col-span-2">Company name, address, phone, website and signature title are edited under <b>Policies</b>. Client signatures are added on each project.</p>
+    </div>
     <Card v-if="tab === 'policies'" title="Editable policies">
         <form class="grid gap-4 sm:grid-cols-2" @submit.prevent="save">
             <Input v-for="k in fields" :key="k" v-model="form.settings[k]" :type="LABELS[k][1]" :step="LABELS[k][1] === 'number' ? 'any' : undefined" :label="LABELS[k][0]" :error="form.errors[`settings.${k}`]" />

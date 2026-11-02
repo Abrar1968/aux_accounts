@@ -9,6 +9,7 @@ import FilterBar from '@/Components/ui/FilterBar.vue';
 import Pagination from '@/Components/ui/Pagination.vue';
 import Badge from '@/Components/ui/Badge.vue';
 import Drawer from '@/Components/ui/Drawer.vue';
+import ImagePicker from '@/Components/ui/ImagePicker.vue';
 import Input from '@/Components/ui/Input.vue';
 import MoneyInput from '@/Components/ui/MoneyInput.vue';
 import Select from '@/Components/ui/Select.vue';
@@ -32,8 +33,8 @@ const columns = [
     { key: 'work_status', label: 'Work' },
 ];
 const open = ref(false);
-const form = useForm({ name: '', customer: '', kind: 'project', start_date: todayIso(), est_delivery_date: '', revenue_method: 'Point in Time', base_value: '', change_orders: 0, referrer: '', notes: '' });
-const submit = () => form.post('/accounting/projects', { preserveScroll: true, onSuccess: () => { open.value = false; form.reset(); } });
+const form = useForm({ name: '', customer: '', kind: 'project', start_date: todayIso(), est_delivery_date: '', revenue_method: 'Point in Time', base_value: '', change_orders: 0, referrer: '', notes: '', client_signature: null });
+const submit = () => form.post('/accounting/projects', { forceFormData: true, preserveScroll: true, onSuccess: () => { open.value = false; form.reset(); } });
 </script>
 
 <template>
@@ -74,6 +75,7 @@ const submit = () => form.post('/accounting/projects', { preserveScroll: true, o
             </div>
             <Input v-model="form.referrer" label="Referrer" hint="Referral memo is calculated from the policy tiers" />
             <Textarea v-model="form.notes" label="Notes" />
+            <ImagePicker v-model="form.client_signature" label="Client signature (optional)" hint="Printed on this client's invoices and statements only" :error="form.errors.client_signature" />
         </form>
         <template #footer><Button variant="secondary" @click="open = false">Cancel</Button><Button type="submit" form="project-form" :loading="form.processing">Create project</Button></template>
     </Drawer>

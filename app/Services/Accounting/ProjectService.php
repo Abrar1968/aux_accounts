@@ -6,8 +6,10 @@ use App\Models\Project;
 use App\Repositories\Contracts\ProjectRepositoryInterface;
 use App\Services\Shared\PeriodService;
 use App\Services\Shared\SequenceService;
+use App\Services\System\BrandingService;
 use App\Support\Money;
 use App\Support\Period;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -21,11 +23,15 @@ class ProjectService
         private readonly ReferralService $referrals,
         private readonly RevenueRecognitionService $recognition,
         private readonly PeriodService $periods,
+        private readonly BrandingService $branding,
     ) {}
 
     public function create(array $data): Project
     {
-        return DB::transaction(function () use ($data) {
+        $signature = $data['client_signature'] ?? null; // optional image, stored after the row exists
+        unset($data['client_signature']);
+
+        return DB::transaction(function () use ($data, $signature) {
             $kind = $data['kind'] ?? 'project';
             $start = $data['start_date'] ?? now()->toDateString();
             $prefix = match ($kind) {
@@ -42,6 +48,9 @@ class ProjectService
                 'source_month' => Period::of($start)->date(),
             ]));
             $this->referrals->syncForProject($project);
+            if ($signature instanceof UploadedFile) {
+                $this->branding->setClientSignature($project, $signature);
+            }
 
             return $project;
         });

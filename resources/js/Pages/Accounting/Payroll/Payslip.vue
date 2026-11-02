@@ -6,6 +6,7 @@ import Button from '@/Components/ui/Button.vue';
 import PrintLayout from '@/Components/print/PrintLayout.vue';
 import { date, money, monthLabel } from '@/lib/format';
 import { printPage } from '@/lib/pdf';
+import { exportPayslipPdf, payslipStatus } from '@/lib/exports';
 
 const props = defineProps({ payroll: Object, payments: Object, recoveries: Object });
 const p = computed(() => props.payroll.data);
@@ -14,9 +15,11 @@ const p = computed(() => props.payroll.data);
 <template>
     <Head :title="`Payslip ${p.employee}`" />
     <PageHeader :title="`Payslip — ${p.employee}`" :subtitle="monthLabel(p.period)" back="/accounting/payroll">
-        <Button size="sm" icon="printer" @click="printPage(`Payslip ${p.employee} ${monthLabel(p.period)}`)">Print / PDF</Button>
+        <Button variant="secondary" size="sm" icon="download" @click="exportPayslipPdf(p, payments.data)">PDF</Button>
+        <Button size="sm" icon="printer" @click="printPage(`Payslip ${p.employee} ${monthLabel(p.period)}`)">Print</Button>
     </PageHeader>
-    <PrintLayout title="Payslip" :subtitle="`${p.employee} · ${monthLabel(p.period)}`" :meta="[{ label: 'Payroll ID', value: p.code }, { label: 'Status', value: p.status }]">
+    <PrintLayout title="Payslip" :subtitle="`${p.employee} · ${monthLabel(p.period)}`" :meta="[{ label: 'Payroll ID', value: p.code }, { label: 'Status', value: p.status }]"
+        :watermark="payslipStatus(p.status)" seal-label="Authorised by" client-label="Employee signature">
         <table class="w-full text-sm">
             <tbody class="divide-y divide-line">
                 <tr><td class="py-2">Gross salary</td><td class="num py-2 text-right">{{ money(p.gross_salary, { decimals: true }) }}</td></tr>
@@ -35,6 +38,5 @@ const p = computed(() => props.payroll.data);
                 <tr v-if="!payments.data.length"><td colspan="3" class="py-2 text-ink-3">No payments yet.</td></tr>
             </tbody>
         </table>
-        <div class="mt-12 grid grid-cols-2 gap-10 text-xs text-ink-3"><p class="border-t border-line pt-2">Employee signature</p><p class="border-t border-line pt-2 text-right">Authorised by</p></div>
     </PrintLayout>
 </template>

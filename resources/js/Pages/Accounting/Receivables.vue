@@ -53,7 +53,7 @@ const exportPdf = () => exportTablePdf(`Receivables ${monthLabel(props.month)}`,
     <div class="mt-5 mb-3"><Tabs v-model="tab" :tabs="[{ key: 'balances', label: 'Month-end balances', count: balances.length }, { key: 'aging', label: 'Aging', count: aging.length }]" /></div>
     <Card v-if="tab === 'balances'" :padded="false">
         <DataTable :columns="cols" :rows="balances" row-key="code">
-            <template #cell-name="{ row }"><Link :href="`/accounting/receivables/${row.type}/${row.id}/statement`" class="block truncate font-medium hover:underline">{{ row.name }}</Link><span class="block truncate text-xs text-ink-3">{{ row.code }}</span></template>
+            <template #cell-name="{ row }"><Link :href="`/accounting/receivables/${row.type}/${row.id}/statement`" class="block truncate font-medium hover:underline">{{ row.name }}</Link><span class="block truncate text-xs text-ink-3">{{ row.code }} · <Link :href="`/accounting/receivables/${row.type}/${row.id}/invoice`" class="hover:underline">Invoice</Link></span></template>
         </DataTable>
     </Card>
     <template v-else>

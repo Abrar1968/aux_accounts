@@ -21,6 +21,7 @@ class Project extends BaseModel
             'start_date' => DateOnly::class,
             'est_delivery_date' => DateOnly::class,
             'actual_delivery_date' => DateOnly::class,
+            'client_signature' => 'array',
             'base_value' => 'decimal:2',
             'change_orders' => 'decimal:2',
         ];
