@@ -39,4 +39,11 @@ class EmployeeController extends Controller
 
         return $this->toast("{$employee->name} updated.");
     }
+
+    public function destroy(Employee $employee)
+    {
+        $this->employees->delete($employee);
+
+        return $this->toast("{$employee->name} removed.");
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Services\Accounting;
 use App\Models\FixedAsset;
 use App\Repositories\Contracts\FixedAssetRepositoryInterface;
 use App\Services\Accounting\Engine\DepreciationCalculator;
+use App\Services\Shared\AuditService;
 use App\Services\Shared\PeriodService;
 use App\Services\Shared\SequenceService;
 use App\Support\Period;
@@ -56,5 +57,12 @@ class AssetService
                 'status' => $a->disposal_date ? 'Disposed' : 'Active'],
             'months' => $this->calculator->schedule($a, $periods),
         ])->values()->all();
+    }
+
+    public function delete(FixedAsset $a, string $reason): void
+    {
+        $this->periods->assertOpen($a->acquisition_date, $a->cash_payment_date);
+        app(AuditService::class)->record('deleted', $a, $a->toArray(), null, $reason);
+        $a->delete();
     }
 }

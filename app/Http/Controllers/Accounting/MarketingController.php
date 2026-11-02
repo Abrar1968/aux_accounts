@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Accounting;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Accounting\DeleteWithReasonRequest;
 use App\Http\Requests\Accounting\StoreMarketingRequest;
 use App\Http\Requests\Accounting\UpdateMarketingRequest;
 use App\Http\Resources\RecordResource;
@@ -37,5 +38,12 @@ class MarketingController extends Controller
         $this->marketing->update($marketing, $request->validated());
 
         return $this->toast("Service {$marketing->code} updated.");
+    }
+
+    public function destroy(DeleteWithReasonRequest $request, MarketingService $marketing)
+    {
+        $this->marketing->delete($marketing, $request->validated('reason'));
+
+        return $this->toast("Service {$marketing->code} deleted.");
     }
 }

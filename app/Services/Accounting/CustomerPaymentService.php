@@ -105,6 +105,32 @@ class CustomerPaymentService
         };
     }
 
+    /** Correct a receipt (date, amounts, method, account, notes, or the receivable it settles). */
+    public function update(CustomerPayment $p, array $data): CustomerPayment
+    {
+        $paidAt = CarbonImmutable::parse($data['paid_at'] ?? $p->paid_at, config('app.timezone'));
+        if ($paidAt->isAfter(now()->endOfDay())) {
+            throw new DomainException('Payment date cannot be in the future.');
+        }
+        $this->periods->assertOpen($p->paid_at, $paidAt->toDateString());
+        $type = $data['receivable_type'] ?? $p->receivable_type;
+        $class = self::MODELS[$type] ?? throw new DomainException('Unknown receivable type.');
+        $target = $class::query()->findOrFail($data['receivable_id'] ?? $p->receivable_id);
+        $cash = Money::round($data['cash_received'] ?? $p->cash_received);
+        $fee = Money::round($data['processing_fee'] ?? 0);
+        if ($cash <= 0 || $fee < 0) {
+            throw new DomainException('Cash received must be positive; fee cannot be negative.');
+        }
+        $name = $target->name ?? $target->client ?? $target->customer ?? $target->code;
+
+        return $this->repo->update($p, [
+            'paid_at' => $paidAt->toDateTimeString(), 'period' => Period::of($paidAt)->date(),
+            'receivable_type' => $type, 'receivable_id' => $target->id, 'revenue_code' => $target->code, 'canonical_name' => $name,
+            'cash_received' => $cash, 'processing_fee' => $fee,
+            'method' => $data['method'] ?? null, 'account' => $data['account'] ?? null, 'notes' => $data['notes'] ?? null,
+        ]);
+    }
+
     public function delete(CustomerPayment $p, string $reason): void
     {
         $this->periods->assertOpen($p->paid_at);

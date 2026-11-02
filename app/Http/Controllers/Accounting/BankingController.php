@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Accounting\ReconcileRequest;
 use App\Http\Requests\Accounting\StoreBankAccountRequest;
 use App\Models\BankAccount;
+use App\Models\BankReconciliation;
 use App\Services\Banking\BankingService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -55,5 +56,19 @@ class BankingController extends Controller
         return $r->status === 'matched'
             ? $this->toast("{$account->name} reconciled — book and statement agree.")
             : $this->toast("{$account->name}: difference of ৳".number_format((float) $r->difference, 2).' recorded for review.', 'warning', 'Difference found');
+    }
+
+    public function destroy(BankAccount $account)
+    {
+        $this->banking->delete($account);
+
+        return redirect('/accounting/banking')->with('toast', ['type' => 'success', 'title' => 'Deleted', 'message' => "{$account->name} deleted."]);
+    }
+
+    public function destroyReconciliation(BankReconciliation $reconciliation)
+    {
+        $this->banking->deleteReconciliation($reconciliation);
+
+        return $this->toast('Reconciliation deleted.');
     }
 }

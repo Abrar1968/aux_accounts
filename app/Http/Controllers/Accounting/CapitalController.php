@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Accounting;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Accounting\DeleteWithReasonRequest;
 use App\Http\Requests\Accounting\StoreCapitalRequest;
+use App\Http\Requests\Accounting\UpdateCapitalRequest;
 use App\Http\Resources\RecordResource;
+use App\Models\CapitalTransaction;
 use App\Services\Accounting\CapitalService;
 use App\Services\Shared\ListingService;
 use Illuminate\Http\Request;
@@ -28,5 +31,19 @@ class CapitalController extends Controller
         $this->capital->create($request->validated());
 
         return $this->toast('Capital transaction saved.');
+    }
+
+    public function update(UpdateCapitalRequest $request, CapitalTransaction $capital)
+    {
+        $this->capital->update($capital, $request->validated());
+
+        return $this->toast('Capital entry updated.');
+    }
+
+    public function destroy(DeleteWithReasonRequest $request, CapitalTransaction $capital)
+    {
+        $this->capital->delete($capital, $request->validated('reason'));
+
+        return $this->toast('Capital entry deleted.');
     }
 }

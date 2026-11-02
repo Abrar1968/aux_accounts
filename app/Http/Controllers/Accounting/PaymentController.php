@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Accounting;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Accounting\DeleteWithReasonRequest;
 use App\Http\Requests\Accounting\StorePaymentRequest;
+use App\Http\Requests\Accounting\UpdatePaymentRequest;
 use App\Http\Resources\PaymentResource;
 use App\Models\CustomerPayment;
 use App\Services\Accounting\CustomerPaymentService;
@@ -44,5 +45,12 @@ class PaymentController extends Controller
     public function receivables(Request $request, ReceivableService $receivables)
     {
         return response()->json($receivables->options($request->query('q')));
+    }
+
+    public function update(UpdatePaymentRequest $request, CustomerPayment $payment)
+    {
+        $this->payments->update($payment, $request->validated());
+
+        return $this->toast("Payment {$payment->code} updated.");
     }
 }

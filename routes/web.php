@@ -38,6 +38,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/projects/{project}', [Accounting\ProjectController::class, 'show'])->middleware('permission:accounting.projects.view')->name('projects.show');
         Route::post('/projects', [Accounting\ProjectController::class, 'store'])->middleware('permission:accounting.projects.create')->name('projects.store');
         Route::put('/projects/{project}', [Accounting\ProjectController::class, 'update'])->middleware('permission:accounting.projects.update')->name('projects.update');
+        Route::delete('/projects/{project}', [Accounting\ProjectController::class, 'destroy'])->middleware('permission:accounting.projects.delete')->name('projects.destroy');
         Route::get('/projects/{project}/signature.{format}', [Accounting\ProjectController::class, 'signature'])->whereIn('format', ['png', 'jpg'])->middleware('permission:accounting.projects.view')->name('projects.signature');
         Route::post('/projects/{project}/signature', [Accounting\ProjectController::class, 'storeSignature'])->middleware('permission:accounting.projects.update')->name('projects.signature.store');
         Route::delete('/projects/{project}/signature', [Accounting\ProjectController::class, 'destroySignature'])->middleware('permission:accounting.projects.update')->name('projects.signature.destroy');
@@ -51,45 +52,64 @@ Route::middleware('auth')->group(function () {
         Route::get('/payments', [Accounting\PaymentController::class, 'index'])->middleware('permission:accounting.payments.view')->name('payments.index');
         Route::post('/payments', [Accounting\PaymentController::class, 'store'])->middleware('permission:accounting.payments.create')->name('payments.store');
         Route::delete('/payments/{payment}', [Accounting\PaymentController::class, 'destroy'])->middleware('permission:accounting.payments.delete')->name('payments.destroy');
+        Route::put('/payments/{payment}', [Accounting\PaymentController::class, 'update'])->middleware('permission:accounting.payments.update')->name('payments.update');
         Route::get('/receivables', Accounting\ReceivableController::class)->middleware('permission:accounting.payments.view')->name('receivables');
 
         Route::get('/marketing', [Accounting\MarketingController::class, 'index'])->middleware('permission:accounting.projects.view')->name('marketing.index');
         Route::post('/marketing', [Accounting\MarketingController::class, 'store'])->middleware('permission:accounting.projects.create')->name('marketing.store');
         Route::put('/marketing/{marketing}', [Accounting\MarketingController::class, 'update'])->middleware('permission:accounting.projects.update')->name('marketing.update');
+        Route::delete('/marketing/{marketing}', [Accounting\MarketingController::class, 'destroy'])->middleware('permission:accounting.projects.delete')->name('marketing.destroy');
 
         Route::get('/partnerships', [Accounting\PartnershipController::class, 'index'])->middleware('permission:accounting.projects.view')->name('partnerships.index');
         Route::post('/partnerships/collaborators', [Accounting\PartnershipController::class, 'storeCollaborator'])->middleware('permission:accounting.projects.create')->name('partnerships.collaborators.store');
         Route::post('/partnerships/assignments', [Accounting\PartnershipController::class, 'storeAssignment'])->middleware('permission:accounting.projects.create')->name('partnerships.assignments.store');
         Route::put('/partnerships/revenues/{revenue}', [Accounting\PartnershipController::class, 'setEarning'])->middleware('permission:accounting.projects.update')->name('partnerships.revenues.update');
+        Route::put('/partnerships/collaborators/{collaborator}', [Accounting\PartnershipController::class, 'updateCollaborator'])->middleware('permission:accounting.projects.update')->name('partnerships.collaborators.update');
+        Route::delete('/partnerships/collaborators/{collaborator}', [Accounting\PartnershipController::class, 'destroyCollaborator'])->middleware('permission:accounting.projects.delete')->name('partnerships.collaborators.destroy');
+        Route::put('/partnerships/assignments/{assignment}', [Accounting\PartnershipController::class, 'updateAssignment'])->middleware('permission:accounting.projects.update')->name('partnerships.assignments.update');
+        Route::delete('/partnerships/assignments/{assignment}', [Accounting\PartnershipController::class, 'destroyAssignment'])->middleware('permission:accounting.projects.delete')->name('partnerships.assignments.destroy');
 
         Route::get('/expenses', [Accounting\ExpenseController::class, 'index'])->middleware('permission:accounting.expenses.view')->name('expenses.index');
         Route::get('/expenses/{expense}', [Accounting\ExpenseController::class, 'show'])->middleware('permission:accounting.expenses.view')->name('expenses.show');
         Route::post('/expenses', [Accounting\ExpenseController::class, 'store'])->middleware('permission:accounting.expenses.create')->name('expenses.store');
         Route::put('/expenses/{expense}', [Accounting\ExpenseController::class, 'update'])->middleware('permission:accounting.expenses.update')->name('expenses.update');
         Route::post('/expenses/{expense}/payments', [Accounting\ExpenseController::class, 'pay'])->middleware('permission:accounting.expenses.pay')->name('expenses.pay');
+        Route::delete('/expenses/{expense}', [Accounting\ExpenseController::class, 'destroy'])->middleware('permission:accounting.expenses.delete')->name('expenses.destroy');
+        Route::post('/expense-payments/{expensePayment}/reverse', [Accounting\ExpenseController::class, 'reversePayment'])->middleware('permission:accounting.expenses.pay')->name('expenses.payments.reverse');
 
         Route::get('/employees', [Accounting\EmployeeController::class, 'index'])->middleware('permission:accounting.payroll.view')->name('employees.index');
         Route::post('/employees', [Accounting\EmployeeController::class, 'store'])->middleware('permission:accounting.payroll.create')->name('employees.store');
         Route::put('/employees/{employee}', [Accounting\EmployeeController::class, 'update'])->middleware('permission:accounting.payroll.update')->name('employees.update');
+        Route::delete('/employees/{employee}', [Accounting\EmployeeController::class, 'destroy'])->middleware('permission:accounting.payroll.delete')->name('employees.destroy');
 
         Route::get('/payroll', [Accounting\PayrollController::class, 'index'])->middleware('permission:accounting.payroll.view')->name('payroll.index');
         Route::post('/payroll', [Accounting\PayrollController::class, 'store'])->middleware('permission:accounting.payroll.create')->name('payroll.store');
         Route::post('/payroll/{month}/draft', [Accounting\PayrollController::class, 'draft'])->where('month', '\d{4}-\d{2}')->middleware('permission:accounting.payroll.create')->name('payroll.draft');
         Route::post('/payroll/{payroll}/payments', [Accounting\PayrollController::class, 'pay'])->middleware('permission:accounting.payroll.pay')->name('payroll.pay');
+        Route::put('/payroll/{payroll}', [Accounting\PayrollController::class, 'update'])->middleware('permission:accounting.payroll.update')->name('payroll.update');
+        Route::delete('/payroll/{payroll}', [Accounting\PayrollController::class, 'destroy'])->middleware('permission:accounting.payroll.delete')->name('payroll.destroy');
+        Route::post('/salary-payments/{salaryPayment}/reverse', [Accounting\PayrollController::class, 'reversePayment'])->middleware('permission:accounting.payroll.pay')->name('payroll.payments.reverse');
         Route::get('/payroll/{payroll}/payslip', [Accounting\PayrollController::class, 'payslip'])->middleware('permission:accounting.payroll.view')->name('payroll.payslip');
 
         Route::get('/advances', [Accounting\AdvanceController::class, 'index'])->middleware('permission:accounting.payroll.view')->name('advances.index');
         Route::post('/advances', [Accounting\AdvanceController::class, 'store'])->middleware('permission:accounting.payroll.create')->name('advances.store');
+        Route::put('/advances/{advance}', [Accounting\AdvanceController::class, 'update'])->middleware('permission:accounting.payroll.update')->name('advances.update');
+        Route::delete('/advances/{advance}', [Accounting\AdvanceController::class, 'destroy'])->middleware('permission:accounting.payroll.delete')->name('advances.destroy');
         Route::get('/referrals', [Accounting\ReferralController::class, 'index'])->middleware('permission:accounting.payroll.view')->name('referrals.index');
         Route::put('/referrals/{referral}', [Accounting\ReferralController::class, 'update'])->middleware('permission:accounting.payroll.pay')->name('referrals.update');
 
         Route::get('/assets', [Accounting\AssetController::class, 'index'])->middleware('permission:accounting.ledger.view')->name('assets.index');
         Route::post('/assets', [Accounting\AssetController::class, 'store'])->middleware('permission:accounting.ledger.create')->name('assets.store');
         Route::put('/assets/{asset}', [Accounting\AssetController::class, 'update'])->middleware('permission:accounting.ledger.update')->name('assets.update');
+        Route::delete('/assets/{asset}', [Accounting\AssetController::class, 'destroy'])->middleware('permission:accounting.ledger.delete')->name('assets.destroy');
         Route::get('/liabilities', [Accounting\LiabilityController::class, 'index'])->middleware('permission:accounting.ledger.view')->name('liabilities.index');
         Route::post('/liabilities', [Accounting\LiabilityController::class, 'store'])->middleware('permission:accounting.ledger.create')->name('liabilities.store');
+        Route::put('/liabilities/{liability}', [Accounting\LiabilityController::class, 'update'])->middleware('permission:accounting.ledger.update')->name('liabilities.update');
+        Route::delete('/liabilities/{liability}', [Accounting\LiabilityController::class, 'destroy'])->middleware('permission:accounting.ledger.delete')->name('liabilities.destroy');
         Route::get('/capital', [Accounting\CapitalController::class, 'index'])->middleware('permission:accounting.ledger.view')->name('capital.index');
         Route::post('/capital', [Accounting\CapitalController::class, 'store'])->middleware('permission:accounting.ledger.create')->name('capital.store');
+        Route::put('/capital/{capital}', [Accounting\CapitalController::class, 'update'])->middleware('permission:accounting.ledger.update')->name('capital.update');
+        Route::delete('/capital/{capital}', [Accounting\CapitalController::class, 'destroy'])->middleware('permission:accounting.ledger.delete')->name('capital.destroy');
 
         Route::get('/receivables/{type}/{id}/invoice', [Accounting\ReceivableController::class, 'invoice'])->whereIn('type', ['project', 'marketing', 'opening', 'partnership'])->middleware('permission:accounting.payments.view')->name('receivables.invoice');
         Route::get('/receivables/{type}/{id}/statement', [Accounting\ReceivableController::class, 'statement'])->whereIn('type', ['project', 'marketing', 'opening', 'partnership'])->middleware('permission:accounting.payments.view')->name('receivables.statement');
@@ -98,6 +118,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/banking/{account}', [Accounting\BankingController::class, 'show'])->middleware('permission:accounting.banking.view')->name('banking.show');
         Route::post('/banking', [Accounting\BankingController::class, 'store'])->middleware('permission:accounting.banking.manage')->name('banking.store');
         Route::put('/banking/{account}', [Accounting\BankingController::class, 'update'])->middleware('permission:accounting.banking.manage')->name('banking.update');
+        Route::delete('/banking/{account}', [Accounting\BankingController::class, 'destroy'])->middleware('permission:accounting.banking.manage')->name('banking.destroy');
+        Route::delete('/banking/reconciliations/{reconciliation}', [Accounting\BankingController::class, 'destroyReconciliation'])->middleware('permission:accounting.banking.reconcile')->name('banking.reconciliations.destroy');
         Route::post('/banking/{account}/reconcile', [Accounting\BankingController::class, 'reconcile'])->middleware('permission:accounting.banking.reconcile')->name('banking.reconcile');
 
         Route::get('/budgets', [Accounting\BudgetController::class, 'index'])->middleware('permission:accounting.budgets.view')->name('budgets.index');
@@ -108,6 +130,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/recurring', [Accounting\RecurringExpenseController::class, 'index'])->middleware('permission:accounting.expenses.view')->name('recurring.index');
         Route::post('/recurring', [Accounting\RecurringExpenseController::class, 'store'])->middleware('permission:accounting.expenses.create')->name('recurring.store');
         Route::put('/recurring/{recurring}', [Accounting\RecurringExpenseController::class, 'update'])->middleware('permission:accounting.expenses.create')->name('recurring.update');
+        Route::delete('/recurring/{recurring}', [Accounting\RecurringExpenseController::class, 'destroy'])->middleware('permission:accounting.expenses.create')->name('recurring.destroy');
         Route::post('/recurring/generate/{month}', [Accounting\RecurringExpenseController::class, 'generate'])->where('month', '\d{4}-\d{2}')->middleware('permission:accounting.expenses.create')->name('recurring.generate');
 
         Route::get('/periods', [Accounting\PeriodController::class, 'index'])->middleware('permission:accounting.reports.view')->name('periods.index');

@@ -33,6 +33,12 @@ class RecurringExpenseService
         return $this->templates->update($t, $this->normalise($data));
     }
 
+    /** Bills already generated stay (their template link is cleared by the FK). */
+    public function delete(RecurringExpense $t): void
+    {
+        $this->templates->delete($t);
+    }
+
     private function normalise(array $data): array
     {
         foreach (['start_month', 'end_month'] as $k) {

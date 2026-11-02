@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Accounting;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Accounting\DeleteWithReasonRequest;
 use App\Http\Requests\Accounting\PostPaymentRequest;
 use App\Http\Requests\Accounting\StoreExpenseRequest;
 use App\Http\Requests\Accounting\UpdateExpenseRequest;
 use App\Http\Resources\ExpenseResource;
 use App\Http\Resources\RecordResource;
 use App\Models\ExpenseCategory;
+use App\Models\ExpensePayment;
 use App\Models\OperatingExpense;
 use App\Services\Accounting\ExpenseService;
 use App\Services\Accounting\PaymentPostingService;
@@ -61,5 +63,19 @@ class ExpenseController extends Controller
         $r = $posting->post('expense', $expense->id, $request->validated());
 
         return $this->toast(($r['action'] === 'already_saved' ? 'Already saved ' : 'SAVED ').$r['payment']->code.'. Remaining ৳'.number_format($r['remaining'], 2).'.');
+    }
+
+    public function destroy(DeleteWithReasonRequest $request, OperatingExpense $expense)
+    {
+        $this->expenses->delete($expense, $request->validated('reason'));
+
+        return redirect('/accounting/expenses')->with('toast', ['type' => 'success', 'title' => 'Deleted', 'message' => "Bill {$expense->code} deleted."]);
+    }
+
+    public function reversePayment(DeleteWithReasonRequest $request, ExpensePayment $expensePayment, PaymentPostingService $posting)
+    {
+        $rev = $posting->reverse('expense', $expensePayment, $request->validated('reason'));
+
+        return $this->toast("Payment reversed ({$rev->code}). The bill balance is restored.", 'success', 'Reversed');
     }
 }

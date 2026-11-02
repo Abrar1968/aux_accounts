@@ -3,9 +3,14 @@
 namespace App\Http\Controllers\Accounting;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Accounting\DeleteWithReasonRequest;
 use App\Http\Requests\Accounting\StoreAssignmentRequest;
 use App\Http\Requests\Accounting\StoreCollaboratorRequest;
 use App\Http\Requests\Accounting\StorePartnershipEarningRequest;
+use App\Http\Requests\Accounting\UpdateAssignmentRequest;
+use App\Http\Requests\Accounting\UpdateCollaboratorRequest;
+use App\Models\Collaborator;
+use App\Models\PartnershipAssignment;
 use App\Models\PartnershipRevenue;
 use App\Services\Accounting\PartnershipService;
 use App\Services\Shared\ListingService;
@@ -42,5 +47,33 @@ class PartnershipController extends Controller
         $r = $this->partnerships->setEarning($revenue, $request->validated('gross_sales'), $request->validated('direct_amount'), $request->validated('notes'));
 
         return $this->toast("{$r->code}: recognised ৳".number_format((float) $r->recognized_revenue, 2).'.');
+    }
+
+    public function updateCollaborator(UpdateCollaboratorRequest $request, Collaborator $collaborator)
+    {
+        $this->partnerships->updateCollaborator($collaborator, $request->validated());
+
+        return $this->toast("{$collaborator->name} updated.");
+    }
+
+    public function destroyCollaborator(Collaborator $collaborator)
+    {
+        $this->partnerships->deleteCollaborator($collaborator);
+
+        return $this->toast("{$collaborator->name} deleted.");
+    }
+
+    public function updateAssignment(UpdateAssignmentRequest $request, PartnershipAssignment $assignment)
+    {
+        $this->partnerships->updateAssignment($assignment, $request->validated());
+
+        return $this->toast("Assignment {$assignment->code} updated.");
+    }
+
+    public function destroyAssignment(DeleteWithReasonRequest $request, PartnershipAssignment $assignment)
+    {
+        $this->partnerships->deleteAssignment($assignment, $request->validated('reason'));
+
+        return $this->toast("Assignment {$assignment->code} deleted.");
     }
 }

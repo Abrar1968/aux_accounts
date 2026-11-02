@@ -7,6 +7,7 @@ use App\Models\Employee;
 use App\Models\Payroll;
 use App\Models\Referral;
 use App\Repositories\Contracts\PayrollRepositoryInterface;
+use App\Services\Shared\AuditService;
 use App\Services\Shared\PeriodService;
 use App\Support\Money;
 use App\Support\Period;
@@ -82,5 +83,26 @@ class PayrollService
             'entry_check' => $check,
             'status' => $check !== 'OK' ? $check : ($unpaid <= 0.01 ? 'Settled' : ($recovery + $cash > 0 ? 'Partly settled' : 'Unpaid')),
         ];
+    }
+
+    public function update(Payroll $pr, array $data): Payroll
+    {
+        $this->periods->assertOpen($pr->period);
+        if (isset($data['gross_salary']) && (float) $data['gross_salary'] < 0) {
+            throw new DomainException('Invalid salary');
+        }
+
+        return $this->repo->update($pr, array_intersect_key($data, array_flip(['gross_salary', 'notes'])));
+    }
+
+    /** Delete a payroll row drafted by mistake (no salary paid, no advance recovered against it). */
+    public function delete(Payroll $pr, string $reason): void
+    {
+        $this->periods->assertOpen($pr->period);
+        if ($pr->payments()->exists() || $pr->recoveries()->exists()) {
+            throw new DomainException("{$pr->code} has salary payments or advance recoveries. Reverse those first.");
+        }
+        app(AuditService::class)->record('deleted', $pr, $pr->toArray(), null, $reason);
+        $pr->delete();
     }
 }
