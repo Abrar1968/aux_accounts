@@ -87,3 +87,7 @@
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* Notification deep link: the exact row flashes, then settles on a soft brand tint. */
+@keyframes row-hit { 0%, 40% { background: var(--color-brand-100); } 100% { background: var(--color-brand-50); } }
+.row-hit { animation: row-hit 2.4s ease-out; background: var(--color-brand-50); box-shadow: inset 3px 0 0 var(--color-brand-500); }

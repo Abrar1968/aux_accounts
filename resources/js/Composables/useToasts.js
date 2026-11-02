@@ -5,9 +5,9 @@ const state = reactive({ items: [] });
 let seq = 0;
 
 export function useToasts() {
-    function push({ type = 'info', title = '', message = '', timeout = 5000 }) {
+    function push({ type = 'info', title = '', message = '', timeout = 5000, url = null, onOpen = null }) {
         const id = ++seq;
-        state.items.push({ id, type, title, message });
+        state.items.push({ id, type, title, message, url, onOpen });
         if (timeout) setTimeout(() => dismiss(id), timeout);
         return id;
     }

@@ -10,8 +10,11 @@ use App\Models\ExpensePayment;
 use App\Models\OperatingExpense;
 use App\Models\Payroll;
 use App\Models\SalaryPayment;
+use App\Notifications\PostingRejected;
+use App\Services\Notifications\NotificationService;
 use App\Services\Shared\PeriodService;
 use App\Support\Money;
+use App\Support\Period;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -32,6 +35,24 @@ class PaymentPostingService
      * @return array{action: 'saved'|'already_saved', payment: Model, remaining: float}
      */
     public function post(string $kind, int $sourceId, array $draft): array
+    {
+        try {
+            return $this->postOnce($kind, $sourceId, $draft);
+        } catch (PostingRejectedException $e) {
+            // Apps Script "posting rejected" alert: kept in the actor's notification centre with a link to the bill.
+            if ($user = Auth::user()) {
+                $bill = ($kind === 'expense' ? OperatingExpense::class : Payroll::class)::query()->find($sourceId);
+                app(NotificationService::class)->send(new PostingRejected(
+                    ($kind === 'expense' ? 'Expense' : 'Salary').' payment rejected',
+                    ($bill->code ?? '#'.$sourceId).': '.$e->getMessage(), 'error', $this->billUrl($kind, $bill),
+                ), $user);
+            }
+            throw $e;
+        }
+    }
+
+    /** @return array{action: 'saved'|'already_saved', payment: Model, remaining: float} */
+    private function postOnce(string $kind, int $sourceId, array $draft): array
     {
         $amount = (float) $draft['amount'];
         $requestId = $draft['request_id'] ?? (string) Str::uuid();
@@ -83,10 +104,24 @@ class PaymentPostingService
                 'posted_at' => now(),
                 'posted_by' => Auth::user()?->email ?? 'system',
             ]);
-            event(new PaymentPosted($kind, $payment->code, $amount));
+            event(new PaymentPosted($kind, $payment->code, $amount, $this->billUrl($kind, $bill, $payment->code)));
 
             return ['action' => 'saved', 'payment' => $payment, 'remaining' => Money::round($remaining - $amount)];
         });
+    }
+
+    /** Deep link to the bill / payroll row a payment belongs to (used by notifications). */
+    public function billUrl(string $kind, ?Model $bill, ?string $highlight = null): string
+    {
+        if (! $bill) {
+            return $kind === 'expense' ? '/accounting/expenses' : '/accounting/payroll';
+        }
+        $url = $kind === 'expense'
+            ? '/accounting/expenses/'.$bill->id
+            : '/accounting/payroll?month='.Period::of($bill->period)->key();
+        $h = $kind === 'expense' ? $highlight : $bill->code; // salary page lists payroll rows, not payments
+
+        return $h ? $url.(str_contains($url, '?') ? '&' : '?').'highlight='.rawurlencode($h) : $url;
     }
 
     private function validateDraft(float $amount, string $date): void
