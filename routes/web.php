@@ -19,7 +19,7 @@ Route::middleware('guest')->group(function () {
 
 Route::get('/attachments/{attachment}', [System\AttachmentController::class, 'show'])->middleware('signed')->name('attachments.show');
 // Letterhead images: logo is public (emails); seal is checked for a signed-in user inside the controller.
-Route::get('/branding/icon/{kind}.png', [System\BrandingController::class, 'icon'])->whereIn('kind', ['favicon', 'touch'])->name('branding.icon');
+Route::get('/branding/icon/{kind}.png', [System\BrandingController::class, 'icon'])->whereIn('kind', ['favicon', 'touch', 'mark'])->name('branding.icon');
 Route::get('/branding/{asset}.{format}', [System\BrandingController::class, 'show'])->whereIn('asset', ['logo', 'seal'])->whereIn('format', ['png', 'jpg'])->name('branding.show');
 
 Route::middleware('auth')->group(function () {

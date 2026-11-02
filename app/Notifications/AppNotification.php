@@ -55,10 +55,10 @@ abstract class AppNotification extends Notification implements ShouldQueue
             $mail->line($line);
         }
         if ($this->url) {
-            $mail->action('Open in Auxtech Ops', url($this->url));
+            $mail->action('Open in Auxtech Accounts', url($this->url));
         }
 
-        return $mail->salutation('— Auxtech Ops');
+        return $mail->salutation('— Auxtech Accounts');
     }
 
     /** @return list<string> extra lines for email (digests). */

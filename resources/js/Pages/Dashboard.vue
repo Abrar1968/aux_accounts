@@ -43,7 +43,7 @@ const expenseTotal = computed(() => props.overview.expense_mix.reduce((s, e) => 
                     <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-slate-200 ring-1 ring-inset ring-white/15"><Icon name="wallet" :size="13" />Cash {{ money(k.ending_cash) }}</span>
                 </div>
             </div>
-            <div class="flex flex-wrap items-center gap-2 xl:flex-nowrap">
+            <div class="flex flex-wrap items-center gap-2 lg:max-w-[30rem] lg:justify-end [&>a]:whitespace-nowrap">
                 <MonthPicker v-model="month" />
                 <Link href="/accounting/payments?new=1" class="inline-flex h-10 items-center gap-2 rounded-xl bg-white/10 px-4 text-sm font-semibold text-white ring-1 ring-inset ring-white/20 backdrop-blur transition hover:bg-white/20"><Icon name="inbox" :size="16" />Record receipt</Link>
                 <Link :href="`/accounting/statements/${month}`" class="inline-flex h-10 items-center gap-2 rounded-xl bg-white px-4 text-sm font-semibold text-slate-900 shadow-lg transition hover:bg-slate-100"><Icon name="doc" :size="16" />Statement pack</Link>

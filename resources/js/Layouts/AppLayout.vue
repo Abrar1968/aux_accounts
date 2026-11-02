@@ -15,6 +15,7 @@ import { setPdfBrand } from '@/lib/pdf';
 
 const page = usePage();
 const brand = computed(() => page.props.brand ?? {});
+const appName = computed(() => page.props.app?.name ?? 'Auxtech Accounts');
 watch(brand, (b) => {
     setPdfBrand(b); // letterhead for every PDF export
     const icon = document.getElementById('app-favicon'); // logo changes show in the tab without reload
@@ -70,9 +71,9 @@ const roleLabel = computed(() => ({ owner: 'Owner', accountant: 'Accountant', sa
 
             <div class="relative flex h-[72px] shrink-0 items-center gap-3 px-5">
                 <Link href="/" class="flex min-w-0 items-center gap-3">
-                    <span v-if="brand.logo" class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-xl bg-white p-1 shadow-lg shadow-black/30"><img :src="brand.logo.png" alt="" class="max-h-full max-w-full object-contain" /></span>
-                    <span v-else class="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-gradient text-base font-extrabold text-white shadow-lg shadow-brand-600/40 ring-1 ring-inset ring-white/20">{{ (brand.company || 'A').charAt(0) }}</span>
-                    <span class="min-w-0 leading-tight"><span class="block truncate text-[15px] font-bold tracking-[-0.01em] text-white">{{ brand.company || 'Auxtech' }}</span><span class="block text-[11px] font-medium text-slate-400">Accounting · CRM</span></span>
+                    <span v-if="brand.mark" class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-xl bg-white p-1.5 shadow-lg shadow-black/30"><img :src="brand.mark" alt="" class="max-h-full max-w-full object-contain" /></span>
+                    <span v-else class="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-gradient text-base font-extrabold text-white shadow-lg shadow-brand-600/40 ring-1 ring-inset ring-white/20">{{ (appName || 'A').charAt(0) }}</span>
+                    <span class="min-w-0 leading-tight"><span class="block truncate text-[15px] font-bold tracking-[-0.01em] text-white">{{ appName }}</span><span class="block text-[11px] font-medium text-slate-400">Accounting · CRM</span></span>
                 </Link>
                 <button class="ml-auto rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-white lg:hidden" aria-label="Close menu" @click="drawer = false"><Icon name="x" /></button>
             </div>

@@ -15,7 +15,7 @@ class BackupService
     {
         $conn = DB::connection();
         $driver = $conn->getDriverName();
-        $sql = '-- Auxtech Ops backup '.now()->toDateTimeString()." ({$driver})\nSET FOREIGN_KEY_CHECKS=0;\n";
+        $sql = '-- Auxtech Accounts backup '.now()->toDateTimeString()." ({$driver})\nSET FOREIGN_KEY_CHECKS=0;\n";
         $tables = $driver === 'sqlite'
             ? collect($conn->select("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"))->pluck('name')
             : collect($conn->select('SHOW TABLES'))->map(fn ($r) => array_values((array) $r)[0]);

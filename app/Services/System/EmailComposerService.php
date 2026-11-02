@@ -308,7 +308,7 @@ class EmailComposerService
                 ['Accounts receivable', $this->money($s['accounts_receivable'])], ['Total assets', $this->money($s['total_assets']), false],
                 ['Total liabilities', $this->money($s['total_liabilities']), false], ['Total equity', $this->money($s['total_equity']), false],
             ],
-            'closing' => 'The full statements are available in Auxtech Ops. Please reply with any questions.',
+            'closing' => 'The full statements are available in Auxtech Accounts. Please reply with any questions.',
         ];
     }
 

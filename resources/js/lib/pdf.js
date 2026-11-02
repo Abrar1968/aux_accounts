@@ -22,6 +22,14 @@ const width = (s, size, bold = false) => {
 };
 
 // drawn last with 16 % opacity (ExtGState /GS1) so it shows over images as well as text
+/** Cut text with an ellipsis so it fits a column (keeps tables from overlapping). */
+function fit(s, maxWidth, size, bold = false) {
+    let t = String(s ?? '');
+    if (width(t, size, bold) <= maxWidth) return t;
+    while (t.length > 1 && width(`${t}...`, size, bold) > maxWidth) t = t.slice(0, -1);
+    return `${t.trimEnd()}...`;
+}
+
 const WATERMARK_TONES = { PAID: '0.05 0.55 0.25', 'PARTIALLY PAID': '0.85 0.50 0.0', UNPAID: '0.80 0.10 0.10' };
 
 // Letterhead registered once by AppLayout from the shared Inertia prop (see lib/brand.js).
@@ -76,16 +84,22 @@ export class PdfDoc {
     letterhead(title, subtitle, meta = []) {
         const top = this.y;
         let x = this.margin;
-        const lw = this.image('logo', x, top - 38, 120, 42);
-        if (lw) x += lw + 10;
         const b = brand ?? {};
-        this.text(x, top - 10, b.company || 'Auxtech', { size: 13, bold: true });
         const contact = [b.address, b.phone, b.email, (b.website || '').replace(/^https?:\/\//, '')].filter(Boolean);
-        contact.slice(0, 3).forEach((c, i) => this.text(x, top - 23 - i * 10, c, { size: 8, gray: 0.4 }));
+        const im = this.images.logo;
+        if (im && im.w / im.h > 2.5) { // wordmark logo: logo on top, contact lines beneath
+            this.image('logo', x, top - 26, 165, 26);
+            contact.slice(0, 3).forEach((c, i) => this.text(x, top - 38 - i * 10, c, { size: 8, gray: 0.4 }));
+        } else {
+            const lw = this.image('logo', x, top - 38, 120, 42);
+            if (lw) x += lw + 10;
+            this.text(x, top - 10, b.company || 'Auxtech', { size: 13, bold: true });
+            contact.slice(0, 3).forEach((c, i) => this.text(x, top - 23 - i * 10, c, { size: 8, gray: 0.4 }));
+        }
         this.text(this.right, top - 10, title, { size: title.length > 24 ? 11 : title.length > 16 ? 13 : 16, bold: true, align: 'right' });
         if (subtitle) this.text(this.right, top - 24, subtitle, { size: 9, align: 'right', gray: 0.3 });
         meta.forEach((m, i) => this.text(this.right, top - 38 - i * 11, `${m.label}: ${m.value}`, { size: 8.5, align: 'right' }));
-        this.y = top - Math.max(52, 44 + meta.length * 11);
+        this.y = top - Math.max(im && im.w / im.h > 2.5 ? 70 : 52, 44 + meta.length * 11);
         this.line(this.margin, this.y, this.right, this.y, 0.75);
         this.y -= 18;
     }
@@ -134,7 +148,7 @@ export class PdfDoc {
             if (this.y - 14 < this.margin) { this.newPage(); head(); }
             if (shade(r, i)) this.rect(x0, this.y - 4, A4[0] - 2 * this.margin, 14, 0.97);
             let x = x0 + 4;
-            columns.forEach((c, j) => { this.text(c.align === 'right' ? x + c.width - 8 : x, this.y, r[j], { size: 9, bold: bold(r, i), align: c.align }); x += c.width; });
+            columns.forEach((c, j) => { this.text(c.align === 'right' ? x + c.width - 8 : x, this.y, fit(r[j], c.width - 12, 9, bold(r, i)), { size: 9, bold: bold(r, i), align: c.align }); x += c.width; });
             this.y -= 14;
         });
         this.y -= 8;
@@ -188,7 +202,7 @@ export class PdfDoc {
         objs.forEach((o, i) => { offsets.push(out.length); out += `${i + 1} 0 obj\n${o}\nendobj\n`; });
         const xref = out.length;
         out += `xref\n0 ${objs.length + 1}\n0000000000 65535 f \n${offsets.map((o) => `${String(o).padStart(10, '0')} 00000 n \n`).join('')}`;
-        out += `trailer\n<< /Size ${objs.length + 1} /Root 1 0 R /Info << /Title (${esc(this.title)}) /Producer (Auxtech Ops) >> >>\nstartxref\n${xref}\n%%EOF`;
+        out += `trailer\n<< /Size ${objs.length + 1} /Root 1 0 R /Info << /Title (${esc(this.title)}) /Producer (Auxtech Accounts) >> >>\nstartxref\n${xref}\n%%EOF`;
         // one char = one byte (images are binary strings; all text is escaped to ASCII)
         const bytes = new Uint8Array(out.length);
         for (let i = 0; i < out.length; i++) bytes[i] = out.charCodeAt(i) & 0xff;

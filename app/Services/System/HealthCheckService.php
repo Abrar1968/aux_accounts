@@ -71,7 +71,7 @@ class HealthCheckService
         });
         if ($mailTo) {
             $add("Test email to {$mailTo}", function () use ($mailTo) {
-                Mail::raw('Auxtech Ops test email — SMTP is working ('.now()->toDateTimeString().').', fn ($m) => $m->to($mailTo)->subject('Auxtech Ops test email'));
+                Mail::raw('Auxtech Accounts test email — SMTP is working ('.now()->toDateTimeString().').', fn ($m) => $m->to($mailTo)->subject('Auxtech Accounts test email'));
 
                 return [true, 'sent'];
             });

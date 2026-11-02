@@ -64,7 +64,7 @@ const removeOption = (type, value) => router.delete('/crm/settings/options', { d
             <ImagePicker v-model="brandForms[k].image" :current="brand[k]?.png" :label="k === 'logo' ? 'Logo image' : 'Seal / signature image'" :error="brandForms[k].errors.image" />
             <div class="mt-3 flex gap-2">
                 <Button size="sm" :disabled="!brandForms[k].image" :loading="brandForms[k].processing" @click="saveBrand(k)">Save</Button>
-                <Button v-if="brand[k]" size="sm" variant="ghost" @click="removeBrand(k)">Remove</Button>
+                <Button v-if="brand[k] && !brand[k].default" size="sm" variant="ghost" @click="removeBrand(k)">Remove</Button><span v-else-if="brand[k]?.default" class="self-center text-xs text-ink-3">Built-in company default — upload to replace</span>
             </div>
         </Card>
         <p class="text-xs text-ink-3 lg:col-span-2">Company name, address, phone, website and signature title are edited under <b>Policies</b>. Client signatures are added on each project.</p>

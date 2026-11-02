@@ -24,9 +24,9 @@ const features = [
             <div class="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:linear-gradient(rgb(255_255_255/.6)_1px,transparent_1px),linear-gradient(90deg,rgb(255_255_255/.6)_1px,transparent_1px)] [background-size:44px_44px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" aria-hidden="true" />
 
             <div class="relative flex items-center gap-3">
-                <span v-if="brand.logo" class="grid size-11 place-items-center overflow-hidden rounded-xl bg-white p-1.5 shadow-lg"><img :src="brand.logo" alt="" class="max-h-full max-w-full object-contain" /></span>
-                <span v-else class="grid size-11 place-items-center rounded-xl bg-brand-gradient text-lg font-extrabold shadow-lg ring-1 ring-inset ring-white/20">{{ (brand.company || 'A').charAt(0) }}</span>
-                <div><p class="text-lg font-bold tracking-tight">{{ brand.company || 'Auxtech' }}</p><p class="text-xs text-slate-400">Accounting · CRM</p></div>
+                <span v-if="brand.mark" class="grid size-11 place-items-center overflow-hidden rounded-xl bg-white p-1.5 shadow-lg"><img :src="brand.mark" alt="" class="max-h-full max-w-full object-contain" /></span>
+                <span v-else class="grid size-11 place-items-center rounded-xl bg-brand-gradient text-lg font-extrabold shadow-lg ring-1 ring-inset ring-white/20">{{ (brand.app || 'A').charAt(0) }}</span>
+                <div><p class="text-lg font-bold tracking-tight">{{ brand.app || 'Auxtech Accounts' }}</p><p class="text-xs text-slate-400">Accounting · CRM</p></div>
             </div>
 
             <div class="relative my-auto max-w-lg py-12">
@@ -61,9 +61,9 @@ const features = [
             <div class="pointer-events-none absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-brand-50 to-transparent opacity-70 lg:hidden" aria-hidden="true" />
             <div class="relative w-full max-w-[400px] animate-in">
                 <div class="mb-8 flex items-center gap-3 lg:hidden">
-                    <span v-if="brand.logo" class="grid size-11 place-items-center overflow-hidden rounded-xl border border-line bg-white p-1.5 shadow-sm"><img :src="brand.logo" alt="" class="max-h-full max-w-full object-contain" /></span>
-                    <span v-else class="grid size-11 place-items-center rounded-xl bg-brand-gradient text-lg font-extrabold text-white shadow-[var(--shadow-brand)]">{{ (brand.company || 'A').charAt(0) }}</span>
-                    <div><p class="font-bold">{{ brand.company || 'Auxtech' }}</p><p class="text-xs text-ink-3">Accounting · CRM</p></div>
+                    <span v-if="brand.mark" class="grid size-11 place-items-center overflow-hidden rounded-xl border border-line bg-white p-1.5 shadow-sm"><img :src="brand.mark" alt="" class="max-h-full max-w-full object-contain" /></span>
+                    <span v-else class="grid size-11 place-items-center rounded-xl bg-brand-gradient text-lg font-extrabold text-white shadow-[var(--shadow-brand)]">{{ (brand.app || 'A').charAt(0) }}</span>
+                    <div><p class="font-bold">{{ brand.app || 'Auxtech Accounts' }}</p><p class="text-xs text-ink-3">Accounting · CRM</p></div>
                 </div>
                 <h1 class="text-[28px] font-bold tracking-[-0.025em]">{{ title }}</h1>
                 <p v-if="subtitle" class="mt-1.5 text-[15px] text-ink-2">{{ subtitle }}</p>
