@@ -61,6 +61,8 @@ export function relative(v) {
 /** Today in Dhaka as Y-m-d / Y-m (for form defaults). */
 export const todayIso = () => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date());
 export const monthIso = () => todayIso().slice(0, 7);
+/** Current Dhaka time as `YYYY-MM-DDTHH:mm` for datetime-local inputs. */
+export const nowLocalIso = () => new Intl.DateTimeFormat('sv-SE', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).format(new Date()).replace(' ', 'T');
 
 const TONES = {
     positive: ['OK', 'Paid', 'Settled', 'Won', 'Active', 'CLOSED_GOOD', 'saved', 'ok', 'Delivered', 'PAID', 'Saved'],

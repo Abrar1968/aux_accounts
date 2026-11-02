@@ -23,6 +23,11 @@ class AssetController extends Controller
     public function store(StoreAssetRequest $request)
     {
         $a = $this->assets->create($request->validated());
+        $unfunded = $this->assets->unfundedAmount($a);
+        if ($unfunded > 0) {
+            return $this->toast("Asset {$a->code} registered. ৳".number_format($unfunded, 2)
+                .' is not paid in cash — record the financing in Liabilities (e.g. LIA-AC) or the balance check will not be 0.', 'warning', 'Saved — action needed');
+        }
 
         return $this->toast("Asset {$a->code} registered.");
     }

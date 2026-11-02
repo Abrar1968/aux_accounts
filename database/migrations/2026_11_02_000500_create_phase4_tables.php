@@ -84,8 +84,10 @@ return new class extends Migration
     {
         Schema::dropIfExists('caller_targets');
         Schema::table('operating_expenses', function (Blueprint $t) {
+            // FK first: MySQL/MariaDB keep the composite unique index as the FK's backing index
+            $t->dropForeign(['recurring_expense_id']);
             $t->dropUnique(['recurring_expense_id', 'accrual_month']);
-            $t->dropConstrainedForeignId('recurring_expense_id');
+            $t->dropColumn('recurring_expense_id');
         });
         foreach (['recurring_expenses', 'budgets', 'bank_reconciliations', 'bank_accounts'] as $t) {
             Schema::dropIfExists($t);

@@ -9,6 +9,6 @@ class ExpenseResource extends RecordResource
 {
     public function toArray(Request $request): array
     {
-        return parent::toArray($request) + app(ExpenseService::class)->status($this->resource);
+        return array_merge(parent::toArray($request), app(ExpenseService::class)->status($this->resource));
     }
 }

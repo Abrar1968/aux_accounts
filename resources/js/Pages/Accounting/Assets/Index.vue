@@ -50,7 +50,7 @@ const submit = () => form.post('/accounting/assets', { preserveScroll: true, onS
             <div class="grid grid-cols-2 gap-3"><Input v-model="form.acquisition_date" type="date" label="Acquired" :error="form.errors.acquisition_date" /><Input v-model="form.in_service_date" type="date" label="In service" :error="form.errors.in_service_date" /></div>
             <div class="grid grid-cols-2 gap-3"><MoneyInput v-model="form.cost" label="Cost" required :error="form.errors.cost" /><MoneyInput v-model="form.residual_value" label="Residual value" /></div>
             <div class="grid grid-cols-2 gap-3"><Input v-model="form.useful_life_months" type="number" min="1" label="Useful life (months)" :error="form.errors.useful_life_months" /><MoneyInput v-model="form.opening_accumulated_dep" label="Opening accum. dep." /></div>
-            <div class="grid grid-cols-2 gap-3"><MoneyInput v-model="form.cash_paid" label="Cash paid now" hint="Direct purchase cash" /><Input v-model="form.cash_payment_date" type="date" label="Cash date" :error="form.errors.cash_payment_date" /></div>
+            <div class="grid grid-cols-2 gap-3"><MoneyInput v-model="form.cash_paid" label="Cash paid now" hint="Direct purchase cash. Any unpaid part must be posted as a liability (e.g. LIA-AC)." /><Input v-model="form.cash_payment_date" type="date" label="Cash date" :error="form.errors.cash_payment_date" /></div>
             <Textarea v-model="form.notes" label="Notes" />
         </form>
         <template #footer><Button variant="secondary" @click="open = false">Cancel</Button><Button type="submit" form="asset-form" :loading="form.processing">Register</Button></template>

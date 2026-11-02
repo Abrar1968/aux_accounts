@@ -9,6 +9,6 @@ class ProjectResource extends RecordResource
 {
     public function toArray(Request $request): array
     {
-        return parent::toArray($request) + ['type_label' => $this->resource->typeLabel()] + app(ProjectService::class)->metrics($this->resource);
+        return array_merge(parent::toArray($request), ['type_label' => $this->resource->typeLabel()], app(ProjectService::class)->metrics($this->resource));
     }
 }

@@ -13,7 +13,7 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, SerializesLocalDates;
 
-    protected $fillable = ['name', 'email', 'password', 'role_id', 'avatar_path', 'is_active', 'last_login_at'];
+    protected $fillable = ['name', 'email', 'password', 'role_id', 'avatar_path', 'is_active', 'last_login_at', 'email_verified_at'];
 
     protected $hidden = ['password', 'remember_token'];
 
