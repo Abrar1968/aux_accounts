@@ -18,6 +18,8 @@ const LABELS = {
     'opening.cash': ['Cash before 1 Apr (৳)', 'number'], 'opening.other_liabilities': ['Other opening liabilities (৳)', 'number'],
     'crm.daily_slots': ['Daily lead target (1–500)', 'number'], 'crm.default_owner': ['Default lead owner', 'text'],
     'crm.default_business_type': ['Default business type', 'text'], 'crm.report_brand': ['Report brand', 'text'],
+    'company.name': ['Company name (emails)', 'text'], 'company.website': ['Company website', 'text'], 'company.phone': ['Company phone', 'text'],
+    'company.address': ['Company address', 'text'], 'company.signature_title': ['Email signature title', 'text'],
 };
 const fields = computed(() => props.editable.filter((k) => LABELS[k]));
 const form = useForm({ settings: Object.fromEntries(fields.value.map((k) => [k, props.settings[k]])) });

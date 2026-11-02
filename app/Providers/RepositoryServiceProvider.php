@@ -49,6 +49,7 @@ class RepositoryServiceProvider extends ServiceProvider
             Contracts\BudgetRepositoryInterface::class => Eloquent\BudgetRepository::class,
             Contracts\RecurringExpenseRepositoryInterface::class => Eloquent\RecurringExpenseRepository::class,
             Contracts\CallerTargetRepositoryInterface::class => Eloquent\CallerTargetRepository::class,
+            Contracts\SentEmailRepositoryInterface::class => Eloquent\SentEmailRepository::class,
         ];
     }
 }

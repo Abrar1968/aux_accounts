@@ -154,6 +154,12 @@ Route::middleware('auth')->group(function () {
         Route::put('/settings', [System\SettingController::class, 'update'])->name('settings.update');
         Route::get('/system/automation', [System\AutomationController::class, 'index'])->name('automation');
     });
+    Route::middleware('permission:email.send')->group(function () {
+        Route::get('/system/email', [System\EmailController::class, 'index'])->name('email.index');
+        Route::get('/system/email/records', [System\EmailController::class, 'records'])->name('email.records');
+        Route::post('/system/email/preview', [System\EmailController::class, 'preview'])->name('email.preview');
+        Route::post('/system/email', [System\EmailController::class, 'send'])->middleware('throttle:30,1')->name('email.send');
+    });
     Route::get('/system/audit', [System\AutomationController::class, 'audit'])->middleware('permission:audit.view')->name('audit');
     Route::middleware('permission:users.manage')->group(function () {
         Route::get('/system/users', [System\UserController::class, 'index'])->name('users.index');

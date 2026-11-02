@@ -2,6 +2,8 @@
 // Inline 24px stroke icons (no icon library dependency).
 defineProps({ name: { type: String, required: true }, size: { type: [Number, String], default: 18 } });
 const paths = {
+    mail: 'M3 6h18v12H3z M3 7l9 6 9-6',
+    send: 'M22 2 11 13 M22 2l-7 20-4-9-9-4z',
     home: 'M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',
     shield: 'M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z M9 12l2 2 4-4',
     briefcase: 'M4 7h16v12H4z M9 7V5h6v2 M4 12h16',
