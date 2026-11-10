@@ -10,6 +10,7 @@ use App\Repositories\Contracts\PartnershipRevenueRepositoryInterface;
 use App\Repositories\Contracts\ProjectRepositoryInterface;
 use App\Repositories\Contracts\RevenueRecognitionRepositoryInterface;
 use App\Support\Money;
+use App\Support\Search;
 use Illuminate\Support\Collection;
 
 /**
@@ -111,7 +112,7 @@ class ReceivableService
     public function options(?string $q = null): Collection
     {
         return $this->balancesAt(null)
-            ->filter(fn ($r) => $q === null || stripos($r['code'].' '.$r['name'], $q) !== false)
+            ->filter(fn ($r) => $q === null || Search::matches($r['code'].' '.$r['name'].' '.($r['customer'] ?? ''), $q))
             ->values();
     }
 

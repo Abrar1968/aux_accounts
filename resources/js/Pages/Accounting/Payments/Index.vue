@@ -1,5 +1,6 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
+import { useOpenOnNew } from '@/Composables/useOpenOnNew';
 import { Head, useForm } from '@inertiajs/vue3';
 import PageHeader from '@/Components/ui/PageHeader.vue';
 import Card from '@/Components/ui/Card.vue';
@@ -51,7 +52,7 @@ const submit = () => {
     const o = { preserveScroll: true, onSuccess: () => (open.value = false) };
     editing.value ? req.put(`/accounting/payments/${editing.value.id}`, o) : req.post('/accounting/payments', o);
 };
-onMounted(() => { if (new URLSearchParams(window.location.search).get('new') === '1') start(); });
+useOpenOnNew(start);
 </script>
 
 <template>

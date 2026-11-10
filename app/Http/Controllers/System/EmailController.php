@@ -4,7 +4,6 @@ namespace App\Http\Controllers\System;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\System\ComposeEmailRequest;
-use App\Models\User;
 use App\Services\System\EmailComposerService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,7 +23,7 @@ class EmailController extends Controller
         return Inertia::render('System/Email', [
             'templates' => $this->emails->templates(),
             'history' => $this->emails->history($request->only('q')),
-            'suggestions' => User::query()->where('is_active', true)->orderBy('name')->get(['name', 'email']),
+            'contacts' => fn () => $this->emails->contacts(),
             'from' => ['address' => config('mail.from.address'), 'name' => config('mail.from.name')],
             // partial reload (only: ['draft']) when the user picks a template / record
             'draft' => fn () => $template !== '' ? $this->emails->draft($template, $request->query('record') ?: null) : null,
@@ -35,6 +34,11 @@ class EmailController extends Controller
     public function records(Request $request): JsonResponse
     {
         return response()->json($this->emails->records((string) $request->query('template'), $request->query('q')));
+    }
+
+    public function contacts(): JsonResponse
+    {
+        return response()->json(['contacts' => $this->emails->contacts()]);
     }
 
     public function preview(ComposeEmailRequest $request): HttpResponse

@@ -10,6 +10,7 @@ use App\Http\Resources\UserResource;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\System\UserService;
+use App\Support\PermissionCatalog;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -38,7 +39,7 @@ class UserController extends Controller
 
     public function roles(): Response
     {
-        return Inertia::render('System/Roles', ['roles' => $this->users->roles()]);
+        return Inertia::render('System/Roles', ['roles' => $this->users->roles(), 'catalog' => PermissionCatalog::forUi()]);
     }
 
     public function updateRole(UpdateRoleRequest $request, Role $role)

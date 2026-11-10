@@ -8,12 +8,14 @@ import Avatar from '@/Components/ui/Avatar.vue';
 import ToastStack from '@/Components/ui/ToastStack.vue';
 import NotificationBell from '@/Components/ui/NotificationBell.vue';
 import CommandPalette from '@/Components/ui/CommandPalette.vue';
+import ShortcutsHelp from '@/Components/ui/ShortcutsHelp.vue';
 import Dropdown from '@/Components/ui/Dropdown.vue';
 import MenuItem from '@/Components/ui/MenuItem.vue';
 import { navigation, modules, can, findNav, quickCreate } from '@/lib/nav';
 import { useHotkey } from '@/Composables/useHotkey';
 import { useRealtime } from '@/Composables/useRealtime';
 import { setPdfBrand } from '@/lib/pdf';
+import { match, submitOpenForm, focusPageSearch, shortcutFor, keyLabel } from '@/lib/shortcuts';
 
 const page = usePage();
 const brand = computed(() => page.props.brand ?? {});
@@ -52,8 +54,22 @@ function toggleTheme() {
     document.documentElement.classList.toggle('dark', dark.value);
     try { localStorage.setItem('theme', dark.value ? 'dark' : 'light'); } catch { /* private mode */ }
 }
-useHotkey('k', () => (palette.value = true), { meta: true });
 useHotkey('/', () => (palette.value = true));
+const help = ref(false);
+
+// Global Ctrl shortcuts (lib/shortcuts.js): create records, jump to sections, save forms.
+function onShortcut(e) {
+    if (e.key === '?' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target?.tagName) && !e.target?.isContentEditable) { e.preventDefault(); help.value = true; return; }
+    const s = match(e);
+    if (!s || (s.perm && !can(user.value, s.perm))) return;
+    if (s.action === 'find') { if (focusPageSearch()) e.preventDefault(); return; }
+    e.preventDefault();
+    if (s.action === 'palette') palette.value = true;
+    else if (s.action === 'help') help.value = !help.value;
+    else if (s.action === 'save') submitOpenForm();
+    else if (s.href) { palette.value = false; help.value = false; router.visit(s.href); }
+}
+const hint = (href) => { const s = shortcutFor(href); return s ? s.keys.map(keyLabel).join('+') : null; };
 useRealtime(user, () => unread.value++);
 
 // Spotlight hover: cards with .spotlight get a soft amber glow that follows the pointer.
@@ -68,8 +84,9 @@ let off;
 onMounted(() => {
     off = router.on('navigate', () => (drawer.value = false));
     window.addEventListener('pointermove', track, { passive: true });
+    window.addEventListener('keydown', onShortcut);
 });
-onBeforeUnmount(() => { off?.(); window.removeEventListener('pointermove', track); });
+onBeforeUnmount(() => { off?.(); window.removeEventListener('pointermove', track); window.removeEventListener('keydown', onShortcut); });
 const roleLabel = computed(() => ({ owner: 'Owner', accountant: 'Accountant', sales_manager: 'Sales manager', caller: 'Caller', viewer: 'Viewer' })[user.value?.role] ?? user.value?.role);
 const greetingDate = computed(() => new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }));
 </script>
@@ -106,6 +123,7 @@ const greetingDate = computed(() => new Date().toLocaleDateString('en-GB', { wee
                     <span class="font-mono text-[9px] font-medium uppercase tracking-[0.12em]">{{ m.key === 'accounting' ? 'Books' : m.key === 'crm' ? 'CRM' : 'System' }}</span>
                 </button>
                 <div class="mt-auto flex flex-col items-center gap-1.5">
+                    <button class="grid size-10 place-items-center rounded-xl transition hover:bg-white/[0.08] hover:text-[#e8ecf7]" aria-label="Keyboard shortcuts" :title="`Keyboard shortcuts (${keyLabel('Ctrl')}+/)`" @click="help = true"><Icon name="bolt" :size="19" /></button>
                     <button class="grid size-10 place-items-center rounded-xl transition hover:bg-white/[0.08] hover:text-[#e8ecf7]" :aria-label="dark ? 'Switch to light mode' : 'Switch to dark mode'" :title="dark ? 'Light mode' : 'Dark mode'" @click="toggleTheme"><Icon :name="dark ? 'sun' : 'moon'" :size="19" /></button>
                     <Link href="/logout" method="post" as="button" class="grid size-10 place-items-center rounded-xl transition hover:bg-[#ff6b6b]/15 hover:text-[#ff6b6b]" aria-label="Sign out" title="Sign out"><Icon name="logout" :size="19" /></Link>
                 </div>
@@ -131,6 +149,7 @@ const greetingDate = computed(() => new Date().toLocaleDateString('en-GB', { wee
                                 <span v-if="isActive(i.href)" class="absolute inset-y-2 left-0 w-[3px] rounded-r-full bg-brand-400 shadow-[0_0_10px_var(--color-brand-400)]" aria-hidden="true" />
                                 <Icon :name="i.icon" :size="17" :class="isActive(i.href) ? 'text-brand-600' : 'text-ink-3 group-hover:text-brand-600'" class="shrink-0 transition-transform duration-200 group-hover:scale-110" />
                                 <span class="truncate transition-transform duration-200 group-hover:translate-x-0.5">{{ i.label }}</span>
+                                <kbd v-if="hint(i.href)" class="ml-auto hidden shrink-0 rounded border border-line px-1 font-mono text-[9.5px] text-ink-3 opacity-0 transition-opacity group-hover:opacity-100 lg:inline">{{ hint(i.href) }}</kbd>
                             </Link>
                         </div>
                     </div>
@@ -162,7 +181,8 @@ const greetingDate = computed(() => new Date().toLocaleDateString('en-GB', { wee
                         <Dropdown v-if="creates.length" width="w-60">
                             <template #trigger><button class="hidden h-10 items-center gap-1.5 rounded-full bg-brand-gradient px-4 text-sm font-semibold text-on-brand shadow-[var(--shadow-brand)] transition hover:-translate-y-0.5 hover:shadow-[0_0_0_1px_var(--color-brand-300),0_14px_34px_-8px_var(--color-brand-400)] sm:inline-flex"><Icon name="plus" :size="16" />Create</button></template>
                             <p class="eyebrow px-3 pb-1.5 pt-1.5 text-ink-3">Quick create</p>
-                            <MenuItem v-for="c in creates" :key="c.href" :href="c.href" :icon="c.icon">{{ c.label }}</MenuItem>
+                            <MenuItem v-for="c in creates" :key="c.href" :href="c.href" :icon="c.icon">{{ c.label }}<kbd v-if="hint(c.href)" class="ml-auto rounded border border-line px-1 font-mono text-[10px] text-ink-3">{{ hint(c.href) }}</kbd></MenuItem>
+                            <button type="button" class="mt-1 flex w-full items-center gap-2.5 rounded-xl border-t border-line px-3 py-2 text-left text-xs font-semibold text-ink-3 hover:text-ink" @click="help = true"><kbd class="rounded border border-line px-1 font-mono text-[10px]">{{ keyLabel('Ctrl') }}+/</kbd>All keyboard shortcuts</button>
                         </Dropdown>
                         <button class="grid size-10 place-items-center rounded-xl text-ink-2 transition hover:bg-ink/5 hover:text-ink lg:hidden" :aria-label="dark ? 'Switch to light mode' : 'Switch to dark mode'" @click="toggleTheme"><Icon :name="dark ? 'sun' : 'moon'" /></button>
                         <NotificationBell v-model:unread="unread" />
@@ -182,6 +202,7 @@ const greetingDate = computed(() => new Date().toLocaleDateString('en-GB', { wee
             <main id="main" class="mx-auto w-full min-w-0 max-w-[1480px] flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-8"><slot /></main>
         </div>
         <ToastStack />
-        <CommandPalette v-model="palette" />
+        <CommandPalette v-model="palette" @help="palette = false; help = true" />
+        <ShortcutsHelp v-model="help" />
     </div>
 </template>

@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\System;
 
+use App\Support\PermissionCatalog;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateRoleRequest extends FormRequest
 {
@@ -15,8 +17,8 @@ class UpdateRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'permissions' => ['required', 'array'],
-            'permissions.*' => ['string', 'max:80'],
+            'permissions' => ['present', 'array'],
+            'permissions.*' => ['string', Rule::in(PermissionCatalog::keys())],
         ];
     }
 }

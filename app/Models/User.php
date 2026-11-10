@@ -35,6 +35,9 @@ class User extends Authenticatable
     /** Wildcards supported: "*" (owner), "accounting.*", "crm.leads.*". */
     public function hasPermission(string $permission): bool
     {
+        if ($this->role?->name === 'owner') {
+            return true; // the owner always has every permission, including ones added later
+        }
         foreach ($this->role?->permissions ?? [] as $granted) {
             if ($granted === '*' || $granted === $permission
                 || (str_ends_with($granted, '.*') && str_starts_with($permission, substr($granted, 0, -1)))) {

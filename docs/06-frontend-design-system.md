@@ -87,3 +87,38 @@ Analytics · Settings · Users/Roles · Automation · Audit · Notifications · 
 ## 8. Accessibility & quality bar
 WCAG 2.1 AA contrast in both themes, `aria-live` toasts, labelled icon buttons, skip-to-content link,
 keyboard Kanban alternative (move via menu). Lighthouse ≥ 90 performance/accessibility on Dashboard.
+
+## 9. Search, keyboard shortcuts & address book (Nov 2026)
+**Search everywhere** (`App\Support\Search`, `resources/js/lib/search.js`): every word must match some
+column, in any order, case-insensitive. Phone numbers match with or without spaces, dashes, `+880`
+or a leading 0 ("+880 1811-222333" finds `01811222333`). Lists search more columns (projects: client
+email/phone, domain, referrer, manager; leads: service, source, owner, outcome; receipts: method,
+account). Ctrl+K also returns marketing clients and users, ranks matches and highlights them.
+
+**Email address book**: To / CC are chip pickers (`RecipientPicker.vue`) over every project
+client email, the active team and anyone emailed before (`GET /system/email/contacts`). Picking a
+project, receipt or receivable pre-fills that client's address. Type any address and press
+Enter/comma; paste a list; Backspace removes the last chip.
+
+**Keyboard shortcuts** (`resources/js/lib/shortcuts.js`, cheat-sheet: Ctrl+/ or the ⚡ rail button;
+⌘ also works on Mac). Shortcuts the user lacks permission for are ignored.
+
+| Keys | Action | Keys | Action |
+|---|---|---|---|
+| Ctrl+N / **Alt+N** | New project | Ctrl+D | Dashboard |
+| Ctrl+P | Record payment (receipt) | Ctrl+O | Projects |
+| Ctrl+E | New expense / bill | Ctrl+Shift+P | Customer payments |
+| Ctrl+L | Add lead | Ctrl+Shift+E | Expenses |
+| Ctrl+M | Compose email | Ctrl+B | Bank & cash |
+| Ctrl+K | Search / jump | Ctrl+G | Financial statements |
+| Ctrl+F | Search this list | Ctrl+H | CRM today |
+| Ctrl+S / Ctrl+Enter | Save the open drawer | Ctrl+J / I / U | Leads / Pipeline / Follow-ups |
+| Ctrl+/ or ? | Shortcut cheat-sheet | Ctrl+, | Settings |
+
+Chrome and Edge never pass Ctrl+N to a web page (it opens a new window), so Alt+N is the
+dependable "new project" key there.
+
+**Roles & permissions**: each role is a set of tick boxes grouped by area
+(`App\Support\PermissionCatalog`, 48 permissions). Wildcards such as `*` / `crm.*` are no longer stored —
+migration `2026_11_11_000100` expanded existing roles. The owner always has everything, including
+permissions added in future.

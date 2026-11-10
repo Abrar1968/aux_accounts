@@ -3,9 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Role;
+use App\Support\PermissionCatalog;
 use Illuminate\Database\Seeder;
 
-/** docs/05 §4 permission catalogue. */
+/** docs/05 §4 roles; wildcard shorthands below are stored as explicit permission lists (App\Support\PermissionCatalog). */
 class RoleSeeder extends Seeder
 {
     public const ROLES = [
@@ -20,7 +21,7 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         foreach (self::ROLES as $name => [$label, $permissions]) {
-            Role::query()->updateOrCreate(['name' => $name], ['label' => $label, 'permissions' => $permissions]);
+            Role::query()->updateOrCreate(['name' => $name], ['label' => $label, 'permissions' => PermissionCatalog::expand($permissions)]);
         }
     }
 }

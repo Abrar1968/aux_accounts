@@ -19,6 +19,7 @@ use App\Services\Shared\PeriodService;
 use App\Services\Shared\SettingsService;
 use App\Support\Money;
 use App\Support\Period;
+use App\Support\Search;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Mail;
@@ -66,14 +67,14 @@ class EmailComposerService
     public function records(string $template, ?string $q = null): array
     {
         $q = trim((string) $q);
-        $like = fn ($query, array $cols) => $q === '' ? $query : $query->where(fn ($w) => array_map(fn ($c) => $w->orWhere($c, 'like', "%{$q}%"), $cols));
+        $like = fn ($query, array $cols) => Search::apply($query, $q, $cols);
 
         return match (self::TEMPLATES[$template][1] ?? null) {
             'payment' => $like(CustomerPayment::query(), ['code', 'canonical_name', 'revenue_code'])->latest('paid_at')->limit(30)->get()
                 ->map(fn ($p) => ['value' => 'payment:'.$p->id, 'label' => $p->code.' · '.$p->canonical_name, 'meta' => $this->money($p->cash_received).' · '.substr((string) $p->paid_at, 0, 10)])->all(),
             'receivable' => $this->receivables->options($q === '' ? null : $q)->sortByDesc('ar')->take(30)
                 ->map(fn ($r) => ['value' => 'receivable:'.$r['type'].':'.$r['id'], 'label' => $r['name'].' · '.$r['code'], 'meta' => $r['ar'] > 0 ? 'Due '.$this->money($r['ar']) : 'Settled'])->values()->all(),
-            'project' => $like(Project::query(), ['code', 'name', 'customer'])->latest('id')->limit(30)->get()
+            'project' => $like(Project::query(), ['code', 'name', 'customer', 'client_email', 'client_phone', 'domain'])->latest('id')->limit(30)->get()
                 ->map(fn ($p) => ['value' => 'project:'.$p->id, 'label' => $p->name.' · '.$p->code, 'meta' => $this->money((float) $p->base_value + (float) $p->change_orders)])->all(),
             'payroll' => $like(Payroll::query()->with('employee'), ['code'])->orderByDesc('period')->limit(40)->get()
                 ->map(fn ($p) => ['value' => 'payroll:'.$p->id, 'label' => $p->employee?->name.' · '.Period::of($p->period)->label(), 'meta' => $this->money($p->gross_salary)])->all(),
@@ -84,6 +85,68 @@ class EmailComposerService
                 ->map(fn (Period $p) => ['value' => 'month:'.$p->key(), 'label' => $p->label(), 'meta' => 'Monthly statement'])->values()->all(),
             default => [],
         };
+    }
+
+    /**
+     * Every address the composer can offer: project client emails, active team members and
+     * anyone emailed before. Deduplicated (case-insensitive), newest projects first.
+     *
+     * @return list<array{email:string,name:string,source:string,meta:string}>
+     */
+    public function contacts(): array
+    {
+        $out = [];
+        $add = function (?string $email, string $name, string $source, string $meta) use (&$out) {
+            foreach (preg_split('/[,;\s]+/', (string) $email) ?: [] as $e) {
+                $e = strtolower(trim($e));
+                if ($e !== '' && filter_var($e, FILTER_VALIDATE_EMAIL) && ! isset($out[$e])) {
+                    $out[$e] = ['email' => $e, 'name' => $name, 'source' => $source, 'meta' => $meta];
+                }
+            }
+        };
+        Project::query()->whereNotNull('client_email')->where('client_email', '!=', '')->latest('id')
+            ->get(['id', 'code', 'name', 'customer', 'client_email'])
+            ->each(fn (Project $p) => $add($p->client_email, $p->customer ?: $p->name, 'Project client', $p->code.' · '.$p->name));
+        User::query()->where('is_active', true)->orderBy('name')->get(['name', 'email'])
+            ->each(fn (User $u) => $add($u->email, $u->name, 'Team', 'Auxtech team'));
+        SentEmail::query()->latest('id')->limit(300)->get(['to', 'cc', 'subject'])
+            ->each(function (SentEmail $m) use ($add) {
+                $add($m->to, Str::before((string) $m->to, '@'), 'Emailed before', Str::limit((string) $m->subject, 60));
+                $add($m->cc, Str::before((string) $m->cc, '@'), 'Emailed before', Str::limit((string) $m->subject, 60));
+            });
+
+        return array_values($out);
+    }
+
+    /**
+     * Client addresses linked to a picked record (project → its client; payment / receivable →
+     * the project it belongs to, plus any project of the same customer).
+     *
+     * @return list<string>
+     */
+    public function recordRecipients(?string $ref): array
+    {
+        $ref = (string) $ref;
+        $project = null;
+        $customer = null;
+        if (str_starts_with($ref, 'project:')) {
+            $project = Project::query()->find((int) Str::after($ref, 'project:'));
+        } elseif (str_starts_with($ref, 'payment:')) {
+            $pay = CustomerPayment::query()->find((int) Str::after($ref, 'payment:'));
+            $project = $pay?->receivable_type === 'project' ? Project::query()->find($pay->receivable_id) : null;
+            $customer = $pay?->canonical_name;
+        } elseif (str_starts_with($ref, 'receivable:')) {
+            [, $type, $id] = array_pad(explode(':', $ref), 3, null);
+            $project = $type === 'project' ? Project::query()->find((int) $id) : null;
+        }
+        $customer ??= $project?->customer;
+        $emails = collect([$project?->client_email]);
+        if ($customer) {
+            $emails = $emails->merge(Project::query()->where('customer', $customer)->whereNotNull('client_email')->pluck('client_email'));
+        }
+
+        return $emails->filter()->flatMap(fn ($e) => preg_split('/[,;\s]+/', strtolower((string) $e)))
+            ->filter(fn ($e) => filter_var($e, FILTER_VALIDATE_EMAIL))->unique()->values()->all();
     }
 
     /**
@@ -117,6 +180,7 @@ class EmailComposerService
             'table' => $d['table'] ?? null,
             'include_table' => isset($d['table']),
             'closing' => $d['closing'],
+            'recipients' => $this->recordRecipients($ref),
         ];
     }
 
@@ -155,7 +219,7 @@ class EmailComposerService
     public function history(array $filters = []): LengthAwarePaginator
     {
         return $this->repo->query()->with('user:id,name')
-            ->when($filters['q'] ?? null, fn ($q, $s) => $q->where(fn ($w) => $w->where('to', 'like', "%{$s}%")->orWhere('subject', 'like', "%{$s}%")))
+            ->when($filters['q'] ?? null, fn ($q, $s) => Search::apply($q, $s, ['to', 'cc', 'subject', 'template']))
             ->latest('id')->paginate(15)->withQueryString();
     }
 

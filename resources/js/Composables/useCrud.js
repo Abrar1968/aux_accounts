@@ -1,4 +1,5 @@
-import { onMounted, reactive, ref } from 'vue';
+import { reactive, ref } from 'vue';
+import { useOpenOnNew } from '@/Composables/useOpenOnNew';
 import { router, useForm } from '@inertiajs/vue3';
 
 /**
@@ -44,7 +45,7 @@ export function useCrud({ base, blank, toForm = (r) => r, reason = true, forceFo
         });
     }
 
-    onMounted(() => { if (new URLSearchParams(window.location.search).get('new') === '1') create(); });
+    useOpenOnNew(create);
 
     return { open, editing, form, create, edit, submit, confirm, askDelete, doDelete };
 }

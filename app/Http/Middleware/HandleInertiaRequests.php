@@ -40,7 +40,7 @@ class HandleInertiaRequests extends Middleware
                     'email' => $user->email,
                     'avatar' => $user->avatar_path,
                     'role' => $user->role?->name,
-                    'permissions' => $user->role?->permissions ?? [],
+                    'permissions' => $user->role?->name === 'owner' ? ['*'] : ($user->role?->permissions ?? []),
                 ] : null,
             ],
             'flash' => [

@@ -11,7 +11,7 @@ class ProjectRepository extends BaseRepository implements ProjectRepositoryInter
 
     protected array $filterable = ['kind' => 'kind'];
 
-    protected array $searchable = ['code', 'name', 'customer'];
+    protected array $searchable = ['code', 'name', 'customer', 'client_email', 'client_phone', 'domain', 'referrer', 'project_manager', 'notes'];
 
     protected function periodFilterColumns(): array
     {

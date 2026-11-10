@@ -9,5 +9,5 @@ class SentEmailRepository extends BaseRepository implements SentEmailRepositoryI
 {
     protected string $model = SentEmail::class;
 
-    protected array $searchable = ['to', 'subject', 'template'];
+    protected array $searchable = ['to', 'cc', 'subject', 'template'];
 }

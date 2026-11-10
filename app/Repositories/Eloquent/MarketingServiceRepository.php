@@ -9,7 +9,7 @@ class MarketingServiceRepository extends BaseRepository implements MarketingServ
 {
     protected string $model = MarketingService::class;
 
-    protected array $searchable = ['code', 'client'];
+    protected array $searchable = ['code', 'client', 'source', 'notes'];
 
     protected function periodFilterColumns(): array
     {

@@ -193,6 +193,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('permission:email.send')->group(function () {
         Route::get('/system/email', [System\EmailController::class, 'index'])->name('email.index');
         Route::get('/system/email/records', [System\EmailController::class, 'records'])->name('email.records');
+        Route::get('/system/email/contacts', [System\EmailController::class, 'contacts'])->name('email.contacts');
         Route::post('/system/email/preview', [System\EmailController::class, 'preview'])->name('email.preview');
         Route::post('/system/email', [System\EmailController::class, 'send'])->middleware('throttle:30,1')->name('email.send');
     });

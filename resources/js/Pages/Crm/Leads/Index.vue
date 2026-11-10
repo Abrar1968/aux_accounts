@@ -1,5 +1,6 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
+import { useOpenOnNew } from '@/Composables/useOpenOnNew';
 import { Head, router } from '@inertiajs/vue3';
 import PageHeader from '@/Components/ui/PageHeader.vue';
 import Card from '@/Components/ui/Card.vue';
@@ -24,7 +25,7 @@ const { can } = usePermissions();
 const adding = ref(false);
 const editingLead = ref(null);
 const del = useCrud({ base: '/crm/leads', blank: {}, reason: false });
-onMounted(() => { if (new URLSearchParams(window.location.search).get('new') === '1') adding.value = true; });
+useOpenOnNew(() => (adding.value = true));
 const stages = ['New', 'Contacted', 'Interested', 'Meeting', 'Proposal', 'Negotiation', 'Won', 'Lost'];
 const columns = [
     { key: 'phone', label: 'Lead', primary: true },

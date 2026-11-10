@@ -5,6 +5,7 @@ namespace App\Repositories\Eloquent;
 use App\Repositories\Contracts\RepositoryInterface;
 use App\Support\Money;
 use App\Support\Period;
+use App\Support\Search;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -82,13 +83,8 @@ abstract class BaseRepository implements RepositoryInterface
 
     protected function applyFilters(Builder $q, array $filters): void
     {
-        if (! empty($filters['q'])) {
-            $term = '%'.str_replace(['%', '_'], ['\%', '\_'], $filters['q']).'%';
-            $q->where(function (Builder $w) use ($term) {
-                foreach ($this->searchable as $col) {
-                    $w->orWhere($col, 'like', $term);
-                }
-            });
+        if (! empty($filters['q']) && is_string($filters['q'])) {
+            Search::apply($q, $filters['q'], $this->searchable);
         }
         foreach ($this->filterable as $key => $col) {
             if (isset($filters[$key]) && $filters[$key] !== '') {

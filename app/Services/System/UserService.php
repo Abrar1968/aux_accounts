@@ -5,6 +5,7 @@ namespace App\Services\System;
 use App\Exceptions\Domain\DomainException;
 use App\Models\Role;
 use App\Models\User;
+use App\Support\PermissionCatalog;
 use Illuminate\Support\Facades\Hash;
 
 class UserService
@@ -44,7 +45,11 @@ class UserService
 
     public function roles()
     {
-        return Role::query()->orderBy('id')->get();
+        return Role::query()->withCount('users')->orderBy('id')->get()
+            ->map(fn (Role $r) => [
+                'id' => $r->id, 'name' => $r->name, 'label' => $r->label, 'users_count' => $r->users_count,
+                'permissions' => $r->name === 'owner' ? PermissionCatalog::keys() : PermissionCatalog::expand($r->permissions ?? []),
+            ]);
     }
 
     public function updateRole(Role $role, array $permissions): Role
@@ -52,7 +57,7 @@ class UserService
         if ($role->name === 'owner') {
             throw new DomainException('The owner role always has every permission.');
         }
-        $role->update(['permissions' => array_values(array_unique($permissions))]);
+        $role->update(['permissions' => PermissionCatalog::expand(array_values(array_unique($permissions)))]);
 
         return $role;
     }
