@@ -54,6 +54,19 @@ class BankingService
         return $this->accounts->update($a, $this->normaliseAliases($data));
     }
 
+    public function delete(BankAccount $a): void
+    {
+        if ($a->reconciliations()->exists()) {
+            throw new DomainException("{$a->name} has reconciliations. Mark it inactive instead.");
+        }
+        $this->accounts->delete($a);
+    }
+
+    public function deleteReconciliation(BankReconciliation $r): void
+    {
+        $r->delete();
+    }
+
     private function normaliseAliases(array $data): array
     {
         if (array_key_exists('aliases', $data)) {

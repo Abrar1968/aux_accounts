@@ -2,6 +2,23 @@
 // Inline 24px stroke icons (no icon library dependency).
 defineProps({ name: { type: String, required: true }, size: { type: [Number, String], default: 18 } });
 const paths = {
+    'pencil': 'M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4z M13.5 6.5l4 4',
+    'trash': 'M4 7h16 M10 11v6 M14 11v6 M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12 M9 7V4h6v3',
+    'arrow-left': 'M19 12H5 M11 18l-6-6 6-6',
+    'arrow-right': 'M5 12h14 M13 6l6 6-6 6',
+    'logout': 'M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3 M10 17l-5-5 5-5 M5 12h11',
+    'user': 'M20 21a8 8 0 0 0-16 0 M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10z',
+    'sparkles': 'M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6z M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z M5 15l.6 1.4L7 17l-1.4.6L5 19l-.6-1.4L3 17l1.4-.6z',
+    'reverse': 'M3 12a9 9 0 1 0 3-6.7 M3 4v5h5',
+    'eye': 'M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',
+    'chevron-down': 'm6 9 6 6 6-6',
+    'chevron-right': 'm9 6 6 6-6 6',
+    'dots': 'M5 12h.01 M12 12h.01 M19 12h.01',
+    'layers': 'M12 3 2 8l10 5 10-5z M2 16l10 5 10-5 M2 12l10 5 10-5',
+    'cash': 'M3 6h18v12H3z M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M6 9v.01 M18 15v.01',
+    'target': 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10z M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2z',
+    'globe': 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M3 12h18 M12 3a14 14 0 0 1 0 18 M12 3a14 14 0 0 0 0 18',
+    'palette': 'M12 21a9 9 0 1 1 9-9c0 2-1.5 3-3 3h-2a2 2 0 0 0-1.5 3.3c.4.5.5 1 .5 1.4 0 .7-.6 1.3-3 1.3z M7.5 11h.01 M10 7h.01 M15 7h.01',
     mail: 'M3 6h18v12H3z M3 7l9 6 9-6',
     send: 'M22 2 11 13 M22 2l-7 20-4-9-9-4z',
     home: 'M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z',

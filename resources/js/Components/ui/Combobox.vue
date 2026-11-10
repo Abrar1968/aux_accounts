@@ -30,11 +30,11 @@ function onKey(e) {
     <Field :label="label" :error="error" :for="id">
         <div class="relative">
             <input :id="id" v-model="q" type="text" role="combobox" :aria-expanded="open" :placeholder="placeholder" autocomplete="off"
-                :class="error ? 'border-negative' : 'border-line focus:border-brand-500'" class="h-10 w-full rounded-lg border bg-surface px-3 text-sm outline-none"
+                :class="error && '!border-negative'" class="field px-3"
                 @focus="open = true; load()" @blur="blur" @keydown="onKey" />
-            <ul v-if="open && items.length" role="listbox" class="card absolute z-40 mt-1 max-h-64 w-full overflow-y-auto p-1 shadow-[var(--shadow-pop)]">
+            <ul v-if="open && items.length" role="listbox" class="card absolute z-40 mt-1.5 max-h-64 w-full overflow-y-auto p-1.5 shadow-[var(--shadow-pop)]">
                 <li v-for="(o, i) in items" :key="o.value" role="option" :aria-selected="i === active" @mousedown.prevent="pick(o)"
-                    :class="i === active ? 'bg-brand-50' : ''" class="cursor-pointer rounded-md px-3 py-2 text-sm">
+                    :class="i === active ? 'bg-brand-50 text-brand-700 dark:text-white' : ''" class="cursor-pointer rounded-lg px-3 py-2 text-sm">
                     <p class="truncate font-medium">{{ o.label }}</p><p v-if="o.meta" class="truncate text-xs text-ink-3">{{ o.meta }}</p>
                 </li>
             </ul>

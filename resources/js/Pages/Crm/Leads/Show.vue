@@ -2,6 +2,8 @@
 import { computed, ref } from 'vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import PageHeader from '@/Components/ui/PageHeader.vue';
+import ConfirmDialog from '@/Components/ui/ConfirmDialog.vue';
+import { useCrud } from '@/Composables/useCrud';
 import Card from '@/Components/ui/Card.vue';
 import Badge from '@/Components/ui/Badge.vue';
 import Button from '@/Components/ui/Button.vue';
@@ -31,6 +33,7 @@ const facts = computed(() => [
     ['Normalised phone', l.value.normalized_phone ?? '—'], ['Quoted price', money(l.value.quoted_price)], ['Meeting', dateTime(l.value.meeting_at)], ['Last activity', dateTime(l.value.last_activity_at)],
     ['Closed', date(l.value.closed_date)], ['Deal value', money(l.value.deal_value)], ['Lost reason', l.value.lost_reason],
 ]);
+const del = useCrud({ base: '/crm/leads', blank: {}, reason: false });
 </script>
 
 <template>
@@ -38,7 +41,8 @@ const facts = computed(() => [
     <PageHeader :title="l.phone" :subtitle="`${l.outcome} · ${l.stage} · score ${l.score}`" back="/crm/leads">
         <PriorityBadge :priority="l.priority" />
         <Button v-if="l.whatsapp" variant="secondary" size="sm" icon="whatsapp" :href="l.whatsapp" target="_blank">WhatsApp</Button>
-        <Button v-if="can('crm.leads.update')" variant="secondary" size="sm" @click="editing = true">Edit</Button>
+        <Button v-if="can('crm.leads.update')" variant="secondary" size="sm" icon="pencil" @click="editing = true">Edit</Button>
+        <Button v-if="can('crm.leads.delete')" variant="danger-soft" size="sm" icon="trash" @click="del.askDelete(l)">Archive</Button>
         <Button v-if="l.stage === 'Won' && !l.project_id && can('accounting.projects.create')" variant="secondary" size="sm" @click="openConvert">Convert to project</Button>
         <Button v-if="can('crm.calls.create')" size="sm" icon="phone" class="hidden sm:inline-flex" @click="calling = true">Log call</Button>
     </PageHeader>
@@ -77,4 +81,6 @@ const facts = computed(() => [
         <div class="space-y-3"><Input v-model="convertForm.name" label="Project name" :error="convertForm.errors.name" /><Input v-model="convertForm.base_value" type="number" label="Contract value (৳)" /></div>
         <template #footer><Button variant="secondary" @click="converting = false">Cancel</Button><Button :loading="convertForm.processing" @click="convertForm.post(`/crm/leads/${l.id}/convert`)">Create project</Button></template>
     </Modal>
+    <ConfirmDialog v-model="del.confirm.open" danger :loading="del.confirm.loading" title="Archive lead?" confirm-label="Archive lead"
+        :message="`Lead ${l.phone} (${l.code}) will be archived and hidden from lists, follow-ups and reports.`" @confirm="del.doDelete" />
 </template>

@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Accounting;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Accounting\DeleteWithReasonRequest;
 use App\Http\Requests\Accounting\StoreAdvanceRequest;
+use App\Http\Requests\Accounting\UpdateAdvanceRequest;
 use App\Http\Resources\RecordResource;
+use App\Models\EmployeeAdvance;
 use App\Services\Accounting\AdvanceService;
 use App\Services\Accounting\EmployeeService;
 use App\Services\Shared\ListingService;
@@ -30,5 +33,19 @@ class AdvanceController extends Controller
         $a = $this->advances->create($request->validated());
 
         return $this->toast("{$a->type} {$a->code} saved.");
+    }
+
+    public function update(UpdateAdvanceRequest $request, EmployeeAdvance $advance)
+    {
+        $this->advances->update($advance, $request->validated());
+
+        return $this->toast("{$advance->type} {$advance->code} updated.");
+    }
+
+    public function destroy(DeleteWithReasonRequest $request, EmployeeAdvance $advance)
+    {
+        $this->advances->delete($advance, $request->validated('reason'));
+
+        return $this->toast("{$advance->code} deleted.");
     }
 }

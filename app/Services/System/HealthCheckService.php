@@ -63,13 +63,15 @@ class HealthCheckService
         $add('Pusher configured', fn () => [config('broadcasting.default') === 'pusher' && (string) config('broadcasting.connections.pusher.secret') !== '', 'app '.config('broadcasting.connections.pusher.app_id').' / '.config('broadcasting.connections.pusher.options.cluster')]);
         $add('Mail configured', fn () => [config('mail.default') === 'smtp' && (string) config('mail.mailers.smtp.password') !== '', config('mail.mailers.smtp.host').':'.config('mail.mailers.smtp.port').' as '.config('mail.mailers.smtp.username')]);
         $add('Scheduler heartbeat', function () {
-            $last = DB::table('automation_runs')->max('started_at');
+            // crm:safety-check runs every 5 minutes once the cron line is active (seeded Apps Script history does not count)
+            $last = DB::table('automation_runs')->where('command', 'crm:safety-check')->max('started_at');
+            $fresh = $last !== null && $last >= now()->subMinutes(10)->toDateTimeString();
 
-            return [$last !== null, $last ? 'last automation run '.$last : 'no run yet — add the cron line, then wait a few minutes'];
+            return [$fresh, $last ? 'crm:safety-check last ran '.$last.($fresh ? '' : ' — older than 10 min, check the cron line') : 'not run yet — add the cron line, then wait 5 minutes'];
         });
         if ($mailTo) {
             $add("Test email to {$mailTo}", function () use ($mailTo) {
-                Mail::raw('Auxtech Ops test email — SMTP is working ('.now()->toDateTimeString().').', fn ($m) => $m->to($mailTo)->subject('Auxtech Ops test email'));
+                Mail::raw('Auxtech Accounts test email — SMTP is working ('.now()->toDateTimeString().').', fn ($m) => $m->to($mailTo)->subject('Auxtech Accounts test email'));
 
                 return [true, 'sent'];
             });

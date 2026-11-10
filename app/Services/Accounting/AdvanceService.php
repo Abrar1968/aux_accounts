@@ -7,6 +7,7 @@ use App\Models\Employee;
 use App\Models\EmployeeAdvance;
 use App\Models\Payroll;
 use App\Repositories\Contracts\EmployeeAdvanceRepositoryInterface;
+use App\Services\Shared\AuditService;
 use App\Services\Shared\PeriodService;
 use App\Services\Shared\SequenceService;
 use App\Support\Money;
@@ -32,20 +33,42 @@ class AdvanceService
         if ((float) $data['amount'] <= 0) {
             throw new DomainException('Positive amount required');
         }
-        $payrollId = null;
-        if ($data['type'] === 'Recovery') {
-            $employee = Employee::query()->findOrFail($data['employee_id']);
-            $month = Period::of($data['related_salary_period'] ?? $data['txn_date']);
-            $payroll = Payroll::query()->where('code', PayrollService::codeFor($month, $employee->name))->first()
-                ?? throw new DomainException('Payroll link needs review: no payroll for '.$employee->name.' in '.$month->label().'.');
-            $payrollId = $payroll->id;
+
+        return $this->repo->create(array_merge($data, [
+            'code' => 'ADV-'.str_pad((string) $this->sequences->next('ADV'), 3, '0', STR_PAD_LEFT),
+            'payroll_id' => $this->payrollLink($data),
+            'amount' => Money::round($data['amount']),
+        ]));
+    }
+
+    public function update(EmployeeAdvance $a, array $data): EmployeeAdvance
+    {
+        $this->periods->assertOpen($a->txn_date, $data['txn_date'] ?? null);
+        $merged = array_merge($a->only(['txn_date', 'employee_id', 'type', 'amount', 'related_salary_period']), $data);
+        if ((float) $merged['amount'] <= 0) {
+            throw new DomainException('Positive amount required');
         }
 
-        return $this->repo->create($data + [
-            'code' => 'ADV-'.str_pad((string) $this->sequences->next('ADV'), 3, '0', STR_PAD_LEFT),
-            'payroll_id' => $payrollId,
-            'amount' => Money::round($data['amount']),
-        ]);
+        return $this->repo->update($a, array_merge($data, ['payroll_id' => $this->payrollLink($merged), 'amount' => Money::round($merged['amount'])]));
+    }
+
+    public function delete(EmployeeAdvance $a, string $reason): void
+    {
+        $this->periods->assertOpen($a->txn_date);
+        app(AuditService::class)->withReason($reason, fn () => $a->delete());
+    }
+
+    /** Recovery rows link to the payroll row of the related salary month (Employee_Advances!J). */
+    private function payrollLink(array $data): ?int
+    {
+        if ($data['type'] !== 'Recovery') {
+            return null;
+        }
+        $employee = Employee::query()->findOrFail($data['employee_id']);
+        $month = Period::of($data['related_salary_period'] ?? $data['txn_date']);
+
+        return Payroll::query()->where('code', PayrollService::codeFor($month, $employee->name))->value('id')
+            ?? throw new DomainException('Payroll link needs review: no payroll for '.$employee->name.' in '.$month->label().'.');
     }
 
     /** Outstanding advance per employee at a cut-off date. */

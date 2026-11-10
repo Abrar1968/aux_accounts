@@ -6,6 +6,7 @@ use App\Exceptions\Domain\DomainException;
 use App\Models\Liability;
 use App\Repositories\Contracts\LiabilityRepositoryInterface;
 use App\Repositories\Contracts\RevenueRecognitionRepositoryInterface;
+use App\Services\Shared\AuditService;
 use App\Services\Shared\PeriodService;
 use App\Support\Money;
 use App\Support\Period;
@@ -43,6 +44,33 @@ class LiabilityService
             'period' => Period::of($data['txn_date'])->date(),
             'liability_type' => self::TYPES[$data['liability_code']] ?? 'Other',
         ]);
+    }
+
+    public function update(Liability $l, array $data): Liability
+    {
+        $this->periods->assertOpen($l->txn_date, $data['txn_date'] ?? null);
+        foreach (['increase', 'decrease', 'cash_impact'] as $k) {
+            if (array_key_exists($k, $data)) {
+                $data[$k] = (float) ($data[$k] ?? 0);
+                if ($k !== 'cash_impact' && $data[$k] < 0) {
+                    throw new DomainException('Increase and decrease must be non-negative; use cash impact for direction.');
+                }
+            }
+        }
+        if (isset($data['txn_date'])) {
+            $data['period'] = Period::of($data['txn_date'])->date();
+        }
+        if (isset($data['liability_code'])) {
+            $data['liability_type'] = self::TYPES[$data['liability_code']] ?? 'Other';
+        }
+
+        return $this->repo->update($l, $data);
+    }
+
+    public function delete(Liability $l, string $reason): void
+    {
+        $this->periods->assertOpen($l->txn_date);
+        app(AuditService::class)->withReason($reason, fn () => $l->delete());
     }
 
     /** Running balance per liability (Liabilities!L). */

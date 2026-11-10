@@ -5,6 +5,7 @@ namespace App\Services\Accounting;
 use App\Models\CapitalTransaction;
 use App\Models\Investor;
 use App\Repositories\Contracts\CapitalTransactionRepositoryInterface;
+use App\Services\Shared\AuditService;
 use App\Services\Shared\PeriodService;
 use App\Support\Money;
 use App\Support\Period;
@@ -24,6 +25,22 @@ class CapitalService
         $this->periods->assertOpen($data['txn_date']);
 
         return $this->repo->create($data + ['period' => Period::of($data['txn_date'])->date()]);
+    }
+
+    public function update(CapitalTransaction $t, array $data): CapitalTransaction
+    {
+        $this->periods->assertOpen($t->txn_date, $data['txn_date'] ?? null);
+        if (isset($data['txn_date'])) {
+            $data['period'] = Period::of($data['txn_date'])->date();
+        }
+
+        return $this->repo->update($t, $data);
+    }
+
+    public function delete(CapitalTransaction $t, string $reason): void
+    {
+        $this->periods->assertOpen($t->txn_date);
+        app(AuditService::class)->withReason($reason, fn () => $t->delete());
     }
 
     /** Cap table at a date: paid-in capital and effective ownership per investor. */

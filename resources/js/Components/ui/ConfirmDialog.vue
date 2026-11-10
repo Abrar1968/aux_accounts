@@ -5,7 +5,7 @@ import Modal from './Modal.vue';
 import Button from './Button.vue';
 import Textarea from './Textarea.vue';
 
-const props = defineProps({ title: String, message: String, confirmLabel: { type: String, default: 'Confirm' }, danger: Boolean, reason: Boolean, loading: Boolean });
+const props = defineProps({ title: String, message: String, confirmLabel: { type: String, default: 'Confirm' }, danger: Boolean, reason: Boolean, loading: Boolean, icon: String });
 const open = defineModel({ type: Boolean });
 const emit = defineEmits(['confirm']);
 const text = ref('');
@@ -13,9 +13,9 @@ watch(open, (v) => v && (text.value = ''));
 </script>
 
 <template>
-    <Modal v-model="open" :title="title">
-        <p class="text-sm text-ink-2">{{ message }}</p>
-        <Textarea v-if="reason" v-model="text" class="mt-3" label="Reason (saved in the audit log)" :rows="2" />
+    <Modal v-model="open" :title="title" :icon="icon ?? (danger ? 'trash' : 'alert')" :tone="danger ? 'danger' : 'warning'">
+        <p class="text-sm leading-relaxed text-ink-2">{{ message }}</p>
+        <Textarea v-if="reason" v-model="text" class="mt-4" label="Reason (saved in the audit log)" placeholder="e.g. Entered twice by mistake" :rows="2" />
         <template #footer>
             <Button variant="secondary" @click="open = false">Cancel</Button>
             <Button :variant="danger ? 'danger' : 'primary'" :loading="loading" :disabled="reason && text.trim().length < 5" @click="emit('confirm', text)">{{ confirmLabel }}</Button>

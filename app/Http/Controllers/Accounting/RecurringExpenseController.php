@@ -44,4 +44,11 @@ class RecurringExpenseController extends Controller
 
         return $this->toast("{$n} bill(s) created for ".Period::of($month)->label().'.');
     }
+
+    public function destroy(RecurringExpense $recurring)
+    {
+        $this->recurring->delete($recurring);
+
+        return $this->toast("Template {$recurring->name} deleted. Bills already generated are kept.");
+    }
 }

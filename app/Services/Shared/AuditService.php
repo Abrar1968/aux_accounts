@@ -11,6 +11,20 @@ class AuditService
 {
     private bool $muted = false;
 
+    private ?string $reason = null;
+
+    /** Run a change (usually a delete) whose automatic audit entry should carry the user's reason. */
+    public function withReason(?string $reason, callable $fn): mixed
+    {
+        $prev = $this->reason;
+        $this->reason = $reason;
+        try {
+            return $fn();
+        } finally {
+            $this->reason = $prev;
+        }
+    }
+
     /** Seeders mute auditing so imported history is not reported as user edits. */
     public function mute(callable $fn): mixed
     {
@@ -36,7 +50,7 @@ class AuditService
             'before' => $before,
             'after' => $after,
             'ip' => app()->runningInConsole() ? null : Request::ip(),
-            'reason' => $reason,
+            'reason' => $reason ?? $this->reason,
             'created_at' => now(),
         ]);
     }

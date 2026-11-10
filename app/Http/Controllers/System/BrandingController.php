@@ -37,6 +37,14 @@ class BrandingController extends Controller
         return $this->toast(BrandingService::ASSETS[$request->validated('asset')].' updated — used on every invoice and PDF.');
     }
 
+    public function accent(Request $request)
+    {
+        $data = $request->validate(['accent' => ['required', 'in:'.implode(',', BrandingService::ACCENTS)]]);
+        $this->branding->setAccent($data['accent']);
+
+        return $this->toast('Accent colour updated.');
+    }
+
     public function destroy(string $asset)
     {
         abort_unless(isset(BrandingService::ASSETS[$asset]), 404);

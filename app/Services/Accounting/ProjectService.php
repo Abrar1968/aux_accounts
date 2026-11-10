@@ -2,8 +2,10 @@
 
 namespace App\Services\Accounting;
 
+use App\Exceptions\Domain\DomainException;
 use App\Models\Project;
 use App\Repositories\Contracts\ProjectRepositoryInterface;
+use App\Services\Shared\AuditService;
 use App\Services\Shared\PeriodService;
 use App\Services\Shared\SequenceService;
 use App\Services\System\BrandingService;
@@ -131,5 +133,33 @@ class ProjectService
             'collection_percent' => $total > 0 ? min(1, $gross / $total) : null,
             'work_status' => $workStatus,
         ];
+    }
+
+    /**
+     * Delete a project registered by mistake. Refused when money or history depends on it:
+     * customer receipts, historical (workbook) recognition, or a referral already paid.
+     * Auto / manual recognition rows in open periods and unpaid referral rows go with it.
+     */
+    public function delete(Project $project, string $reason): void
+    {
+        $this->periods->assertOpen($project->source_month);
+        if ($n = $project->payments()->count()) {
+            throw new DomainException("{$project->code} has {$n} customer receipt(s). Delete those receipts first.");
+        }
+        if ($project->recognitions()->where('is_historical', true)->exists()) {
+            throw new DomainException("{$project->code} has historical recognised revenue from the workbook and cannot be deleted.");
+        }
+        if ($project->referrals()->where('paid_amount', '>', 0)->exists()) {
+            throw new DomainException("A referral on {$project->code} is already paid. Reverse the referral payment first.");
+        }
+        DB::transaction(function () use ($project, $reason) {
+            foreach ($project->recognitions()->get() as $r) {
+                $this->periods->assertOpen($r->period);
+                $r->delete();
+            }
+            $project->referrals()->delete();
+            $this->branding->setClientSignature($project, null);
+            app(AuditService::class)->withReason($reason, fn () => $project->delete());
+        });
     }
 }

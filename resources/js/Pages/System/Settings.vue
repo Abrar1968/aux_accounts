@@ -5,6 +5,7 @@ import PageHeader from '@/Components/ui/PageHeader.vue';
 import Card from '@/Components/ui/Card.vue';
 import ImagePicker from '@/Components/ui/ImagePicker.vue';
 import Tabs from '@/Components/ui/Tabs.vue';
+import Icon from '@/Components/ui/Icon.vue';
 import Input from '@/Components/ui/Input.vue';
 import Button from '@/Components/ui/Button.vue';
 import Badge from '@/Components/ui/Badge.vue';
@@ -30,6 +31,13 @@ const fixed = computed(() => Object.entries(props.settings).filter(([k]) => !pro
 const brand = computed(() => usePage().props.brand ?? {});
 const brandForms = { logo: useForm({ asset: 'logo', image: null }), seal: useForm({ asset: 'seal', image: null }) };
 const saveBrand = (k) => brandForms[k].post('/settings/branding', { forceFormData: true, preserveScroll: true, onSuccess: () => brandForms[k].reset('image') });
+const accents = [
+    { key: 'indigo', label: 'Indigo', from: '#6366f1', to: '#8b5cf6' }, { key: 'blue', label: 'Ocean', from: '#3b82f6', to: '#06b6d4' },
+    { key: 'violet', label: 'Violet', from: '#8b5cf6', to: '#d946ef' }, { key: 'emerald', label: 'Emerald', from: '#10b981', to: '#14b8a6' },
+    { key: 'teal', label: 'Teal', from: '#14b8a6', to: '#06b6d4' }, { key: 'rose', label: 'Rose', from: '#f43f5e', to: '#fb923c' },
+    { key: 'amber', label: 'Amber', from: '#f59e0b', to: '#f97316' },
+];
+const setAccent = (accent) => { document.documentElement.dataset.accent = accent; router.put('/settings/branding/accent', { accent }, { preserveScroll: true }); };
 const removeBrand = (k) => router.delete(`/settings/branding/${k}`, { preserveScroll: true });
 const option = useForm({ type: 'service', value: '' });
 const addOption = () => option.post('/crm/settings/options', { preserveScroll: true, onSuccess: () => option.reset('value') });
@@ -41,12 +49,22 @@ const removeOption = (type, value) => router.delete('/crm/settings/options', { d
     <PageHeader title="Settings" subtitle="Accounting policies and CRM lists — statements recalculate automatically after a change" />
     <div class="mb-3"><Tabs v-model="tab" :tabs="[{ key: 'policies', label: 'Policies' }, { key: 'branding', label: 'Branding' }, { key: 'referrals', label: 'Referral tiers' }, { key: 'crm', label: 'CRM lists' }, { key: 'system', label: 'Model constants' }]" /></div>
     <div v-if="tab === 'branding'" class="grid gap-4 lg:grid-cols-2">
+        <Card title="Accent colour" subtitle="Buttons, highlights, charts and the sidebar glow — applies to everyone instantly" icon="palette" class="lg:col-span-2">
+            <div class="flex flex-wrap gap-3">
+                <button v-for="a in accents" :key="a.key" type="button" :aria-pressed="brand.accent === a.key" @click="setAccent(a.key)"
+                    :class="brand.accent === a.key ? 'border-ink ring-2 ring-ink/10' : 'border-line hover:border-line-strong'"
+                    class="flex items-center gap-2.5 rounded-xl border bg-surface py-2 pl-2 pr-3.5 text-sm font-semibold shadow-[var(--shadow-xs)] transition">
+                    <span class="size-7 rounded-lg shadow-inner" :style="{ background: `linear-gradient(135deg, ${a.from}, ${a.to})` }" />{{ a.label }}
+                    <Icon v-if="brand.accent === a.key" name="check" :size="16" class="text-positive" />
+                </button>
+            </div>
+        </Card>
         <Card v-for="k in ['logo', 'seal']" :key="k" :title="k === 'logo' ? 'Company logo' : 'Accounts seal / signature'"
             :subtitle="k === 'logo' ? 'Letterhead of every invoice, statement, payslip, report and email' : 'Printed as the authorised signature on every invoice and PDF'">
             <ImagePicker v-model="brandForms[k].image" :current="brand[k]?.png" :label="k === 'logo' ? 'Logo image' : 'Seal / signature image'" :error="brandForms[k].errors.image" />
             <div class="mt-3 flex gap-2">
                 <Button size="sm" :disabled="!brandForms[k].image" :loading="brandForms[k].processing" @click="saveBrand(k)">Save</Button>
-                <Button v-if="brand[k]" size="sm" variant="ghost" @click="removeBrand(k)">Remove</Button>
+                <Button v-if="brand[k] && !brand[k].default" size="sm" variant="ghost" @click="removeBrand(k)">Remove</Button><span v-else-if="brand[k]?.default" class="self-center text-xs text-ink-3">Built-in company default — upload to replace</span>
             </div>
         </Card>
         <p class="text-xs text-ink-3 lg:col-span-2">Company name, address, phone, website and signature title are edited under <b>Policies</b>. Client signatures are added on each project.</p>

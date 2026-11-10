@@ -10,6 +10,8 @@ import DataTable from '@/Components/ui/DataTable.vue';
 import Modal from '@/Components/ui/Modal.vue';
 import Input from '@/Components/ui/Input.vue';
 import ImagePicker from '@/Components/ui/ImagePicker.vue';
+import ConfirmDialog from '@/Components/ui/ConfirmDialog.vue';
+import ProjectDrawer, { useProjectCrud } from '@/Components/accounting/ProjectDrawer.vue';
 import { router } from '@inertiajs/vue3';
 import { usePermissions } from '@/Composables/usePermissions';
 import { date, dateTime, money, pct, todayIso } from '@/lib/format';
@@ -17,6 +19,7 @@ import { date, dateTime, money, pct, todayIso } from '@/lib/format';
 const props = defineProps({ project: Object, recognitions: Object, payments: Object, referrals: Array });
 const p = computed(() => props.project.data);
 const { can } = usePermissions();
+const crud = useProjectCrud();
 const deliver = ref(false);
 const form = useForm({ actual_delivery_date: todayIso() });
 const submit = () => form.post(`/accounting/projects/${p.value.id}/deliver`, { preserveScroll: true, onSuccess: () => (deliver.value = false) });
@@ -38,11 +41,13 @@ const facts = computed(() => [
         <Button v-if="p.kind !== 'lead'" variant="secondary" size="sm" icon="receipt" :href="`/accounting/receivables/project/${p.id}/invoice`">Invoice</Button>
         <Button v-if="p.kind !== 'lead'" variant="secondary" size="sm" icon="doc" :href="`/accounting/receivables/project/${p.id}/statement`">Statement</Button>
         <Button v-if="can('accounting.projects.update') && !p.actual_delivery_date && p.kind !== 'lead'" size="sm" icon="check" @click="deliver = true">Mark delivered</Button>
+        <Button v-if="can('accounting.projects.update')" variant="secondary" size="sm" icon="pencil" @click="crud.edit(p)">Edit</Button>
+        <Button v-if="can('accounting.projects.delete')" variant="danger-soft" size="sm" icon="trash" @click="crud.askDelete(p)">Delete</Button>
     </PageHeader>
     <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard label="Contract value" :value="money(p.total_value)" :hint="p.change_orders ? `Incl. change orders ${money(p.change_orders)}` : null" />
-        <StatCard label="Revenue recognised" :value="money(p.revenue_recognized)" :hint="`Progress ${pct(p.progress)}`" />
-        <StatCard label="Collected (gross)" :value="money(p.gross_settlement)" :hint="`${pct(p.collection_percent)} · fees ${money(p.processing_fees)}`" />
+        <StatCard icon="briefcase" label="Contract value" :value="money(p.total_value)" :hint="p.change_orders ? `Incl. change orders ${money(p.change_orders)}` : null" />
+        <StatCard icon="trend" label="Revenue recognised" :value="money(p.revenue_recognized)" :hint="`Progress ${pct(p.progress)}`" />
+        <StatCard icon="inbox" label="Collected (gross)" :value="money(p.gross_settlement)" :hint="`${pct(p.collection_percent)} · fees ${money(p.processing_fees)}`" />
         <StatCard :label="p.customer_advance ? 'Customer advance' : 'Receivable'" :value="money(p.customer_advance || p.current_ar)" :tone="p.current_ar ? 'warning' : 'neutral'" />
     </div>
     <div class="mt-4 grid gap-4 lg:grid-cols-3">
@@ -86,4 +91,7 @@ const facts = computed(() => [
         <Input v-model="form.actual_delivery_date" type="date" label="Actual delivery date" :max="todayIso()" :error="form.errors.actual_delivery_date" />
         <template #footer><Button variant="secondary" @click="deliver = false">Cancel</Button><Button :loading="form.processing" @click="submit">Save delivery</Button></template>
     </Modal>
+    <ProjectDrawer :crud="crud" />
+    <ConfirmDialog v-model="crud.confirm.open" danger reason :loading="crud.confirm.loading" title="Delete project?" confirm-label="Delete project"
+        :message="`${p.name} (${p.code}) will be removed with its unpaid referral rows and open-period recognition. Projects with customer receipts or historical revenue cannot be deleted.`" @confirm="crud.doDelete" />
 </template>

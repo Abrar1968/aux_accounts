@@ -2,8 +2,11 @@
 
 namespace App\Services\Accounting;
 
+use App\Exceptions\Domain\DomainException;
+use App\Models\CustomerPayment;
 use App\Models\MarketingService;
 use App\Repositories\Contracts\MarketingServiceRepositoryInterface;
+use App\Services\Shared\AuditService;
 use App\Services\Shared\PeriodService;
 use App\Services\Shared\SequenceService;
 use App\Support\Money;
@@ -51,5 +54,14 @@ class MarketingRevenueService
             'customer_advance' => max(0.0, Money::round($gross - (float) $m->revenue)),
             'status' => $ar > 0 ? 'Open' : ($gross > 0 ? 'Paid' : 'Unpaid'),
         ];
+    }
+
+    public function delete(MarketingService $m, string $reason): void
+    {
+        $this->periods->assertOpen($m->service_month);
+        if (CustomerPayment::query()->where('receivable_type', 'marketing')->where('receivable_id', $m->id)->exists()) {
+            throw new DomainException("{$m->code} has customer receipts. Delete those receipts first.");
+        }
+        app(AuditService::class)->withReason($reason, fn () => $m->delete());
     }
 }

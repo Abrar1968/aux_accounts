@@ -164,4 +164,35 @@ class PaymentPostingService
 
         return Money::round((float) $bill->gross_salary - $recovered - $paid);
     }
+
+    /**
+     * Reverse an expense / salary payment. The cash ledger is permanent (as in the workbook), so a
+     * mistake is corrected with an equal negative entry dated today that points at the original.
+     */
+    public function reverse(string $kind, Model $payment, string $reason): Model
+    {
+        $ledger = $kind === 'expense' ? ExpensePayment::class : SalaryPayment::class;
+        if ($payment->reverses_id || (float) $payment->amount <= 0) {
+            throw new PostingRejectedException('A reversal entry cannot be reversed again.');
+        }
+        if ($ledger::query()->where('reverses_id', $payment->id)->exists()) {
+            throw new PostingRejectedException('This payment has already been reversed.');
+        }
+        $today = now()->toDateString();
+        $this->periods->assertOpen($today);
+        $fk = $kind === 'expense' ? 'operating_expense_id' : 'payroll_id';
+        $uuid = (string) Str::uuid();
+
+        return DB::transaction(function () use ($ledger, $payment, $reason, $today, $fk, $uuid, $kind) {
+            $rev = $ledger::query()->create([
+                'code' => ($kind === 'expense' ? 'EPAY-' : 'SPAY-').$uuid, 'paid_on' => $today, $fk => $payment->{$fk},
+                'amount' => -Money::round((float) $payment->amount), 'method' => $payment->method, 'account' => $payment->account,
+                'notes' => 'Reversal of '.$payment->code.': '.$reason, 'origin' => 'Reversal', 'request_id' => $uuid,
+                'reverses_id' => $payment->id, 'posted_at' => now(), 'posted_by' => Auth::user()?->email ?? 'system',
+            ]);
+            event(new PaymentPosted($kind, $rev->code, (float) $rev->amount));
+
+            return $rev;
+        });
+    }
 }

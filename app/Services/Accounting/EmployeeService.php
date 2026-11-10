@@ -29,6 +29,15 @@ class EmployeeService
         return $this->repo->update($e, $data);
     }
 
+    /** Only employees with no payroll or advances can be removed; others are deactivated instead. */
+    public function delete(Employee $e): void
+    {
+        if ($e->payrolls()->exists() || $e->advances()->exists()) {
+            throw new DomainException("{$e->name} has payroll or advance history. Mark them inactive instead.");
+        }
+        $this->repo->delete($e);
+    }
+
     /** @return list<array{value:int,label:string}> active employees for pickers */
     public function options(): array
     {

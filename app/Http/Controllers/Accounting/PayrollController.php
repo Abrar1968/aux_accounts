@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Accounting;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Accounting\DeleteWithReasonRequest;
 use App\Http\Requests\Accounting\PostPaymentRequest;
 use App\Http\Requests\Accounting\StorePayrollRequest;
+use App\Http\Requests\Accounting\UpdatePayrollRequest;
 use App\Http\Resources\PayrollResource;
 use App\Http\Resources\RecordResource;
 use App\Models\Payroll;
+use App\Models\SalaryPayment;
 use App\Services\Accounting\PaymentPostingService;
 use App\Services\Accounting\PayrollService;
 use App\Services\Shared\ListingService;
@@ -61,5 +64,26 @@ class PayrollController extends Controller
             'payments' => RecordResource::collection($payroll->payments),
             'recoveries' => RecordResource::collection($payroll->recoveries),
         ]);
+    }
+
+    public function update(UpdatePayrollRequest $request, Payroll $payroll)
+    {
+        $this->payroll->update($payroll, $request->validated());
+
+        return $this->toast("{$payroll->code} updated.");
+    }
+
+    public function destroy(DeleteWithReasonRequest $request, Payroll $payroll)
+    {
+        $this->payroll->delete($payroll, $request->validated('reason'));
+
+        return $this->toast("{$payroll->code} deleted.");
+    }
+
+    public function reversePayment(DeleteWithReasonRequest $request, SalaryPayment $salaryPayment, PaymentPostingService $posting)
+    {
+        $rev = $posting->reverse('salary', $salaryPayment, $request->validated('reason'));
+
+        return $this->toast("Salary payment reversed ({$rev->code}).", 'success', 'Reversed');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Accounting;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Accounting\ClientSignatureRequest;
+use App\Http\Requests\Accounting\DeleteWithReasonRequest;
 use App\Http\Requests\Accounting\DeliverProjectRequest;
 use App\Http\Requests\Accounting\StoreProjectRequest;
 use App\Http\Requests\Accounting\UpdateProjectRequest;
@@ -84,5 +85,12 @@ class ProjectController extends Controller
         $this->projects->update($project, $request->validated());
 
         return $this->toast("{$project->name} marked delivered; revenue is recognised by the daily automation.");
+    }
+
+    public function destroy(DeleteWithReasonRequest $request, Project $project)
+    {
+        $this->projects->delete($project, $request->validated('reason'));
+
+        return redirect('/accounting/projects')->with('toast', ['type' => 'success', 'title' => 'Deleted', 'message' => "Project {$project->code} deleted."]);
     }
 }

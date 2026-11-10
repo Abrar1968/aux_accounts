@@ -20,6 +20,9 @@ class BrandingService
 {
     public const ASSETS = ['logo' => 'Company logo', 'seal' => 'Accounts seal / signature'];
 
+    /** Accent palettes defined in resources/css/app.css ([data-accent]). */
+    public const ACCENTS = ['indigo', 'blue', 'violet', 'emerald', 'teal', 'rose', 'amber'];
+
     public function __construct(
         private readonly ImageService $images,
         private readonly SettingsService $settings,
@@ -66,9 +69,28 @@ class BrandingService
     /** Asset file for the controller. @return array{path:string, mime:string}|null */
     public function file(string $asset, string $format): ?array
     {
-        $meta = $this->settings->get('branding.'.$asset);
+        return $this->pick($this->meta($asset), $format);
+    }
 
-        return $this->pick($meta, $format);
+    /**
+     * Uploaded asset (Settings → Branding) or the bundled company default in resources/branding
+     * (Auxtech logo + accounts signature), so documents are branded out of the box.
+     */
+    public function meta(string $asset): ?array
+    {
+        $m = $this->settings->get('branding.'.$asset);
+        if (is_array($m)) {
+            return $m;
+        }
+        $files = ['logo' => ['png' => 'logo.png', 'jpg' => 'logo.jpg', 'favicon' => 'logo-favicon.png', 'touch' => 'logo-touch.png', 'mark' => 'logo-mark.png'],
+            'seal' => ['png' => 'seal.png', 'jpg' => 'seal.jpg']][$asset] ?? null;
+        $dir = resource_path('branding');
+        if (! $files || ! is_file($dir.'/'.$files['png'])) {
+            return null;
+        }
+        [$w, $h] = getimagesize($dir.'/'.$files['png']);
+
+        return array_map(fn ($f) => $dir.'/'.$f, $files) + ['width' => $w, 'height' => $h, 'v' => filemtime($dir.'/'.$files['png']), 'default' => true];
     }
 
     /** @return array{path:string, mime:string}|null */
@@ -85,10 +107,10 @@ class BrandingService
     public function brand(): array
     {
         $asset = function (string $name) {
-            $m = $this->settings->get('branding.'.$name);
+            $m = $this->meta($name);
 
             return is_array($m) ? ['png' => route('branding.show', [$name, 'png']).'?v='.$m['v'], 'jpg' => route('branding.show', [$name, 'jpg']).'?v='.$m['v'],
-                'width' => $m['width'], 'height' => $m['height']] : null;
+                'width' => $m['width'], 'height' => $m['height'], 'default' => ! empty($m['default'])] : null;
         };
 
         return [
@@ -97,6 +119,8 @@ class BrandingService
             'email' => config('mail.from.address'), 'signature_title' => $this->settings->get('company.signature_title'),
             'logo' => $asset('logo'), 'seal' => $asset('seal'),
             'favicon' => $this->faviconUrl(),
+            'mark' => $this->meta('logo') ? $this->faviconUrl(isset($this->meta('logo')['mark']) ? 'mark' : 'touch') : null,
+            'accent' => $this->accent(),
         ];
     }
 
@@ -109,10 +133,36 @@ class BrandingService
             'width' => $m['width'], 'height' => $m['height'], 'name' => $project->customer ?: $project->name] : null;
     }
 
+    public function accent(): string
+    {
+        $a = (string) ($this->settings->get('branding.accent') ?: 'blue'); // blue matches the Auxtech logo
+
+        return in_array($a, self::ACCENTS, true) ? $a : 'blue';
+    }
+
+    public function setAccent(string $accent): void
+    {
+        if (! in_array($accent, self::ACCENTS, true)) {
+            throw new DomainException('Unknown accent colour.');
+        }
+        $this->settings->set('branding.accent', $accent, 'branding');
+        $this->settings->flush();
+    }
+
+    /** Public letterhead for the sign-in pages (no seal / private data). */
+    public function guestBrand(): array
+    {
+        $logo = $this->meta('logo');
+
+        return ['company' => $this->settings->get('company.name'), 'app' => config('app.name'),
+            'logo' => $logo ? route('branding.show', ['logo', 'png']).'?v='.$logo['v'] : null,
+            'mark' => $logo ? $this->faviconUrl(isset($logo['mark']) ? 'mark' : 'touch') : null];
+    }
+
     /** Logo-derived browser icon (cache-busted), or the default /favicon.ico. */
     public function faviconUrl(string $kind = 'favicon'): string
     {
-        $m = $this->settings->get('branding.logo');
+        $m = $this->meta('logo');
 
         return is_array($m) && isset($m[$kind]) ? route('branding.icon', $kind).'?v='.$m['v'] : '/favicon.ico';
     }
@@ -135,11 +185,12 @@ class BrandingService
 
     private function pick(mixed $meta, string $format): ?array
     {
-        if (! is_array($meta) || ! in_array($format, ['png', 'jpg', 'favicon', 'touch'], true) || ! isset($meta[$format]) || ! Storage::disk('local')->exists($meta[$format])) {
+        if (! is_array($meta) || ! in_array($format, ['png', 'jpg', 'favicon', 'touch', 'mark'], true) || ! isset($meta[$format])) {
             return null;
         }
+        $path = ! empty($meta['default']) ? $meta[$format] : Storage::disk('local')->path($meta[$format]);
 
-        return ['path' => Storage::disk('local')->path($meta[$format]), 'mime' => $format === 'jpg' ? 'image/jpeg' : 'image/png'];
+        return is_file($path) ? ['path' => $path, 'mime' => $format === 'jpg' ? 'image/jpeg' : 'image/png'] : null;
     }
 
     private function deleteFiles(mixed $meta): void

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Accounting;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Accounting\DeleteWithReasonRequest;
 use App\Http\Requests\Accounting\StoreAssetRequest;
 use App\Http\Requests\Accounting\UpdateAssetRequest;
 use App\Models\FixedAsset;
@@ -37,5 +38,12 @@ class AssetController extends Controller
         $this->assets->update($asset, $request->validated());
 
         return $this->toast("Asset {$asset->code} updated.");
+    }
+
+    public function destroy(DeleteWithReasonRequest $request, FixedAsset $asset)
+    {
+        $this->assets->delete($asset, $request->validated('reason'));
+
+        return $this->toast("Asset {$asset->code} deleted.");
     }
 }

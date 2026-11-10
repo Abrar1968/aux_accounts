@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
+import ConfirmDialog from '@/Components/ui/ConfirmDialog.vue';
 import PageHeader from '@/Components/ui/PageHeader.vue';
 import Card from '@/Components/ui/Card.vue';
 import DataTable from '@/Components/ui/DataTable.vue';
@@ -26,6 +27,9 @@ function edit(r) {
     form.override_amount = r.override_amount ?? '';
     form.notes = r.notes ?? '';
 }
+const confirmDel = ref(false);
+const removing = ref(false);
+const remove = () => { removing.value = true; router.delete(`/accounting/recognition/${editing.value.id}`, { preserveScroll: true, onFinish: () => { removing.value = false; confirmDel.value = false; editing.value = null; } }); };
 const save = () => form.transform((d) => ({ ...d, ending_progress: d.ending_progress === '' ? null : Number(d.ending_progress) / 100, override_amount: d.override_amount === '' ? null : d.override_amount }))
     .put(`/accounting/recognition/${editing.value.id}`, { preserveScroll: true, onSuccess: () => (editing.value = null) });
 const columns = [
@@ -50,12 +54,13 @@ const columns = [
         </DataTable>
         <Pagination :page="rows" />
     </Card>
-    <Modal :model-value="!!editing" @update:model-value="(v) => !v && (editing = null)" :title="`Update ${editing?.code}`">
+    <Modal :model-value="!!editing" @update:model-value="(v) => !v && (editing = null)" icon="pencil" :title="`Update ${editing?.code}`" :subtitle="editing?.project?.name">
         <div class="space-y-4">
             <Input v-model="form.ending_progress" type="number" min="0" max="100" step="0.1" label="Ending cumulative progress (%)" :error="form.errors.ending_progress" :hint="`Opening progress ${pct(editing?.opening_progress ?? 0)}`" />
             <Input v-model="form.override_amount" type="number" step="0.01" label="Documented override (৳)" hint="Only with documentation; replaces the auto amount" :error="form.errors.override_amount" />
             <Input v-model="form.notes" label="Notes" />
         </div>
-        <template #footer><Button variant="secondary" @click="editing = null">Cancel</Button><Button :loading="form.processing" @click="save">Save</Button></template>
+        <template #footer><Button v-if="!editing?.auto_generated" variant="danger-soft" icon="trash" class="sm:mr-auto" @click="confirmDel = true">Delete row</Button><Button variant="secondary" @click="editing = null">Cancel</Button><Button :loading="form.processing" @click="save">Save</Button></template>
     </Modal>
+    <ConfirmDialog v-model="confirmDel" danger :loading="removing" title="Delete recognition row?" confirm-label="Delete" :message="`${editing?.code} will be removed and the statements recalculated. Historical (workbook) rows are locked.`" @confirm="remove" />
 </template>
