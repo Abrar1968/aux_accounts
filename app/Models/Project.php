@@ -22,6 +22,7 @@ class Project extends BaseModel
             'est_delivery_date' => DateOnly::class,
             'actual_delivery_date' => DateOnly::class,
             'client_signature' => 'array',
+            'discount' => 'decimal:2',
             'base_value' => 'decimal:2',
             'change_orders' => 'decimal:2',
         ];
@@ -74,9 +75,10 @@ class Project extends BaseModel
         return $this->belongsTo(Lead::class);
     }
 
+    /** Contract value = project valuation + change orders − discount (Project Intake Form). */
     public function getTotalValueAttribute(): float
     {
-        return round((float) $this->base_value + (float) $this->change_orders, 2);
+        return round((float) $this->base_value + (float) $this->change_orders - (float) $this->discount, 2);
     }
 
     public function isLead(): bool

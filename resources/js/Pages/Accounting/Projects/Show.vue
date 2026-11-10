@@ -5,6 +5,7 @@ import PageHeader from '@/Components/ui/PageHeader.vue';
 import Card from '@/Components/ui/Card.vue';
 import StatCard from '@/Components/ui/StatCard.vue';
 import Badge from '@/Components/ui/Badge.vue';
+import Avatar from '@/Components/ui/Avatar.vue';
 import Button from '@/Components/ui/Button.vue';
 import DataTable from '@/Components/ui/DataTable.vue';
 import Modal from '@/Components/ui/Modal.vue';
@@ -26,6 +27,7 @@ const submit = () => form.post(`/accounting/projects/${p.value.id}/deliver`, { p
 const sig = useForm({ client_signature: null });
 const saveSig = () => sig.post(`/accounting/projects/${p.value.id}/signature`, { forceFormData: true, preserveScroll: true, onSuccess: () => sig.reset() });
 const removeSig = () => router.delete(`/accounting/projects/${p.value.id}/signature`, { preserveScroll: true });
+const providerLabel = (v) => ({ client: 'Client', auxtech: 'Auxtech', not_needed: 'Not needed' })[v] ?? '—';
 const facts = computed(() => [
     ['Code', p.value.code], ['Customer', p.value.customer], ['Register', p.value.type_label], ['Revenue method', p.value.revenue_method],
     ['Source month', date(p.value.source_month)], ['Start', date(p.value.start_date)], ['Est. delivery', date(p.value.est_delivery_date)],
@@ -38,6 +40,7 @@ const facts = computed(() => [
     <Head :title="p.name" />
     <PageHeader :title="p.name" :subtitle="`${p.code} · ${p.work_status}`" back="/accounting/projects">
         <Badge :label="p.payment_status" />
+        <Button variant="secondary" size="sm" icon="doc" :href="`/accounting/projects/${p.id}/intake`">Intake form</Button>
         <Button v-if="p.kind !== 'lead'" variant="secondary" size="sm" icon="receipt" :href="`/accounting/receivables/project/${p.id}/invoice`">Invoice</Button>
         <Button v-if="p.kind !== 'lead'" variant="secondary" size="sm" icon="doc" :href="`/accounting/receivables/project/${p.id}/statement`">Statement</Button>
         <Button v-if="can('accounting.projects.update') && !p.actual_delivery_date && p.kind !== 'lead'" size="sm" icon="check" @click="deliver = true">Mark delivered</Button>
@@ -45,13 +48,29 @@ const facts = computed(() => [
         <Button v-if="can('accounting.projects.delete')" variant="danger-soft" size="sm" icon="trash" @click="crud.askDelete(p)">Delete</Button>
     </PageHeader>
     <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard icon="briefcase" label="Contract value" :value="money(p.total_value)" :hint="p.change_orders ? `Incl. change orders ${money(p.change_orders)}` : null" />
+        <StatCard icon="briefcase" label="Contract value" :value="money(p.total_value)" :hint="[Number(p.discount) ? `After discount ${money(p.discount)}` : null, Number(p.change_orders) ? `incl. change orders ${money(p.change_orders)}` : null].filter(Boolean).join(' · ') || `Valuation ${money(p.base_value)}`" />
         <StatCard icon="trend" label="Revenue recognised" :value="money(p.revenue_recognized)" :hint="`Progress ${pct(p.progress)}`" />
         <StatCard icon="inbox" label="Collected (gross)" :value="money(p.gross_settlement)" :hint="`${pct(p.collection_percent)} · fees ${money(p.processing_fees)}`" />
         <StatCard :label="p.customer_advance ? 'Customer advance' : 'Receivable'" :value="money(p.customer_advance || p.current_ar)" :tone="p.current_ar ? 'warning' : 'neutral'" />
     </div>
     <div class="mt-4 grid gap-4 lg:grid-cols-3">
         <div class="min-w-0 space-y-4">
+        <Card title="Client & intake" icon="user">
+            <div class="flex items-center gap-3">
+                <Avatar :name="p.customer || p.name" />
+                <div class="min-w-0"><p class="truncate font-semibold">{{ p.customer || p.name }}</p><p class="truncate text-xs text-ink-3">{{ p.client_address || 'No address' }}</p></div>
+            </div>
+            <dl class="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+                <dt class="text-ink-3">Email</dt><dd class="min-w-0 truncate text-right font-medium"><a v-if="p.client_email" :href="`mailto:${p.client_email}`" class="text-brand-600 hover:underline dark:text-brand-300">{{ p.client_email }}</a><span v-else>—</span></dd>
+                <dt class="text-ink-3">Phone</dt><dd class="min-w-0 truncate text-right font-medium"><a v-if="p.client_phone" :href="`tel:${p.client_phone}`" class="text-brand-600 hover:underline dark:text-brand-300">{{ p.client_phone }}</a><span v-else>—</span></dd>
+                <dt class="text-ink-3">Domain</dt><dd class="min-w-0 truncate text-right font-medium">{{ p.domain || '—' }}</dd>
+                <dt class="text-ink-3">Domain by</dt><dd class="text-right font-medium">{{ providerLabel(p.domain_provided_by) }}</dd>
+                <dt class="text-ink-3">Hosting by</dt><dd class="text-right font-medium">{{ providerLabel(p.hosting_provided_by) }}</dd>
+                <dt class="text-ink-3">Project manager</dt><dd class="min-w-0 truncate text-right font-medium">{{ p.project_manager || '—' }}</dd>
+                <dt class="text-ink-3">Valuation</dt><dd class="num text-right font-medium">{{ money(p.base_value) }}</dd>
+                <dt class="text-ink-3">Discount</dt><dd class="num text-right font-medium">{{ money(p.discount) }}</dd>
+            </dl>
+        </Card>
         <Card title="Details">
             <dl class="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
                 <template v-for="[k, v] in facts" :key="k"><dt class="text-ink-3">{{ k }}</dt><dd class="min-w-0 truncate text-right font-medium">{{ v }}</dd></template>

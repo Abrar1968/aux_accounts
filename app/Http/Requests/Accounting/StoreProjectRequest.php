@@ -14,9 +14,24 @@ class StoreProjectRequest extends FormRequest
         return true;
     }
 
-    public function rules(): array
+    /** Project Intake Form fields, shared with UpdateProjectRequest. */
+    public static function intakeRules(): array
     {
         return [
+            'client_email' => ['nullable', 'email', 'max:190'],
+            'client_phone' => ['nullable', 'string', 'max:40'],
+            'client_address' => ['nullable', 'string', 'max:255'],
+            'domain' => ['nullable', 'string', 'max:190'],
+            'domain_provided_by' => ['nullable', 'in:client,auxtech,not_needed'],
+            'hosting_provided_by' => ['nullable', 'in:client,auxtech,not_needed'],
+            'discount' => ['nullable', 'numeric', 'min:0', 'decimal:0,2'],
+            'project_manager' => ['nullable', 'string', 'max:120'],
+        ];
+    }
+
+    public function rules(): array
+    {
+        return self::intakeRules() + [
             'name' => ['required', 'string', 'max:190'],
             'customer' => ['nullable', 'string', 'max:190'],
             'kind' => ['required', 'in:project,international,lead'],

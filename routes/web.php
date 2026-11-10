@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/projects', [Accounting\ProjectController::class, 'store'])->middleware('permission:accounting.projects.create')->name('projects.store');
         Route::put('/projects/{project}', [Accounting\ProjectController::class, 'update'])->middleware('permission:accounting.projects.update')->name('projects.update');
         Route::delete('/projects/{project}', [Accounting\ProjectController::class, 'destroy'])->middleware('permission:accounting.projects.delete')->name('projects.destroy');
+        Route::get('/projects/{project}/intake', [Accounting\ProjectController::class, 'intake'])->middleware('permission:accounting.projects.view')->name('projects.intake');
         Route::get('/projects/{project}/signature.{format}', [Accounting\ProjectController::class, 'signature'])->whereIn('format', ['png', 'jpg'])->middleware('permission:accounting.projects.view')->name('projects.signature');
         Route::post('/projects/{project}/signature', [Accounting\ProjectController::class, 'storeSignature'])->middleware('permission:accounting.projects.update')->name('projects.signature.store');
         Route::delete('/projects/{project}/signature', [Accounting\ProjectController::class, 'destroySignature'])->middleware('permission:accounting.projects.update')->name('projects.signature.destroy');
@@ -183,6 +184,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/settings', [System\SettingController::class, 'index'])->name('settings.index');
         Route::put('/settings', [System\SettingController::class, 'update'])->name('settings.update');
         Route::post('/settings/branding', [System\BrandingController::class, 'store'])->name('branding.store');
+        Route::post('/settings/integrations/google-sheets/secret', [System\IntegrationController::class, 'rotate'])->name('integrations.sheets.rotate');
+        Route::get('/settings/integrations/google-sheets/script', [System\IntegrationController::class, 'script'])->name('integrations.sheets.script');
         Route::put('/settings/branding/accent', [System\BrandingController::class, 'accent'])->name('branding.accent');
         Route::delete('/settings/branding/{asset}', [System\BrandingController::class, 'destroy'])->whereIn('asset', ['logo', 'seal'])->name('branding.destroy');
         Route::get('/system/automation', [System\AutomationController::class, 'index'])->name('automation');

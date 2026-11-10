@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Schedule;
 
 $tz = config('app.timezone');
 
+Schedule::command('deploy:auto-migrate')->everyMinute()->withoutOverlapping(); // applies migrations from an uploaded update zip
 Schedule::command('queue:work --stop-when-empty --max-time=50')->everyMinute()->withoutOverlapping();
 Schedule::command('crm:safety-check')->everyFiveMinutes()->timezone($tz)->withoutOverlapping();
 Schedule::command('accounting:daily')->dailyAt('02:10')->timezone($tz)->withoutOverlapping();
