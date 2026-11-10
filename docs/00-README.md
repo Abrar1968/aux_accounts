@@ -19,5 +19,6 @@
 | 15 | [New features](15-new-features.md) | Phase 4: banking, budgets, forecast, recurring bills, statements, leaderboard, CSV import |
 | 16 | [Verification report](16-verification-report.md) | Pre-deployment audit: data, calculations, tests, E2E, fixes, go-live checklist |
 | 17 | [Deployment](17-deployment.md) | cPanel release zip, commands, cron, SMTP/Pusher env, backup/restore, smoke test |
+| 18 | [Google Sheets sync](18-google-sheets-sync.md) | Lead sheet → CRM live sync (Apps Script push, signed webhook), set-up, troubleshooting |
 
 Current state: **Phases 0, 1, 3 and 4 complete**. Next: Prompt D (deploy) in 10-prompts.md, and Phase 2 hardening items.

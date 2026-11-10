@@ -9,9 +9,13 @@ import Icon from '@/Components/ui/Icon.vue';
 import Input from '@/Components/ui/Input.vue';
 import Button from '@/Components/ui/Button.vue';
 import Badge from '@/Components/ui/Badge.vue';
-import { money, pct, titleCase } from '@/lib/format';
+import { dateTime, money, pct, titleCase } from '@/lib/format';
 
-const props = defineProps({ settings: Object, editable: Array, crm: Object });
+const props = defineProps({ settings: Object, editable: Array, crm: Object, sheets: Object });
+const sheetStatus = computed(() => props.sheets?.status ?? {});
+const sheetHealthy = computed(() => sheetStatus.value.last_seen && (Date.now() - new Date(sheetStatus.value.last_seen.replace(' ', 'T') + '+06:00').getTime()) < 15 * 60 * 1000);
+const rotating = ref(false);
+const rotateSecret = () => { rotating.value = true; router.post('/settings/integrations/google-sheets/secret', {}, { preserveScroll: true, onFinish: () => (rotating.value = false) }); };
 const tab = ref('policies');
 const LABELS = {
     'assets.ac_useful_life': ['AC useful life (months)', 'number'], 'assets.ac_residual': ['AC residual value (৳)', 'number'],
@@ -47,7 +51,49 @@ const removeOption = (type, value) => router.delete('/crm/settings/options', { d
 <template>
     <Head title="Settings" />
     <PageHeader title="Settings" subtitle="Accounting policies and CRM lists — statements recalculate automatically after a change" />
-    <div class="mb-3"><Tabs v-model="tab" :tabs="[{ key: 'policies', label: 'Policies' }, { key: 'branding', label: 'Branding' }, { key: 'referrals', label: 'Referral tiers' }, { key: 'crm', label: 'CRM lists' }, { key: 'system', label: 'Model constants' }]" /></div>
+    <div class="mb-3"><Tabs v-model="tab" :tabs="[{ key: 'policies', label: 'Policies' }, { key: 'branding', label: 'Branding' }, { key: 'integrations', label: 'Integrations' }, { key: 'referrals', label: 'Referral tiers' }, { key: 'crm', label: 'CRM lists' }, { key: 'system', label: 'Model constants' }]" /></div>
+    <div v-if="tab === 'integrations'" class="grid gap-4 xl:grid-cols-3">
+        <Card title="Google Sheets → Lead CRM" subtitle="Your daily lead sheet updates the CRM automatically" icon="layers" class="xl:col-span-2">
+            <div class="flex flex-wrap items-center gap-3">
+                <Badge v-if="!sheets.enabled" tone="neutral" label="Not enabled" />
+                <Badge v-else-if="sheetHealthy" tone="positive" label="Connected" />
+                <Badge v-else-if="sheetStatus.last_seen" tone="warning" label="No sync in the last 15 min" />
+                <Badge v-else tone="warning" label="Waiting for the sheet" />
+                <span v-if="sheetStatus.last_seen" class="text-sm text-ink-2">Last sync {{ dateTime(sheetStatus.last_seen) }} · last change {{ sheetStatus.last_change ? dateTime(sheetStatus.last_change) : '—' }}</span>
+            </div>
+            <dl v-if="sheetStatus.summary" class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <div v-for="[k, l] in [['created', 'New leads'], ['updated', 'Updated'], ['unchanged', 'Unchanged'], ['calls_added', 'Calls added']]" :key="k" class="rounded-xl border border-line bg-surface-2/50 p-3">
+                    <dt class="text-xs text-ink-3">{{ l }} <span class="text-[10px]">({{ sheetStatus.mode === 'full' ? '5-min sync' : 'last edit' }})</span></dt><dd class="num text-xl font-bold">{{ sheetStatus.summary[k] ?? 0 }}</dd>
+                </div>
+            </dl>
+            <div v-if="sheetStatus.errors?.length" class="mt-4 rounded-xl border border-warning/30 bg-warning/10 p-3 text-sm">
+                <p class="font-semibold text-warning">Rows that need fixing in the sheet</p>
+                <ul class="mt-1 list-disc space-y-0.5 pl-5 text-ink-2"><li v-for="e in sheetStatus.errors" :key="e">{{ e }}</li></ul>
+            </div>
+            <ol class="mt-5 space-y-2.5 text-sm text-ink-2">
+                <li class="flex gap-3"><span class="grid size-6 shrink-0 place-items-center rounded-full bg-brand-50 text-xs font-bold text-brand-600 dark:text-brand-300">1</span><span><b class="text-ink">{{ sheets.enabled ? 'Sync is enabled.' : 'Enable the sync' }}</b> — this creates a private secret that only your sheet knows.</span></li>
+                <li class="flex gap-3"><span class="grid size-6 shrink-0 place-items-center rounded-full bg-brand-50 text-xs font-bold text-brand-600 dark:text-brand-300">2</span><span><b class="text-ink">Download the script</b> (your site address and secret are already filled in).</span></li>
+                <li class="flex gap-3"><span class="grid size-6 shrink-0 place-items-center rounded-full bg-brand-50 text-xs font-bold text-brand-600 dark:text-brand-300">3</span><span>In the lead sheet open <b class="text-ink">Extensions → Apps Script</b>, add a new script file, paste it and save.</span></li>
+                <li class="flex gap-3"><span class="grid size-6 shrink-0 place-items-center rounded-full bg-brand-50 text-xs font-bold text-brand-600 dark:text-brand-300">4</span><span>Select <b class="text-ink">auxtechSetup</b> and press <b class="text-ink">Run</b>, then allow access. Edits sync instantly; a full re-sync runs every 5 minutes.</span></li>
+            </ol>
+            <div class="mt-5 flex flex-wrap gap-2">
+                <Button v-if="!sheets.enabled" icon="bolt" :loading="rotating" @click="rotateSecret">Enable sync</Button>
+                <template v-else>
+                    <a href="/settings/integrations/google-sheets/script" download class="inline-flex h-10 items-center gap-2 rounded-[10px] bg-brand-gradient px-4 text-sm font-semibold text-white shadow-[var(--shadow-brand)] ring-1 ring-inset ring-white/15 hover:brightness-110"><Icon name="download" :size="16" />Download Apps Script</a>
+                    <Button variant="secondary" icon="reverse" :loading="rotating" @click="rotateSecret">Rotate secret</Button>
+                </template>
+            </div>
+        </Card>
+        <Card title="How it syncs" icon="info">
+            <ul class="space-y-2.5 text-sm text-ink-2">
+                <li><b class="text-ink">Leads</b> are matched by Lead ID, then by phone. New rows become new leads; changed rows update stage, score and follow-ups.</li>
+                <li><b class="text-ink">Call Log</b> rows are added once each, by Call ID.</li>
+                <li>The sheet is the source of truth for the columns it holds; an edit in the sheet overwrites the same fields in the CRM.</li>
+                <li>Nothing is deleted: leads archived in the CRM stay archived, and removed sheet rows are left alone.</li>
+                <li class="break-all text-xs text-ink-3">Endpoint: {{ sheets.endpoint }}</li>
+            </ul>
+        </Card>
+    </div>
     <div v-if="tab === 'branding'" class="grid gap-4 lg:grid-cols-2">
         <Card title="Accent colour" subtitle="Buttons, highlights, charts and the sidebar glow — applies to everyone instantly" icon="palette" class="lg:col-span-2">
             <div class="flex flex-wrap gap-3">

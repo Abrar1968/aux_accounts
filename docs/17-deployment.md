@@ -75,6 +75,7 @@ This single line runs everything. A separate `queue:work` cron is **not** needed
 
 | When (Asia/Dhaka) | Job |
 |---|---|
+| every minute | `deploy:auto-migrate` — applies new database migrations from an uploaded update zip (no-op otherwise) |
 | every minute | `queue:work --stop-when-empty` — sends queued emails / notifications |
 | every 5 min | `crm:safety-check` — automatic daily / monthly / yearly CRM reports |
 | 02:10 daily | `accounting:daily` — revenue recognition, Siam share, partnership rows, recurring bills, controls |

@@ -184,6 +184,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/settings', [System\SettingController::class, 'index'])->name('settings.index');
         Route::put('/settings', [System\SettingController::class, 'update'])->name('settings.update');
         Route::post('/settings/branding', [System\BrandingController::class, 'store'])->name('branding.store');
+        Route::post('/settings/integrations/google-sheets/secret', [System\IntegrationController::class, 'rotate'])->name('integrations.sheets.rotate');
+        Route::get('/settings/integrations/google-sheets/script', [System\IntegrationController::class, 'script'])->name('integrations.sheets.script');
         Route::put('/settings/branding/accent', [System\BrandingController::class, 'accent'])->name('branding.accent');
         Route::delete('/settings/branding/{asset}', [System\BrandingController::class, 'destroy'])->whereIn('asset', ['logo', 'seal'])->name('branding.destroy');
         Route::get('/system/automation', [System\AutomationController::class, 'index'])->name('automation');

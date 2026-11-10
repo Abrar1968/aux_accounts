@@ -15,7 +15,7 @@ const m = (v) => money(v, { decimals: true });
 const provider = (v) => ({ client: 'Provided by client', auxtech: 'Provided by Auxtech', not_needed: 'Not needed' })[v] ?? 'Not specified';
 const sections = computed(() => [
     ['Client information', [['Name', p.value.customer || p.value.name], ['Email', p.value.client_email], ['Phone', p.value.client_phone], ['Address', p.value.client_address]]],
-    ['Project information', [['Title / Domain', [p.value.name, p.value.domain].filter(Boolean).join(' · ')], ['Project ID', p.value.code], ['Assign date', date(p.value.start_date)], ['Delivery date', date(p.value.est_delivery_date)], ['Project manager', p.value.project_manager]]],
+    ['Project information', [['Title / Domain', [...new Set([p.value.name, p.value.domain].filter(Boolean))].join(' · ')], ['Project ID', p.value.code], ['Assign date', date(p.value.start_date)], ['Delivery date', date(p.value.est_delivery_date)], ['Project manager', p.value.project_manager]]],
     ['Domain & hosting', [['Domain', provider(p.value.domain_provided_by)], ['Hosting', provider(p.value.hosting_provided_by)]]],
     ['Payment information', [['Project valuation', m(p.value.base_value)], ...(Number(p.value.change_orders) ? [['Change orders', m(p.value.change_orders)]] : []), ['Discount', m(p.value.discount)], ['Contract value', m(p.value.total_value)], ['Paid', m(p.value.gross_settlement)], ['Due', m(Math.max(0, p.value.total_value - p.value.gross_settlement))]]],
 ]);
