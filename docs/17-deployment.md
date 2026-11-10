@@ -99,7 +99,7 @@ MAIL_PORT=465
 MAIL_USERNAME=admin@accounts.auxtechsoftware.com
 MAIL_PASSWORD=…
 MAIL_FROM_ADDRESS=admin@accounts.auxtechsoftware.com
-MAIL_FROM_NAME="Auxtech Software"
+MAIL_FROM_NAME="Auxtech"
 
 BROADCAST_CONNECTION=pusher
 PUSHER_APP_ID=2208649

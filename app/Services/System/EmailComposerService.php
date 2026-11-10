@@ -407,7 +407,8 @@ class EmailComposerService
             'details' => array_values(array_filter($data['details'] ?? [], fn ($d) => ! empty($d['on']) && trim((string) ($d['label'] ?? '')) !== '')),
             'table' => ! empty($data['include_table']) ? ($data['table'] ?? null) : null,
             'closing' => $data['closing'] ?? '',
-            'sender' => $sender->name, 'title' => $this->settings->get('company.signature_title'),
+            // every email is signed by the same person, whoever clicks Send (Settings → Policies → Email signature)
+            'sender' => $this->settings->get('company.signature_name') ?: $sender->name, 'title' => $this->settings->get('company.signature_title'),
             'company' => $this->settings->get('company.name'), 'website' => $this->settings->get('company.website'),
             'phone' => $this->settings->get('company.phone'), 'address' => $this->settings->get('company.address'),
             'replyTo' => config('mail.from.address'),

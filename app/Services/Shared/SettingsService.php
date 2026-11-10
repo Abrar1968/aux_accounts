@@ -47,11 +47,12 @@ class SettingsService
         'crm.phone_country_code' => '88',
         'forecast.collection_rate' => 0.6,
         // Email composer letterhead / signature
-        'company.name' => 'Auxtech Software',
+        'company.name' => 'Auxtech',
         'company.website' => 'https://auxtechsoftware.com',
         'company.phone' => '',
         'company.address' => 'Dhaka, Bangladesh',
-        'company.signature_title' => 'Accounts Team',
+        'company.signature_name' => 'Minhazur Rahman',
+        'company.signature_title' => 'Chief Operating Officer',
     ];
 
     public function get(string $key, mixed $default = null): mixed
@@ -79,7 +80,7 @@ class SettingsService
         'assets.ac_useful_life', 'assets.ac_residual', 'siam.start', 'siam.months', 'siam.share', 'referral.tiers',
         'opening.other_fixed_assets', 'opening.other_assets', 'opening.cash', 'opening.other_liabilities',
         'forecast.collection_rate', 'crm.daily_slots', 'crm.default_owner', 'crm.default_business_type', 'crm.report_brand',
-        'company.name', 'company.website', 'company.phone', 'company.address', 'company.signature_title',
+        'company.name', 'company.website', 'company.phone', 'company.address', 'company.signature_name', 'company.signature_title',
     ];
 
     /** @param array<string,mixed> $values */
