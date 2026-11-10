@@ -19,9 +19,9 @@ const arcs = computed(() => {
 
 <template>
     <div class="@container"><div class="flex flex-col items-center gap-5 @sm:flex-row">
-        <svg viewBox="0 0 100 100" class="size-40 shrink-0 drop-shadow-sm" role="img" aria-label="Breakdown">
-            <circle cx="50" cy="50" r="40" fill="none" stroke="var(--color-surface-2)" stroke-width="11" />
-            <path v-for="a in arcs" :key="a.label" :d="a.d" fill="none" :stroke="a.color" stroke-width="11" stroke-linecap="butt"><title>{{ a.label }}: {{ money(a.amount) }}</title></path>
+        <svg viewBox="0 0 100 100" class="size-40 shrink-0 overflow-visible" role="img" aria-label="Breakdown">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="var(--color-line)" stroke-width="11" />
+            <path v-for="a in arcs" :key="a.label" :d="a.d" fill="none" :stroke="a.color" stroke-width="11" stroke-linecap="butt" class="origin-center cursor-pointer transition-[stroke-width] duration-200 hover:[stroke-width:14]"><title>{{ a.label }}: {{ money(a.amount) }}</title></path>
             <text x="50" y="49" text-anchor="middle" class="num" font-size="10" font-weight="600" fill="var(--color-ink)">{{ center }}</text>
             <text x="50" y="60" text-anchor="middle" font-size="6" fill="var(--color-ink-3)">{{ centerLabel }}</text>
         </svg>

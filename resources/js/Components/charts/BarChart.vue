@@ -23,7 +23,7 @@ const color = (s, si) => s.color ?? SERIES[si];
             <defs>
                 <linearGradient v-for="(s, si) in series" :id="`${gid}-${si}`" :key="si" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" :stop-color="color(s, si)" /><stop offset="100%" :stop-color="color(s, si)" stop-opacity=".55" /></linearGradient>
             </defs>
-            <g class="text-[10px]" fill="var(--color-ink-3)">
+            <g class="font-mono text-[9.5px]" fill="var(--color-ink-3)">
                 <g v-for="t in ticks" :key="t"><line :x1="P.l" :x2="W - P.r" :y1="y(t)" :y2="y(t)" stroke="var(--color-line)" :stroke-dasharray="t === 0 ? '' : '3 3'" /><text :x="P.l - 6" :y="y(t) + 3" text-anchor="end">{{ compact(t) }}</text></g>
                 <text v-for="(l, i) in labels" :key="l" :x="P.l + band * i + band / 2" :y="height - 8" text-anchor="middle">{{ l }}</text>
             </g>

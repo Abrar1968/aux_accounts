@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue';
-const props = defineProps({ values: { type: Array, default: () => [] }, stroke: { type: String, default: 'var(--color-brand-500)' } });
+const props = defineProps({ values: { type: Array, default: () => [] }, stroke: { type: String, default: 'var(--color-brand-400)' } });
 const id = `sp-${Math.random().toString(36).slice(2, 8)}`;
 const pts = computed(() => {
     const v = props.values.map(Number);

@@ -15,4 +15,4 @@ export const compact = (n) => {
     const s = a >= 1e7 ? `${(a / 1e7).toFixed(1)}Cr` : a >= 1e5 ? `${(a / 1e5).toFixed(a >= 1e6 ? 0 : 1)}L` : a >= 1e3 ? `${(a / 1e3).toFixed(0)}k` : `${a}`;
     return n < 0 ? `-${s}` : s;
 };
-export const SERIES = ['var(--color-brand-500)', 'var(--color-brand-alt)', '#10b981', '#f59e0b', '#f43f5e', '#06b6d4', '#64748b'];
+export const SERIES = ['var(--color-brand-400)', 'var(--color-info)', 'var(--color-positive)', '#a78bfa', 'var(--color-negative)', '#5eead4', '#93a4d6'];

@@ -1,7 +1,9 @@
 # 06 — Frontend & Design System (Inertia + Vue 3 + Tailwind v4)
 
-Goal: a calm, dense, professional finance tool — closer to Linear / Stripe Dashboard than to an
-admin template. Numbers are the hero; chrome is quiet.
+Design language **"Command glass"** (Nov 2026 redesign, inspired by the *Auxtech Command* concept):
+midnight navy + amber, frosted-glass surfaces over soft ambient light, mono uppercase micro-labels
+and mono figures. Dark is the primary theme (default for new browsers); light is a cool "cloud"
+variant of the same tokens. Numbers are the hero; chrome stays quiet.
 
 ## 1. Stack
 * Inertia v2 (`@inertiajs/vue3`): `Link`, `useForm`, `router`, partial reloads, deferred props,
@@ -13,26 +15,37 @@ admin template. Numbers are the hero; chrome is quiet.
 * No UI/chart/icon/date libraries: icons are inline SVG (`Components/ui/Icon.vue`), charts are hand-built SVG
   components, dates via `Intl`.
 
-## 2. Tokens
+## 2. Tokens (`resources/css/app.css`)
 | Token | Light | Dark | Use |
 |---|---|---|---|
-| canvas | #f6f7f9 | #0b0f17 | page background |
-| surface / surface-2 | #fff / #f1f3f6 | #121826 / #182033 | cards, inputs / hover, table header |
-| line | #e3e6eb | #243049 | borders, dividers |
-| ink / ink-2 / ink-3 | #0f172a / #475569 / #94a3b8 | #e6ebf5 / #a3b0c6 / #66748d | text hierarchy |
-| brand-500/600/700 | #3d6ef5 / #2b57db / #2245b0 | same | primary actions, active nav |
-| positive / negative / warning / info | #0f9f6e / #d4364b / #c27a06 / #2b6cd4 | same | money direction, statuses |
+| canvas | #edf0f7 + amber/blue washes | #0a1128 + amber/blue washes | page background (ambient orbs drift behind the glass) |
+| surface / surface-2 / surface-3 | #fff / #f3f5fb / #e7ebf4 | #111d42 / #16244f / #1d2d5d | solid fills (inputs, sticky cells) |
+| line / line-strong | navy 8.5 % / 16 % | cloud 8.5 % / 16 % | hairline borders |
+| ink / ink-2 / ink-3 | #0a1128 / #3d4763 / #6b748c | #e8ecf7 / #b4bdd6 / #8b94ab | text hierarchy |
+| brand-300…500 | #ffc978 / #ffb454 / #f59e2e | same | amber accent; `text-on-brand` = navy text on amber |
+| positive / negative / warning / info | #0f9b68 / #e04848 / #c27c0e / #2f6fe0 | #4ade9e / #ff6b6b / #f7c85c / #5b9dff | statuses, money direction |
 
-Typography: Inter (system fallback), 14 px base, tabular numerals for all money (`num` utility),
-headings 20–24 px semibold tight tracking. Radius 14 px cards, 8 px controls. Shadows minimal.
-Money: `৳1,23,456` (en-IN grouping), negatives in parentheses and `text-negative`.
+Settings → Branding can still switch the accent (amber house colour, ocean, indigo, violet, emerald,
+teal, rose); each palette also sets `--color-on-brand`.
+
+Glass utilities: `card` (frosted panel, 18 px radius, blur 18 px), `glass-pop` (opaque glass for
+menus, drawers, modals, palette, toasts), `glass-chrome` (top bar, section panel). Hover utilities:
+`lift` (rise 3 px + amber edge glow) and `spotlight` (amber radial glow that follows the pointer;
+`AppLayout` feeds `--mx/--my`). Rows highlight with an amber inset bar; buttons are pills that rise
+on hover; primary buttons carry an amber glow.
+
+Typography: **Fustat** (UI, self-hosted variable woff2) and **JetBrains Mono** (figures via the `num`
+utility, table money columns, `eyebrow` micro-labels at 10.5 px / .16em uppercase). 14 px base,
+page titles 30 px bold −0.03em. Money: `৳1,23,456` (en-IN grouping), negatives in parentheses and
+`text-negative`. Documents (invoice, payslip, statements, reports) render as light paper (`.paper`)
+in both themes.
 
 ## 3. Layout & responsiveness
 | Breakpoint | Behaviour |
 |---|---|
-| < 640 px (phones) | sidebar = slide-over drawer; tables render as stacked cards (`DataTable` `mobile="cards"`); forms = full-screen sheet; sticky bottom action bar; toasts bottom-centre |
+| < 640 px (phones) | rail + section panel slide in together as one drawer; tables render as stacked cards (`DataTable` `mobile="cards"`); forms = full-screen sheet; sticky bottom action bar; toasts bottom-centre |
 | 640–1023 px | drawer sidebar, 2-column KPI grid, tables scroll horizontally with sticky first column |
-| ≥ 1024 px | fixed 264 px sidebar, 4-column KPI grid, drawers 480 px from right |
+| ≥ 1024 px | 76 px module rail (Accounting · Lead CRM · System) + 248 px glass section panel, 4-column KPI grid, drawers 480 px from right |
 | ≥ 1440 px | content max-width 1440 px, statement grid shows 8+ months |
 
 Touch targets ≥ 40 px, focus rings on everything, `prefers-reduced-motion` respected.

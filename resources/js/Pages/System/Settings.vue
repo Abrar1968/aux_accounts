@@ -36,10 +36,10 @@ const brand = computed(() => usePage().props.brand ?? {});
 const brandForms = { logo: useForm({ asset: 'logo', image: null }), seal: useForm({ asset: 'seal', image: null }) };
 const saveBrand = (k) => brandForms[k].post('/settings/branding', { forceFormData: true, preserveScroll: true, onSuccess: () => brandForms[k].reset('image') });
 const accents = [
-    { key: 'indigo', label: 'Indigo', from: '#6366f1', to: '#8b5cf6' }, { key: 'blue', label: 'Ocean', from: '#3b82f6', to: '#06b6d4' },
-    { key: 'violet', label: 'Violet', from: '#8b5cf6', to: '#d946ef' }, { key: 'emerald', label: 'Emerald', from: '#10b981', to: '#14b8a6' },
-    { key: 'teal', label: 'Teal', from: '#14b8a6', to: '#06b6d4' }, { key: 'rose', label: 'Rose', from: '#f43f5e', to: '#fb923c' },
-    { key: 'amber', label: 'Amber', from: '#f59e0b', to: '#f97316' },
+    { key: 'amber', label: 'Amber (house)', from: '#ffc978', to: '#f59e2e' }, { key: 'blue', label: 'Ocean', from: '#3b82f6', to: '#06b6d4' },
+    { key: 'indigo', label: 'Indigo', from: '#6366f1', to: '#8b5cf6' }, { key: 'violet', label: 'Violet', from: '#8b5cf6', to: '#d946ef' },
+    { key: 'emerald', label: 'Emerald', from: '#10b981', to: '#14b8a6' }, { key: 'teal', label: 'Teal', from: '#14b8a6', to: '#06b6d4' },
+    { key: 'rose', label: 'Rose', from: '#f43f5e', to: '#fb923c' },
 ];
 const setAccent = (accent) => { document.documentElement.dataset.accent = accent; router.put('/settings/branding/accent', { accent }, { preserveScroll: true }); };
 const removeBrand = (k) => router.delete(`/settings/branding/${k}`, { preserveScroll: true });
@@ -79,7 +79,7 @@ const removeOption = (type, value) => router.delete('/crm/settings/options', { d
             <div class="mt-5 flex flex-wrap gap-2">
                 <Button v-if="!sheets.enabled" icon="bolt" :loading="rotating" @click="rotateSecret">Enable sync</Button>
                 <template v-else>
-                    <a href="/settings/integrations/google-sheets/script" download class="inline-flex h-10 items-center gap-2 rounded-[10px] bg-brand-gradient px-4 text-sm font-semibold text-white shadow-[var(--shadow-brand)] ring-1 ring-inset ring-white/15 hover:brightness-110"><Icon name="download" :size="16" />Download Apps Script</a>
+                    <a href="/settings/integrations/google-sheets/script" download class="inline-flex h-10 items-center gap-2 rounded-full bg-brand-gradient px-[18px] text-sm font-semibold text-on-brand shadow-[var(--shadow-brand)] transition hover:-translate-y-px"><Icon name="download" :size="16" />Download Apps Script</a>
                     <Button variant="secondary" icon="reverse" :loading="rotating" @click="rotateSecret">Rotate secret</Button>
                 </template>
             </div>

@@ -5,151 +5,245 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Inter (OFL), self-hosted in public/fonts — no CDN at runtime */
-@font-face {
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 400 800;
-    font-display: swap;
-    src: url('/fonts/inter-latin-ext.woff2') format('woff2');
-    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 400 800;
-    font-display: swap;
-    src: url('/fonts/inter-latin.woff2') format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
+/* Fustat + JetBrains Mono (OFL), self-hosted variable fonts in public/fonts — no CDN at runtime */
+@font-face { font-family: 'Fustat'; font-style: normal; font-weight: 200 800; font-display: swap; src: url('/fonts/fustat-latin-ext.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Fustat'; font-style: normal; font-weight: 200 800; font-display: swap; src: url('/fonts/fustat-latin.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 400 700; font-display: swap; src: url('/fonts/jetbrains-mono-latin-ext.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 400 700; font-display: swap; src: url('/fonts/jetbrains-mono-latin.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 
 /* ===========================================================================
-   Design tokens — "Aurora" (docs/06). Brand colours come from the accent
-   palette chosen in Settings → Branding (html[data-accent]); indigo default.
+   Design tokens — "Command glass": midnight navy + amber, frosted-glass surfaces.
+   Dark is the primary theme; light is a cool "cloud" variant of the same system.
+   The brand scale comes from html[data-accent] (amber default, Settings → Branding).
    =========================================================================== */
 @theme {
-    --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-    --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+    --font-sans: 'Fustat', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-    --color-canvas: #f4f5f9;
+    --color-canvas: #edf0f7;
     --color-surface: #ffffff;
-    --color-surface-2: #f3f4f8;
-    --color-surface-3: #eceef4;
-    --color-line: #e5e7ef;
-    --color-line-strong: #d5d9e4;
-    --color-ink: #0b1020;
-    --color-ink-2: #4a5468;
-    --color-ink-3: #8a93a7;
+    --color-surface-2: #f3f5fb;
+    --color-surface-3: #e7ebf4;
+    --color-line: rgb(10 17 40 / 0.085);
+    --color-line-strong: rgb(10 17 40 / 0.16);
+    --color-ink: #0a1128;
+    --color-ink-2: #3d4763;
+    --color-ink-3: #6b748c;
 
-    --color-brand-50: #eef2ff;
-    --color-brand-100: #e0e7ff;
-    --color-brand-200: #c7d2fe;
-    --color-brand-300: #a5b4fc;
-    --color-brand-400: #818cf8;
-    --color-brand-500: #6366f1;
-    --color-brand-600: #4f46e5;
-    --color-brand-700: #4338ca;
-    --color-brand-alt: #8b5cf6;
+    /* amber (default accent) */
+    --color-brand-50: #fff6e9;
+    --color-brand-100: #ffebcf;
+    --color-brand-200: #ffdcaa;
+    --color-brand-300: #ffc978;
+    --color-brand-400: #ffb454;
+    --color-brand-500: #f59e2e;
+    --color-brand-600: #c9720c;
+    --color-brand-700: #9a5508;
+    --color-brand-alt: #ff8a4c;
+    --color-on-brand: #0a1128;
 
-    --color-positive: #059669;
-    --color-negative: #e11d48;
-    --color-warning: #d97706;
-    --color-info: #2563eb;
+    --color-positive: #0f9b68;
+    --color-negative: #e04848;
+    --color-warning: #c27c0e;
+    --color-info: #2f6fe0;
 
-    --color-side: #0a0f1f;
-    --color-side-2: #11183a;
+    --color-side: #070c1d;
+    --color-side-2: #0f1b3d;
+    --color-navy: #0a1128;
 
-    --radius-card: 16px;
-    --shadow-xs: 0 1px 2px rgb(16 24 40 / 0.05);
-    --shadow-card: 0 1px 2px rgb(16 24 40 / 0.04), 0 2px 6px -1px rgb(16 24 40 / 0.05);
-    --shadow-lift: 0 2px 4px rgb(16 24 40 / 0.04), 0 12px 24px -6px rgb(16 24 40 / 0.10);
-    --shadow-pop: 0 24px 48px -12px rgb(16 24 40 / 0.25), 0 2px 6px rgb(16 24 40 / 0.06);
-    --shadow-brand: 0 6px 16px -4px color-mix(in oklab, var(--color-brand-600) 55%, transparent);
+    --radius-card: 18px;
+    --shadow-xs: 0 1px 2px rgb(10 17 40 / 0.05);
+    --shadow-card: 0 1px 0 rgb(255 255 255 / 0.7) inset, 0 1px 2px rgb(10 17 40 / 0.04), 0 10px 30px -12px rgb(10 17 40 / 0.14);
+    --shadow-lift: 0 1px 0 rgb(255 255 255 / 0.8) inset, 0 18px 40px -14px rgb(10 17 40 / 0.24);
+    --shadow-pop: 0 30px 70px -20px rgb(10 17 40 / 0.35), 0 2px 6px rgb(10 17 40 / 0.06);
+    --shadow-brand: 0 0 0 1px color-mix(in oklab, var(--color-brand-400) 30%, transparent), 0 10px 28px -8px color-mix(in oklab, var(--color-brand-400) 55%, transparent);
 
-    --animate-in: fade-up 0.35s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    --animate-in: fade-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+:root {
+    color-scheme: light;
+    /* glass recipe (cards, panels, popovers) */
+    --glass-bg: linear-gradient(160deg, rgb(255 255 255 / 0.78), rgb(255 255 255 / 0.56));
+    --glass-solid: rgb(255 255 255 / 0.92);
+    --glass-border: rgb(255 255 255 / 0.75);
+    --glass-edge: rgb(10 17 40 / 0.07);
+    --glass-blur: 18px;
+    --glass-hover-border: color-mix(in oklab, var(--color-brand-400) 45%, transparent);
+    --chrome-bg: rgb(255 255 255 / 0.62);
+    --rail-bg: rgb(10 17 40 / 0.94);
+    --wash-1: rgb(255 180 84 / 0.20);
+    --wash-2: rgb(91 157 255 / 0.18);
+    --wash-3: rgb(255 138 76 / 0.10);
+    --grid-line: rgb(10 17 40 / 0.035);
 }
 
 @keyframes fade-up {
-    from { opacity: 0; transform: translateY(6px); }
+    from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: none; }
 }
+@keyframes drift {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    50% { transform: translate3d(3%, 4%, 0) scale(1.08); }
+}
 
-/* Accent palettes (Tailwind scales) */
-[data-accent='blue'] { --color-brand-50: #eff6ff; --color-brand-100: #dbeafe; --color-brand-200: #bfdbfe; --color-brand-300: #93c5fd; --color-brand-400: #60a5fa; --color-brand-500: #3b82f6; --color-brand-600: #2563eb; --color-brand-700: #1d4ed8; --color-brand-alt: #06b6d4; }
-[data-accent='violet'] { --color-brand-50: #f5f3ff; --color-brand-100: #ede9fe; --color-brand-200: #ddd6fe; --color-brand-300: #c4b5fd; --color-brand-400: #a78bfa; --color-brand-500: #8b5cf6; --color-brand-600: #7c3aed; --color-brand-700: #6d28d9; --color-brand-alt: #d946ef; }
-[data-accent='emerald'] { --color-brand-50: #ecfdf5; --color-brand-100: #d1fae5; --color-brand-200: #a7f3d0; --color-brand-300: #6ee7b7; --color-brand-400: #34d399; --color-brand-500: #10b981; --color-brand-600: #059669; --color-brand-700: #047857; --color-brand-alt: #14b8a6; }
-[data-accent='teal'] { --color-brand-50: #f0fdfa; --color-brand-100: #ccfbf1; --color-brand-200: #99f6e4; --color-brand-300: #5eead4; --color-brand-400: #2dd4bf; --color-brand-500: #14b8a6; --color-brand-600: #0d9488; --color-brand-700: #0f766e; --color-brand-alt: #06b6d4; }
-[data-accent='rose'] { --color-brand-50: #fff1f2; --color-brand-100: #ffe4e6; --color-brand-200: #fecdd3; --color-brand-300: #fda4af; --color-brand-400: #fb7185; --color-brand-500: #f43f5e; --color-brand-600: #e11d48; --color-brand-700: #be123c; --color-brand-alt: #fb923c; }
-[data-accent='amber'] { --color-brand-50: #fffbeb; --color-brand-100: #fef3c7; --color-brand-200: #fde68a; --color-brand-300: #fcd34d; --color-brand-400: #fbbf24; --color-brand-500: #f59e0b; --color-brand-600: #d97706; --color-brand-700: #b45309; --color-brand-alt: #f97316; }
+/* Accent palettes (Settings → Branding). Amber is the house colour. */
+[data-accent='amber'] { --color-brand-50: #fff6e9; --color-brand-100: #ffebcf; --color-brand-200: #ffdcaa; --color-brand-300: #ffc978; --color-brand-400: #ffb454; --color-brand-500: #f59e2e; --color-brand-600: #c9720c; --color-brand-700: #9a5508; --color-brand-alt: #ff8a4c; --color-on-brand: #0a1128; }
+[data-accent='indigo'] { --color-brand-50: #eef2ff; --color-brand-100: #e0e7ff; --color-brand-200: #c7d2fe; --color-brand-300: #a5b4fc; --color-brand-400: #818cf8; --color-brand-500: #6366f1; --color-brand-600: #4f46e5; --color-brand-700: #4338ca; --color-brand-alt: #8b5cf6; --color-on-brand: #ffffff; }
+[data-accent='blue'] { --color-brand-50: #eff6ff; --color-brand-100: #dbeafe; --color-brand-200: #bfdbfe; --color-brand-300: #93c5fd; --color-brand-400: #60a5fa; --color-brand-500: #3b82f6; --color-brand-600: #2563eb; --color-brand-700: #1d4ed8; --color-brand-alt: #06b6d4; --color-on-brand: #ffffff; }
+[data-accent='violet'] { --color-brand-50: #f5f3ff; --color-brand-100: #ede9fe; --color-brand-200: #ddd6fe; --color-brand-300: #c4b5fd; --color-brand-400: #a78bfa; --color-brand-500: #8b5cf6; --color-brand-600: #7c3aed; --color-brand-700: #6d28d9; --color-brand-alt: #d946ef; --color-on-brand: #ffffff; }
+[data-accent='emerald'] { --color-brand-50: #ecfdf5; --color-brand-100: #d1fae5; --color-brand-200: #a7f3d0; --color-brand-300: #6ee7b7; --color-brand-400: #34d399; --color-brand-500: #10b981; --color-brand-600: #059669; --color-brand-700: #047857; --color-brand-alt: #14b8a6; --color-on-brand: #04241a; }
+[data-accent='teal'] { --color-brand-50: #f0fdfa; --color-brand-100: #ccfbf1; --color-brand-200: #99f6e4; --color-brand-300: #5eead4; --color-brand-400: #2dd4bf; --color-brand-500: #14b8a6; --color-brand-600: #0d9488; --color-brand-700: #0f766e; --color-brand-alt: #06b6d4; --color-on-brand: #042624; }
+[data-accent='rose'] { --color-brand-50: #fff1f2; --color-brand-100: #ffe4e6; --color-brand-200: #fecdd3; --color-brand-300: #fda4af; --color-brand-400: #fb7185; --color-brand-500: #f43f5e; --color-brand-600: #e11d48; --color-brand-700: #be123c; --color-brand-alt: #fb923c; --color-on-brand: #ffffff; }
 
 .dark {
-    --color-canvas: #070a14;
-    --color-surface: #0d1323;
-    --color-surface-2: #131a2d;
-    --color-surface-3: #1a2238;
-    --color-line: #1e2840;
-    --color-line-strong: #2a3654;
-    --color-ink: #e8ebf4;
-    --color-ink-2: #a6b0c6;
-    --color-ink-3: #6b7690;
-    --color-brand-50: color-mix(in oklab, var(--color-brand-500) 13%, #0d1323);
-    --color-brand-100: color-mix(in oklab, var(--color-brand-500) 22%, #0d1323);
-    --color-positive: #34d399;
-    --color-negative: #fb7185;
-    --color-warning: #fbbf24;
-    --color-info: #60a5fa;
-    --color-side: #050810;
-    --color-side-2: #0b1124;
-    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3);
-    --shadow-lift: 0 12px 28px -8px rgb(0 0 0 / 0.55);
-    --shadow-pop: 0 24px 56px -12px rgb(0 0 0 / 0.7);
+    color-scheme: dark;
+    --color-canvas: #0a1128;
+    --color-surface: #111d42;
+    --color-surface-2: #16244f;
+    --color-surface-3: #1d2d5d;
+    --color-line: rgb(232 236 247 / 0.085);
+    --color-line-strong: rgb(232 236 247 / 0.16);
+    --color-ink: #e8ecf7;
+    --color-ink-2: #b4bdd6;
+    --color-ink-3: #8b94ab;
+    --color-brand-50: color-mix(in oklab, var(--color-brand-400) 11%, transparent);
+    --color-brand-100: color-mix(in oklab, var(--color-brand-400) 19%, transparent);
+    --color-brand-600: var(--color-brand-400);
+    --color-brand-700: var(--color-brand-300);
+    --color-positive: #4ade9e;
+    --color-negative: #ff6b6b;
+    --color-warning: #f7c85c;
+    --color-info: #5b9dff;
+    --color-side: #070c1d;
+    --color-side-2: #0f1b3d;
+    --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.3);
+    --shadow-card: 0 1px 0 rgb(232 236 247 / 0.06) inset, 0 18px 40px -18px rgb(3 6 18 / 0.7);
+    --shadow-lift: 0 1px 0 rgb(232 236 247 / 0.09) inset, 0 24px 56px -16px rgb(3 6 18 / 0.85);
+    --shadow-pop: 0 1px 0 rgb(232 236 247 / 0.08) inset, 0 32px 80px -16px rgb(3 6 18 / 0.9);
+    --glass-bg: linear-gradient(160deg, rgb(26 42 92 / 0.62), rgb(13 24 56 / 0.5));
+    --glass-solid: rgb(17 29 66 / 0.94);
+    --glass-border: rgb(232 236 247 / 0.09);
+    --glass-edge: rgb(232 236 247 / 0.09);
+    --chrome-bg: rgb(10 17 40 / 0.62);
+    --rail-bg: rgb(7 12 29 / 0.82);
+    --wash-1: rgb(255 180 84 / 0.13);
+    --wash-2: rgb(91 157 255 / 0.14);
+    --wash-3: rgb(124 92 255 / 0.10);
+    --grid-line: rgb(232 236 247 / 0.028);
 }
 
 @layer base {
     html { -webkit-tap-highlight-color: transparent; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
     body {
-        font-feature-settings: 'cv11', 'ss01', 'ss03';
+        font-size: 14px;
         background:
-            radial-gradient(1200px 500px at 85% -10%, color-mix(in oklab, var(--color-brand-500) 8%, transparent), transparent 60%),
-            radial-gradient(900px 400px at 10% -20%, color-mix(in oklab, var(--color-brand-alt) 6%, transparent), transparent 60%),
+            radial-gradient(900px 520px at 8% -8%, var(--wash-1), transparent 62%),
+            radial-gradient(1000px 600px at 100% 0%, var(--wash-2), transparent 62%),
+            radial-gradient(800px 600px at 60% 110%, var(--wash-3), transparent 60%),
             var(--color-canvas);
         background-attachment: fixed;
     }
-    h1, h2, h3 { letter-spacing: -0.015em; }
-    :focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; border-radius: 6px; }
-    ::selection { background: color-mix(in oklab, var(--color-brand-500) 25%, transparent); }
+    h1, h2, h3 { letter-spacing: -0.02em; }
+    :focus-visible { outline: 2px solid color-mix(in oklab, var(--color-brand-400) 75%, transparent); outline-offset: 2px; border-radius: 8px; }
+    ::selection { background: color-mix(in oklab, var(--color-brand-400) 32%, transparent); }
     * { scrollbar-width: thin; scrollbar-color: var(--color-line-strong) transparent; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-thumb { background: var(--color-line-strong); border-radius: 8px; }
 }
 
+/* Figures: JetBrains Mono keeps columns aligned (Fustat's tabular comma is too wide). */
 @utility num {
+    font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
-    font-feature-settings: 'tnum', 'cv11';
+    letter-spacing: -0.015em;
 }
 
+/* Mono uppercase micro-label (section eyebrows, table heads, KPI labels) */
+@utility eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+/* Frosted-glass card — the base surface of every panel. */
 @utility card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-line);
+    position: relative;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-edge);
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-card);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    transition: border-color .25s, box-shadow .25s, transform .25s cubic-bezier(.16, 1, .3, 1);
+    &:hover { border-color: color-mix(in oklab, var(--color-ink) 14%, transparent); }
+}
+/* Opaque glass for popovers that float over busy content (menus, palette, drawers). */
+@utility glass-pop {
+    background: var(--glass-solid);
+    border: 1px solid var(--glass-edge);
+    box-shadow: var(--shadow-pop);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    backdrop-filter: blur(24px) saturate(160%);
+}
+/* Translucent chrome (top bar, nav panel). */
+@utility glass-chrome {
+    background: var(--chrome-bg);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+}
+/* Hover lift for clickable cards / tiles, with an amber edge + spotlight glow. */
+@utility lift {
+    transition: transform .3s cubic-bezier(.16, 1, .3, 1), box-shadow .3s, border-color .3s;
+    &:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift), 0 0 0 1px var(--glass-hover-border); border-color: var(--glass-hover-border); }
+    &:active { transform: translateY(-1px); }
+}
+@utility spotlight {
+    isolation: isolate;
+    &::before {
+        content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .35s;
+        background: radial-gradient(420px 220px at var(--mx, 85%) var(--my, 0%), color-mix(in oklab, var(--color-brand-400) 16%, transparent), transparent 70%);
+    }
+    &:hover::before { opacity: 1; }
 }
 
 /* Brand gradient fill / text (buttons, hero cards, icon tiles) */
 @utility bg-brand-gradient {
-    background-image: linear-gradient(135deg, var(--color-brand-500), var(--color-brand-600) 55%, color-mix(in oklab, var(--color-brand-alt) 85%, var(--color-brand-700)));
+    background-image: linear-gradient(135deg, var(--color-brand-300), var(--color-brand-400) 45%, var(--color-brand-500));
 }
 @utility text-brand-gradient {
-    background-image: linear-gradient(90deg, var(--color-brand-600), var(--color-brand-alt));
+    background-image: linear-gradient(90deg, var(--color-brand-400), var(--color-brand-alt));
     -webkit-background-clip: text; background-clip: text; color: transparent;
 }
-/* Inputs share one look */
+/* Inputs share one look: glassy well, amber focus ring. */
 @utility field {
-    height: 2.5rem; width: 100%; border-radius: 10px; border: 1px solid var(--color-line);
-    background: var(--color-surface); color: var(--color-ink); font-size: 0.875rem; outline: none;
-    box-shadow: var(--shadow-xs); transition: border-color .15s, box-shadow .15s;
-    &:hover { border-color: var(--color-line-strong); }
-    &:focus { border-color: var(--color-brand-500); box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-brand-500) 16%, transparent); }
+    height: 2.625rem; width: 100%; border-radius: 12px; border: 1px solid var(--color-line-strong);
+    background: color-mix(in oklab, var(--color-surface) 70%, transparent); color: var(--color-ink); font-size: 0.875rem; outline: none;
+    transition: border-color .15s, box-shadow .15s, background-color .15s;
+    &:hover { border-color: color-mix(in oklab, var(--color-ink) 28%, transparent); }
+    &:focus { border-color: var(--color-brand-400); background: var(--color-surface); box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-brand-400) 18%, transparent); }
     &::placeholder { color: var(--color-ink-3); }
     &:disabled { background: var(--color-surface-2); color: var(--color-ink-3); }
+}
+select.field option { background: var(--color-surface); color: var(--color-ink); }
+
+/* Documents (invoice, payslip, statements, reports) are always light paper, even in dark mode. */
+.paper {
+    color-scheme: light;
+    --color-surface: #ffffff; --color-surface-2: #f4f6fa; --color-surface-3: #e9edf4;
+    --color-line: rgb(10 17 40 / 0.1); --color-line-strong: rgb(10 17 40 / 0.18);
+    --color-ink: #0a1128; --color-ink-2: #3d4763; --color-ink-3: #6b748c;
+    --color-brand-50: #fff6e9; --color-brand-100: #ffebcf; --color-brand-600: #c9720c; --color-brand-700: #9a5508;
+    --color-positive: #0f9b68; --color-negative: #e04848; --color-warning: #c27c0e; --color-info: #2f6fe0;
+    background: #fff; color: var(--color-ink);
+    border-radius: 6px; border: 1px solid rgb(10 17 40 / 0.06);
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.9) inset, 0 40px 90px -30px rgb(3 6 18 / 0.65), 0 0 0 1px rgb(255 255 255 / 0.04);
 }
 
 /* Print / browser-PDF (docs/06 §7): A4, light palette, app chrome hidden; pages that contain a
@@ -158,14 +252,15 @@
     @page { size: A4; margin: 12mm; }
     :root, .dark {
         --color-canvas: #ffffff; --color-surface: #ffffff; --color-surface-2: #f3f4f6; --color-line: #d9dde3;
-        --color-ink: #0b1220; --color-ink-2: #374151; --color-ink-3: #6b7280; --color-brand-50: #eef4ff; --color-brand-100: #d9e6ff;
+        --color-ink: #0b1220; --color-ink-2: #374151; --color-ink-3: #6b7280; --color-brand-50: #fff6e9; --color-brand-100: #ffebcf; --color-brand-600: #c9720c; --color-brand-700: #9a5508; --color-line-strong: #c5cad3;
     }
-    html, body { background: #fff !important; }
+    html, body { background: #fff !important; color: #0b1220; }
     .no-print { display: none !important; }
     .app-shell { display: block !important; }
     main { padding: 0 !important; max-width: none !important; }
     main:has(.print-doc) > :not(.print-doc) { display: none !important; }
-    .card { box-shadow: none !important; }
+    .card, .glass-pop, .glass-chrome { box-shadow: none !important; backdrop-filter: none !important; background: #fff !important; border-color: #d9dde3 !important; }
+    .lift:hover { transform: none !important; }
     table { page-break-inside: auto; }
     tr, .break-inside-avoid { break-inside: avoid; }
     thead { display: table-header-group; }

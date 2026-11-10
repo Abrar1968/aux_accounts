@@ -20,7 +20,7 @@ const contact = computed(() => [brand.value.address, brand.value.phone, brand.va
 </script>
 
 <template>
-    <article class="print-doc card relative mx-auto max-w-[210mm] overflow-hidden bg-surface p-5 sm:p-10 print:max-w-none print:border-0 print:p-0">
+    <article class="print-doc paper relative mx-auto max-w-[210mm] animate-in overflow-hidden p-5 sm:p-10 print:max-w-none print:border-0 print:p-0 print:shadow-none">
         <div v-if="watermark" aria-hidden="true" class="watermark pointer-events-none absolute inset-0 z-0 flex items-center justify-center select-none">
             <span :class="tones[watermark] ?? 'text-ink-3'" class="-rotate-[32deg] whitespace-nowrap border-[6px] border-current px-6 py-2 text-5xl font-black tracking-widest opacity-[0.13] sm:text-7xl">{{ watermark }}</span>
         </div>
@@ -28,14 +28,14 @@ const contact = computed(() => [brand.value.address, brand.value.phone, brand.va
             <header class="flex flex-col gap-4 border-b border-line pb-5 sm:flex-row sm:items-start sm:justify-between">
                 <div :class="wide ? 'flex flex-col items-start gap-2' : 'flex items-center gap-3'">
                     <img v-if="brand.logo" :src="brand.logo.png" :alt="`${brand.company} logo`" :class="wide ? 'h-9 max-w-[13rem]' : 'h-12 max-w-[9rem]'" class="w-auto object-contain" />
-                    <div v-else class="grid size-10 place-items-center rounded-lg bg-brand-600 font-bold text-white print:bg-black">{{ (brand.company || 'A').charAt(0) }}</div>
+                    <div v-else class="grid size-10 place-items-center rounded-lg bg-brand-400 font-bold text-on-brand print:bg-black print:text-white">{{ (brand.company || 'A').charAt(0) }}</div>
                     <div class="min-w-0">
                         <p v-if="!wide" class="text-sm font-semibold">{{ brand.company || 'Auxtech' }}</p>
                         <p v-for="c in contact.slice(0, 3)" :key="c" class="text-[11px] leading-4 text-ink-3">{{ c }}</p>
                     </div>
                 </div>
                 <div class="sm:text-right">
-                    <h1 class="text-lg font-semibold uppercase tracking-wide">{{ title }}</h1>
+                    <h1 class="text-xl font-bold uppercase tracking-[0.06em]">{{ title }}</h1>
                     <p v-if="subtitle" class="text-sm text-ink-2">{{ subtitle }}</p>
                     <dl v-if="meta" class="mt-1 grid grid-cols-[auto_auto] gap-x-4 gap-y-0.5 text-xs sm:justify-end">
                         <template v-for="m in meta" :key="m.label"><dt class="text-ink-3">{{ m.label }}</dt><dd class="num font-medium">{{ m.value }}</dd></template>

@@ -10,17 +10,17 @@ const props = defineProps({
     type: { type: String, default: 'button' }, block: Boolean, square: Boolean,
 });
 const variants = {
-    primary: 'bg-brand-gradient text-white shadow-[var(--shadow-brand)] ring-1 ring-inset ring-white/15 hover:brightness-110 active:brightness-95',
-    secondary: 'border border-line bg-surface text-ink shadow-[var(--shadow-xs)] hover:border-line-strong hover:bg-surface-2',
-    soft: 'bg-brand-50 text-brand-700 hover:bg-brand-100 dark:text-brand-300',
-    ghost: 'text-ink-2 hover:bg-surface-2 hover:text-ink',
-    danger: 'bg-negative text-white shadow-sm hover:brightness-110',
+    primary: 'bg-brand-gradient text-on-brand shadow-[var(--shadow-brand)] ring-1 ring-inset ring-white/25 hover:-translate-y-px hover:shadow-[0_0_0_1px_var(--color-brand-300),0_14px_34px_-8px_var(--color-brand-400)] active:translate-y-0',
+    secondary: 'border border-line-strong bg-ink/[0.03] text-ink backdrop-blur hover:-translate-y-px hover:border-brand-400/55 hover:bg-brand-50 hover:text-ink active:translate-y-0',
+    soft: 'bg-brand-50 text-brand-700 ring-1 ring-inset ring-brand-400/20 hover:bg-brand-100 hover:ring-brand-400/40',
+    ghost: 'text-ink-2 hover:bg-ink/[0.06] hover:text-ink',
+    danger: 'bg-negative text-white shadow-[0_10px_26px_-10px_var(--color-negative)] hover:-translate-y-px hover:brightness-110',
     'danger-soft': 'text-negative hover:bg-negative/10',
 };
-const sizes = { sm: 'h-8 px-3 text-xs gap-1.5', md: 'h-10 px-4 text-sm gap-2', lg: 'h-12 px-5 text-[15px] gap-2' };
+const sizes = { sm: 'h-8 px-3.5 text-xs gap-1.5', md: 'h-10 px-[18px] text-sm gap-2', lg: 'h-12 px-6 text-[15px] gap-2' };
 const squares = { sm: 'size-8', md: 'size-10', lg: 'size-12' };
 const cls = computed(() => [
-    'inline-flex items-center justify-center rounded-[10px] font-semibold tracking-[-0.005em] transition-all duration-150 disabled:pointer-events-none disabled:opacity-55 whitespace-nowrap select-none',
+    'inline-flex items-center justify-center rounded-full font-semibold tracking-[-0.005em] transition-all duration-200 disabled:pointer-events-none disabled:opacity-55 whitespace-nowrap select-none',
     props.square ? squares[props.size] : sizes[props.size],
     props.block ? 'w-full' : '',
     variants[props.variant],

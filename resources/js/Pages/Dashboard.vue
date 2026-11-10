@@ -6,6 +6,7 @@ import Card from '@/Components/ui/Card.vue';
 import MonthPicker from '@/Components/ui/MonthPicker.vue';
 import Avatar from '@/Components/ui/Avatar.vue';
 import Icon from '@/Components/ui/Icon.vue';
+import Button from '@/Components/ui/Button.vue';
 import BarChart from '@/Components/charts/BarChart.vue';
 import LineChart from '@/Components/charts/LineChart.vue';
 import Donut from '@/Components/charts/Donut.vue';
@@ -27,26 +28,26 @@ const expenseTotal = computed(() => props.overview.expense_mix.reduce((s, e) => 
 <template>
     <Head title="Dashboard" />
     <!-- Welcome banner -->
-    <section class="relative mb-6 animate-in overflow-hidden rounded-[22px] bg-gradient-to-br from-side-2 via-side to-side p-5 text-white shadow-[var(--shadow-lift)] sm:p-7">
-        <div class="pointer-events-none absolute -right-20 -top-28 size-80 rounded-full bg-brand-500/40 blur-3xl" aria-hidden="true" />
-        <div class="pointer-events-none absolute -bottom-32 left-1/3 size-72 rounded-full bg-brand-alt/25 blur-3xl" aria-hidden="true" />
-        <div class="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:linear-gradient(rgb(255_255_255/.7)_1px,transparent_1px),linear-gradient(90deg,rgb(255_255_255/.7)_1px,transparent_1px)] [background-size:36px_36px] [mask-image:linear-gradient(to_left,black,transparent_70%)]" aria-hidden="true" />
+    <section class="card spotlight relative mb-6 animate-in overflow-hidden !rounded-[26px] p-5 sm:p-7">
+        <div class="pointer-events-none absolute -right-24 -top-32 size-96 rounded-full bg-brand-400/25 blur-3xl" aria-hidden="true" />
+        <div class="pointer-events-none absolute -bottom-40 left-1/4 size-80 rounded-full bg-info/15 blur-3xl" aria-hidden="true" />
+        <div class="pointer-events-none absolute inset-0 [background-image:linear-gradient(var(--grid-line)_1px,transparent_1px),linear-gradient(90deg,var(--grid-line)_1px,transparent_1px)] [background-size:32px_32px] [mask-image:linear-gradient(to_left,black,transparent_70%)]" aria-hidden="true" />
         <div class="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div class="min-w-0">
-                <p class="text-[13px] font-medium text-slate-400">{{ today }}</p>
-                <h1 class="mt-1 text-2xl font-bold tracking-[-0.02em] sm:text-[30px]">{{ greeting }}, {{ user?.name?.split(' ')[0] }} 👋</h1>
-                <p class="mt-1.5 max-w-xl text-sm text-slate-300">Here’s {{ monthLabel(month) }} at a glance — accrual results, cash and the balance sheet at month end.</p>
+                <p class="eyebrow flex items-center gap-2 text-brand-600"><span class="size-1.5 rounded-full bg-brand-400 shadow-[0_0_8px_var(--color-brand-400)]" />{{ today }}</p>
+                <h1 class="mt-2 text-[26px] font-bold tracking-[-0.035em] sm:text-[36px]">{{ greeting }}, {{ user?.name?.split(' ')[0] }}</h1>
+                <p class="mt-1.5 max-w-xl text-sm text-ink-3">Here’s {{ monthLabel(month) }} at a glance — accrual results, cash and the balance sheet at month end.</p>
                 <div class="mt-4 flex flex-wrap items-center gap-2">
-                    <span :class="k.balance_check === 0 ? 'bg-emerald-400/15 text-emerald-300 ring-emerald-400/30' : 'bg-rose-400/15 text-rose-300 ring-rose-400/30'" class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset">
-                        <span class="size-1.5 rounded-full bg-current" />{{ k.balance_check === 0 ? 'Books balanced' : `Balance check ${money(k.balance_check)}` }}
+                    <span :class="k.balance_check === 0 ? 'bg-positive/12 text-positive ring-positive/30' : 'bg-negative/12 text-negative ring-negative/30'" class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset">
+                        <span class="size-1.5 rounded-full bg-current shadow-[0_0_6px_currentColor]" />{{ k.balance_check === 0 ? 'Books balanced' : `Balance check ${money(k.balance_check)}` }}
                     </span>
-                    <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-slate-200 ring-1 ring-inset ring-white/15"><Icon name="wallet" :size="13" />Cash {{ money(k.ending_cash) }}</span>
+                    <span class="inline-flex items-center gap-1.5 rounded-full bg-ink/[0.05] px-3 py-1 font-mono text-[11.5px] font-semibold text-ink-2 ring-1 ring-inset ring-line-strong"><Icon name="wallet" :size="13" />Cash {{ money(k.ending_cash) }}</span>
                 </div>
             </div>
-            <div class="flex flex-wrap items-center gap-2 lg:max-w-[30rem] lg:justify-end [&>a]:whitespace-nowrap">
+            <div class="flex flex-wrap items-center gap-2 lg:max-w-[32rem] lg:justify-end [&>a]:whitespace-nowrap">
                 <MonthPicker v-model="month" />
-                <Link href="/accounting/payments?new=1" class="inline-flex h-10 items-center gap-2 rounded-xl bg-white/10 px-4 text-sm font-semibold text-white ring-1 ring-inset ring-white/20 backdrop-blur transition hover:bg-white/20"><Icon name="inbox" :size="16" />Record receipt</Link>
-                <Link :href="`/accounting/statements/${month}`" class="inline-flex h-10 items-center gap-2 rounded-xl bg-white px-4 text-sm font-semibold text-slate-900 shadow-lg transition hover:bg-slate-100"><Icon name="doc" :size="16" />Statement pack</Link>
+                <Button variant="secondary" href="/accounting/payments?new=1" icon="inbox">Record receipt</Button>
+                <Button :href="`/accounting/statements/${month}`" icon="doc">Statement pack</Button>
             </div>
         </div>
     </section>
@@ -59,34 +60,34 @@ const expenseTotal = computed(() => props.overview.expense_mix.reduce((s, e) => 
         <StatCard icon="box" label="Total assets" :value="money(k.total_assets)" hint="Month-end balance sheet" />
         <StatCard icon="scale" label="Total liabilities" :value="money(k.total_liabilities)" :hint="`Payables ${money(k.payables)}`" />
         <StatCard icon="pie" label="Equity" :value="money(k.total_equity)" :tone="k.total_equity < 0 ? 'negative' : 'neutral'" hint="Paid-in + retained" />
-        <Link href="/accounting/controls" class="card group flex flex-col justify-between gap-3 p-4 transition hover:shadow-[var(--shadow-lift)] sm:p-5">
-            <div class="flex items-center gap-2.5"><span :class="k.balance_check === 0 ? 'bg-positive/10 text-positive' : 'bg-negative/10 text-negative'" class="grid size-8 place-items-center rounded-lg"><Icon name="shield" :size="16" /></span><p class="text-[13px] font-medium text-ink-2">Balance check</p></div>
-            <p :class="k.balance_check === 0 ? 'text-positive' : 'text-negative'" class="text-[22px] font-bold leading-none sm:text-[26px]">{{ k.balance_check === 0 ? 'Balanced' : money(k.balance_check) }}</p>
+        <Link href="/accounting/controls" :class="k.balance_check === 0 ? '!border-positive/30 !bg-positive/[0.06]' : '!border-negative/30 !bg-negative/[0.06]'" class="card lift spotlight group flex flex-col justify-between gap-3 p-4 sm:p-5">
+            <div class="flex items-center gap-2.5"><span :class="k.balance_check === 0 ? 'bg-positive/12 text-positive ring-positive/25' : 'bg-negative/12 text-negative ring-negative/25'" class="grid size-8 place-items-center rounded-xl ring-1 ring-inset transition-transform group-hover:scale-110"><Icon name="shield" :size="16" /></span><p class="eyebrow text-ink-3">Balance check</p></div>
+            <p :class="k.balance_check === 0 ? 'text-positive' : 'text-negative'" class="text-[22px] font-bold leading-none tracking-[-0.03em] sm:text-[27px]">{{ k.balance_check === 0 ? 'Balanced' : money(k.balance_check) }}</p>
             <p class="inline-flex items-center gap-1 text-xs font-semibold text-brand-600 dark:text-brand-300">Open controls <Icon name="arrow-right" :size="13" class="transition group-hover:translate-x-0.5" /></p>
         </Link>
     </div>
 
     <div class="mt-4 grid gap-4 xl:grid-cols-3">
         <Card title="Revenue vs expenses" subtitle="By month, accrual basis" icon="chart" class="xl:col-span-2">
-            <BarChart :labels="labels" :series="[{ name: 'Revenue', values: series('revenue') }, { name: 'Expenses', values: series('expenses'), color: '#f43f5e' }]" title="Revenue vs expenses" />
+            <BarChart :labels="labels" :series="[{ name: 'Revenue', values: series('revenue') }, { name: 'Expenses', values: series('expenses'), color: 'var(--color-negative)' }]" title="Revenue vs expenses" />
         </Card>
         <Card title="Expense mix" :subtitle="monthLabel(month)" icon="pie">
             <Donut v-if="overview.expense_mix.length" :items="overview.expense_mix" :center="money(expenseTotal, { compact: true })" center-label="total" />
             <div v-else class="flex flex-col items-center py-10 text-center"><span class="mb-3 grid size-12 place-items-center rounded-2xl bg-surface-2 text-ink-3"><Icon name="receipt" :size="22" /></span><p class="text-sm font-semibold">No expenses yet</p><p class="mt-1 text-xs text-ink-3">Bills booked in {{ monthLabel(month) }} appear here.</p></div>
         </Card>
         <Card title="Cash & receivables" subtitle="Month-end balances" icon="trend" class="xl:col-span-2">
-            <LineChart :labels="labels" area :series="[{ name: 'Ending cash', values: series('ending_cash') }, { name: 'Receivables', values: series('accounts_receivable'), color: '#f59e0b' }]" title="Cash and receivables" />
+            <LineChart :labels="labels" area :series="[{ name: 'Ending cash', values: series('ending_cash') }, { name: 'Receivables', values: series('accounts_receivable'), color: 'var(--color-info)' }]" title="Cash and receivables" />
         </Card>
         <Card title="Largest receivables" subtitle="Who owes the most" icon="clock" :padded="false">
             <template #actions><Link href="/accounting/receivables" class="text-xs font-semibold text-brand-600 hover:underline dark:text-brand-300">View all</Link></template>
             <ul class="divide-y divide-line">
-                <li v-for="r in overview.top_receivables" :key="r.code" class="px-4 py-3 sm:px-5">
+                <li v-for="r in overview.top_receivables" :key="r.code" class="group px-4 py-3 transition-colors hover:bg-brand-50 sm:px-5">
                     <div class="flex items-center gap-3 text-sm">
                         <Avatar :name="r.name" size="sm" />
                         <span class="min-w-0 flex-1"><span class="block truncate font-semibold">{{ r.name }}</span><span class="block truncate text-xs text-ink-3">{{ r.code }} · {{ r.kind }}</span></span>
-                        <span class="num shrink-0 font-bold">{{ money(r.ar) }}</span>
+                        <span class="num shrink-0 font-mono text-[13px] font-bold">{{ money(r.ar) }}</span>
                     </div>
-                    <div class="ml-10 mt-2 h-1.5 overflow-hidden rounded-full bg-surface-2"><div class="h-full rounded-full bg-brand-gradient" :style="{ width: `${(Number(r.ar) / maxAr) * 100}%` }" /></div>
+                    <div class="ml-10 mt-2 h-1 overflow-hidden rounded-full bg-ink/[0.07]"><div class="h-full rounded-full bg-brand-gradient shadow-[0_0_8px_var(--color-brand-400)] transition-all duration-500" :style="{ width: `${(Number(r.ar) / maxAr) * 100}%` }" /></div>
                 </li>
             </ul>
         </Card>

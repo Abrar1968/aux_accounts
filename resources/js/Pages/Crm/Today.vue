@@ -22,11 +22,11 @@ const adding = ref(false);
         <Button icon="plus" class="hidden sm:inline-flex" @click="adding = true">Add lead</Button>
     </PageHeader>
     <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <div class="col-span-2 flex flex-col gap-3 overflow-hidden rounded-[var(--radius-card)] bg-brand-gradient p-4 text-white shadow-[var(--shadow-brand)] ring-1 ring-inset ring-white/10 sm:p-5 lg:col-span-1">
-            <div class="flex items-center gap-2.5"><span class="grid size-8 place-items-center rounded-lg bg-white/18 ring-1 ring-inset ring-white/20"><Icon name="target" :size="16" /></span><p class="text-[13px] font-medium text-white/85">Daily target</p><p class="num ml-auto rounded-full bg-white/20 px-2 py-0.5 text-[11px] font-semibold">{{ Math.round(Math.min(100, (progress.created / progress.target) * 100)) }}%</p></div>
-            <p class="num text-[26px] font-bold leading-none">{{ progress.created }}<span class="text-base font-semibold text-white/70"> / {{ progress.target }}</span></p>
-            <div class="h-2 overflow-hidden rounded-full bg-white/20"><div class="h-full rounded-full bg-white shadow-[0_0_12px_rgb(255_255_255/0.7)]" :style="{ width: `${Math.min(100, (progress.created / progress.target) * 100)}%` }" /></div>
-            <p class="text-xs text-white/80">{{ progress.remaining }} leads to go today</p>
+        <div class="col-span-2 flex flex-col gap-3 overflow-hidden rounded-[var(--radius-card)] lift bg-brand-gradient p-4 text-on-brand shadow-[var(--shadow-brand)] ring-1 ring-inset ring-white/30 sm:p-5 lg:col-span-1">
+            <div class="flex items-center gap-2.5"><span class="grid size-8 place-items-center rounded-lg bg-navy/10 ring-1 ring-inset ring-navy/15"><Icon name="target" :size="16" /></span><p class="eyebrow text-on-brand/75">Daily target</p><p class="num ml-auto rounded-full bg-navy/12 px-2 py-0.5 text-[11px] font-semibold">{{ Math.round(Math.min(100, (progress.created / progress.target) * 100)) }}%</p></div>
+            <p class="num text-[26px] font-bold leading-none">{{ progress.created }}<span class="text-base font-semibold text-on-brand/60"> / {{ progress.target }}</span></p>
+            <div class="h-2 overflow-hidden rounded-full bg-navy/12"><div class="h-full rounded-full bg-navy shadow-[0_0_10px_rgb(10_17_40/0.4)]" :style="{ width: `${Math.min(100, (progress.created / progress.target) * 100)}%` }" /></div>
+            <p class="text-xs text-on-brand/75">{{ progress.remaining }} leads to go today</p>
         </div>
         <StatCard icon="bell" label="Due / overdue" :value="String(summary.due_or_overdue)" tone="warning" hint="Call these first" />
         <StatCard icon="phone" label="Active leads" :value="String(summary.active_leads)" :hint="`${summary.total_leads} total · ${summary.lost} lost`" />

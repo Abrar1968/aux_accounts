@@ -135,9 +135,9 @@ class BrandingService
 
     public function accent(): string
     {
-        $a = (string) ($this->settings->get('branding.accent') ?: 'blue'); // blue matches the Auxtech logo
+        $a = (string) ($this->settings->get('branding.accent') ?: 'amber'); // amber = "Command glass" house colour
 
-        return in_array($a, self::ACCENTS, true) ? $a : 'blue';
+        return in_array($a, self::ACCENTS, true) ? $a : 'amber';
     }
 
     public function setAccent(string $accent): void

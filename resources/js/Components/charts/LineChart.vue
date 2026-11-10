@@ -29,7 +29,7 @@ function move(e) {
             <defs>
                 <linearGradient v-for="(s, si) in series" :id="`${gid}-${si}`" :key="si" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" :stop-color="s.color ?? SERIES[si]" stop-opacity=".22" /><stop offset="100%" :stop-color="s.color ?? SERIES[si]" stop-opacity="0" /></linearGradient>
             </defs>
-            <g class="text-[10px]" fill="var(--color-ink-3)">
+            <g class="font-mono text-[9.5px]" fill="var(--color-ink-3)">
                 <g v-for="t in ticks" :key="t"><line :x1="P.l" :x2="W - P.r" :y1="y(t)" :y2="y(t)" stroke="var(--color-line)" :stroke-dasharray="t === 0 ? '' : '3 3'" /><text :x="P.l - 6" :y="y(t) + 3" text-anchor="end">{{ compact(t) }}</text></g>
                 <text v-for="(l, i) in labels" :key="l" :x="x(i)" :y="height - 8" text-anchor="middle">{{ l }}</text>
             </g>
@@ -40,7 +40,7 @@ function move(e) {
             </g>
             <line v-if="hover !== null" :x1="x(hover)" :x2="x(hover)" :y1="P.t" :y2="height - P.b" stroke="var(--color-ink-3)" stroke-dasharray="2 3" />
         </svg>
-        <div v-if="hover !== null" class="card pointer-events-none absolute top-2 z-10 px-3 py-2 text-xs shadow-[var(--shadow-pop)]" :style="{ left: `min(calc(${(x(hover) / W) * 100}% + 8px), calc(100% - 11rem))` }">
+        <div v-if="hover !== null" class="glass-pop pointer-events-none absolute top-2 z-10 rounded-xl px-3 py-2 text-xs" :style="{ left: `min(calc(${(x(hover) / W) * 100}% + 8px), calc(100% - 11rem))` }">
             <p class="font-semibold">{{ labels[hover] }}</p>
             <p v-for="(s, si) in series" :key="s.name" class="num flex justify-between gap-4"><span class="text-ink-2">{{ s.name }}</span><span>{{ money(s.values[hover]) }}</span></p>
         </div>
