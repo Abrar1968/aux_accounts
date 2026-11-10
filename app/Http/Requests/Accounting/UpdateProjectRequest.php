@@ -15,7 +15,7 @@ class UpdateProjectRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
+        return StoreProjectRequest::intakeRules() + [
             'name' => ['sometimes', 'string', 'max:190'],
             'customer' => ['nullable', 'string', 'max:190'],
             'start_date' => ['sometimes', 'date'],

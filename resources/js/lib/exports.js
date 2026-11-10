@@ -73,3 +73,16 @@ export async function exportPayslipPdf(p, payments) {
     doc.signatures({ sealLabel: 'Authorised by', clientLabel: 'Employee signature' });
     doc.download(`payslip-${p.code}.pdf`);
 }
+
+export async function exportIntakePdf(p, sections) {
+    const doc = await new PdfDoc({ title: `Project intake ${p.code}` }).useBrand({ client: p.client_signature });
+    doc.letterhead('PROJECT INTAKE FORM', `${p.code} - ${p.name}`, [{ label: 'Assign date', value: date(p.start_date) }, { label: 'Delivery', value: date(p.est_delivery_date) }]);
+    for (const [title, rows] of sections) {
+        doc.ensure(40); doc.text(40, doc.y, title.toUpperCase(), { size: 9, bold: true, gray: 0.35 }); doc.y -= 14;
+        doc.table([{ label: 'Field', width: 175 }, { label: 'Details', width: 340 }], rows.map(([k, v]) => [k, String(v || '-').replace('৳', 'BDT ')]),
+            { bold: (r) => ['Contract value', 'Due'].includes(r[0]) });
+    }
+    if (p.notes) { doc.ensure(30); doc.text(40, doc.y, 'NOTE', { size: 9, bold: true, gray: 0.35 }); doc.y -= 14; doc.text(40, doc.y, p.notes.split('\n')[0], { size: 9 }); doc.y -= 20; }
+    doc.signatures({ sealLabel: 'Auxtech', clientLabel: 'Client signature' });
+    doc.download(`intake-${p.code}.pdf`);
+}

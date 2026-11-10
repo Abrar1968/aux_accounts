@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/projects', [Accounting\ProjectController::class, 'store'])->middleware('permission:accounting.projects.create')->name('projects.store');
         Route::put('/projects/{project}', [Accounting\ProjectController::class, 'update'])->middleware('permission:accounting.projects.update')->name('projects.update');
         Route::delete('/projects/{project}', [Accounting\ProjectController::class, 'destroy'])->middleware('permission:accounting.projects.delete')->name('projects.destroy');
+        Route::get('/projects/{project}/intake', [Accounting\ProjectController::class, 'intake'])->middleware('permission:accounting.projects.view')->name('projects.intake');
         Route::get('/projects/{project}/signature.{format}', [Accounting\ProjectController::class, 'signature'])->whereIn('format', ['png', 'jpg'])->middleware('permission:accounting.projects.view')->name('projects.signature');
         Route::post('/projects/{project}/signature', [Accounting\ProjectController::class, 'storeSignature'])->middleware('permission:accounting.projects.update')->name('projects.signature.store');
         Route::delete('/projects/{project}/signature', [Accounting\ProjectController::class, 'destroySignature'])->middleware('permission:accounting.projects.update')->name('projects.signature.destroy');

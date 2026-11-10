@@ -230,7 +230,7 @@ class EmailComposerService
     private function projectDraft(Project $p): array
     {
         $s = $this->receivables->statement('project', $p->id);
-        $value = Money::round((float) $p->base_value + (float) $p->change_orders);
+        $value = $p->total_value;
         $delivered = $p->actual_delivery_date !== null;
 
         return [

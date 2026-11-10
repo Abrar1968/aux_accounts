@@ -32,6 +32,7 @@ class InvoiceService
             'project' => [array_values(array_filter([
                 ['description' => $r->name.' — contract value', 'detail' => trim(($r->revenue_method ?? '').($r->start_date ? ' · start '.$r->start_date->format('d M Y') : '')), 'amount' => (float) $r->base_value],
                 (float) $r->change_orders != 0.0 ? ['description' => 'Approved change orders', 'detail' => '', 'amount' => (float) $r->change_orders] : null,
+                (float) $r->discount != 0.0 ? ['description' => 'Discount', 'detail' => '', 'amount' => -(float) $r->discount] : null,
             ])), $r->start_date ?? $r->source_month, $r->customer ?: $r->name, $r->name],
             'marketing' => [[['description' => 'Marketing service — '.$r->service_month->format('F Y'), 'detail' => $r->notes ?? '', 'amount' => (float) $r->revenue]],
                 $r->service_month, $r->client, 'Marketing service'],

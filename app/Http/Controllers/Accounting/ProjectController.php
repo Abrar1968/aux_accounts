@@ -59,6 +59,12 @@ class ProjectController extends Controller
         return $this->toast("Project {$project->code} updated.");
     }
 
+    /** Printable Project Intake Form (client, project, domain / hosting, payment summary, signatures). */
+    public function intake(Project $project, BrandingService $branding): Response
+    {
+        return Inertia::render('Accounting/Projects/Intake', ['project' => new ProjectResource($project)]);
+    }
+
     public function signature(Project $project, string $format, BrandingService $branding): BinaryFileResponse
     {
         $file = $branding->signatureFile($project, $format) ?? abort(404);
