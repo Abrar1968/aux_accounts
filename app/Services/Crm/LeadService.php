@@ -54,6 +54,21 @@ class LeadService
         return ($date ?? CarbonImmutable::now(config('app.timezone')))->format('Ymd').'-'.strtoupper(substr(str_replace('-', '', (string) Str::uuid()), 0, 8));
     }
 
+    /** When false, persist() skips the per-lead realtime broadcast (bulk sync sends one at the end). */
+    private bool $broadcast = true;
+
+    /** Run a bulk change without one Pusher round-trip per lead; returns the callback's result. */
+    public function withoutBroadcasts(callable $fn): mixed
+    {
+        $prev = $this->broadcast;
+        $this->broadcast = false;
+        try {
+            return $fn();
+        } finally {
+            $this->broadcast = $prev;
+        }
+    }
+
     public function create(array $data): Lead
     {
         if (! $this->phones->isValid($data['phone'] ?? null)) {
@@ -108,7 +123,9 @@ class LeadService
         $becameWon = $lead->isDirty('stage') && $lead->stage === 'Won';
         $reassigned = $lead->exists && $lead->isDirty('owner') && $lead->owner;
         $lead->save();
-        event(new LeadUpdated($lead->id, $lead->code));
+        if ($this->broadcast) {
+            event(new LeadUpdated($lead->id, $lead->code));
+        }
         $notifications = app(NotificationService::class);
         if ($becameWon) {
             $notifications->send(new DealWon('Deal won 🎉', $lead->phone.' · '.$lead->business_type.($lead->deal_value ? ' · ৳'.number_format((float) $lead->deal_value, 2) : ''), 'success', '/crm/leads/'.$lead->id));

@@ -134,6 +134,17 @@ class GoogleSheetSyncTest extends TestCase
         $this->assertCount(1, $this->push(['calls' => [$orphan]])->json('errors'));
     }
 
+    public function test_a_batch_sends_one_realtime_refresh_not_one_per_lead(): void
+    {
+        \Illuminate\Support\Facades\Event::fake([\App\Events\LeadUpdated::class]);
+        $this->push(['leads' => [
+            $this->leadRow(['Lead ID' => '20261110-BATCH001', 'Phone' => '01755000001']),
+            $this->leadRow(['Lead ID' => '20261110-BATCH002', 'Phone' => '01755000002']),
+            $this->leadRow(['Lead ID' => '20261110-BATCH003', 'Phone' => '01755000003']),
+        ]])->assertJson(['created' => 3]);
+        \Illuminate\Support\Facades\Event::assertDispatchedTimes(\App\Events\LeadUpdated::class, 1);
+    }
+
     public function test_settings_enable_rotate_and_download_script(): void
     {
         $owner = User::query()->where('email', 'admin@auxtech.local')->firstOrFail();

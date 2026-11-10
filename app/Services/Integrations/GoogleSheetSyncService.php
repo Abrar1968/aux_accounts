@@ -2,6 +2,7 @@
 
 namespace App\Services\Integrations;
 
+use App\Events\LeadUpdated;
 use App\Exceptions\Domain\DomainException;
 use App\Models\AutomationRun;
 use App\Models\CrmOption;
@@ -101,13 +102,16 @@ class GoogleSheetSyncService
             'calls_added' => 0, 'calls_existing' => 0, 'errors' => []];
         $users = User::query()->pluck('id', 'name')->all();
 
-        foreach ($payload['leads'] ?? [] as $r) {
-            try {
-                $sum[$this->upsertLead((array) ($r['values'] ?? []), isset($r['row']) ? (int) $r['row'] : null, $users)]++;
-            } catch (\Throwable $e) {
-                $sum['errors'][] = 'Leads row '.($r['row'] ?? '?').': '.Str::limit($e->getMessage(), 160);
+        // one realtime refresh for the whole batch instead of one Pusher call per lead
+        $this->leads->withoutBroadcasts(function () use ($payload, $users, &$sum) {
+            foreach ($payload['leads'] ?? [] as $r) {
+                try {
+                    $sum[$this->upsertLead((array) ($r['values'] ?? []), isset($r['row']) ? (int) $r['row'] : null, $users)]++;
+                } catch (\Throwable $e) {
+                    $sum['errors'][] = 'Leads row '.($r['row'] ?? '?').': '.Str::limit($e->getMessage(), 160);
+                }
             }
-        }
+        });
         foreach ($payload['calls'] ?? [] as $r) {
             try {
                 $sum[$this->insertCall((array) ($r['values'] ?? []))]++;
@@ -116,6 +120,13 @@ class GoogleSheetSyncService
             }
         }
         $this->record($sum, count($payload['leads'] ?? []), count($payload['calls'] ?? []));
+        if ($sum['created'] + $sum['updated'] + $sum['calls_added'] > 0) {
+            try {
+                event(new LeadUpdated(0, 'sheet-sync')); // open CRM pages reload once
+            } catch (\Throwable $e) {
+                report($e); // realtime is best-effort; the data is already saved
+            }
+        }
 
         return $sum;
     }
