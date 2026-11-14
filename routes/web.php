@@ -197,6 +197,15 @@ Route::middleware('auth')->group(function () {
         Route::post('/system/email/preview', [System\EmailController::class, 'preview'])->name('email.preview');
         Route::post('/system/email', [System\EmailController::class, 'send'])->middleware('throttle:30,1')->name('email.send');
     });
+    Route::middleware('permission:email.inbox')->group(function () {
+        Route::get('/system/inbox', [System\InboxController::class, 'index'])->name('inbox.index');
+        Route::post('/system/inbox/sync', [System\InboxController::class, 'sync'])->middleware('throttle:12,1')->name('inbox.sync');
+        Route::post('/system/inbox/{message}/read', [System\InboxController::class, 'read'])->name('inbox.read');
+        Route::post('/system/inbox/{message}/archive', [System\InboxController::class, 'archive'])->name('inbox.archive');
+        Route::post('/system/inbox/{message}/reply', [System\InboxController::class, 'reply'])->middleware('throttle:30,1')->name('inbox.reply');
+        Route::get('/system/inbox/{message}/html', [System\InboxController::class, 'html'])->name('inbox.html');
+        Route::get('/system/inbox/attachments/{attachment}', [System\InboxController::class, 'attachment'])->name('inbox.attachment');
+    });
     Route::get('/system/audit', [System\AutomationController::class, 'audit'])->middleware('permission:audit.view')->name('audit');
     Route::middleware('permission:users.manage')->group(function () {
         Route::get('/system/users', [System\UserController::class, 'index'])->name('users.index');
@@ -221,6 +230,7 @@ Route::middleware('auth')->group(function () {
     // JSON helpers (session + CSRF)
     Route::prefix('ajax')->group(function () {
         Route::get('/search', System\SearchController::class)->name('ajax.search');
+        Route::get('/referrers', [Accounting\ReferralController::class, 'known'])->middleware('permission:accounting.projects.view')->name('ajax.referrers');
         Route::get('/receivables', [Accounting\PaymentController::class, 'receivables'])->middleware('permission:accounting.payments.create')->name('ajax.receivables');
         Route::get('/leads/phone-check', [Crm\LeadController::class, 'phoneCheck'])->middleware('permission:crm.leads.create')->name('ajax.phone');
         Route::get('/notifications', [System\NotificationController::class, 'latest'])->name('ajax.notifications');

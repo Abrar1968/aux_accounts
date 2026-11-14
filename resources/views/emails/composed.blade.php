@@ -55,6 +55,12 @@
 
       @if($closing)<p style="margin:0 0 20px;font-size:15px;line-height:1.6;">{!! nl2br(e($closing)) !!}</p>@endif
       <p style="margin:0;font-size:15px;line-height:1.6;">Kind regards,<br><strong>{{ $sender }}</strong>@if($title)<br><span style="color:#6b7280;">{{ $title }}, {{ $company }}</span>@endif</p>
+      @if(!empty($quote))
+      <div style="margin:24px 0 0;padding:12px 0 0 14px;border-left:3px solid #e5e7eb;color:#6b7280;font-size:13px;line-height:1.55;">
+        @if(!empty($quoteHeader))<p style="margin:0 0 8px;font-size:12px;">{{ $quoteHeader }}</p>@endif
+        {!! nl2br(e($quote)) !!}
+      </div>
+      @endif
     </td></tr>
     <tr><td class="pad" style="padding:20px 28px 24px;">
       <p style="margin:0;border-top:1px solid #eef0f4;padding-top:14px;font-size:12px;line-height:1.6;color:#9ca3af;">

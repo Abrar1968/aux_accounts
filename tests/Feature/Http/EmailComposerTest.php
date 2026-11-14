@@ -36,7 +36,7 @@ class EmailComposerTest extends TestCase
                 $ref = $options[0]['value'];
             }
             $d = $svc->draft($key, $ref);
-            if ($key !== 'custom') {
+            if (! in_array($key, ['custom', 'reply'], true)) {
                 $this->assertStringContainsString('· Auxtech', $d['subject'], $key);
                 $this->assertStringNotContainsString('Software', $d['subject'], $key);
                 $this->assertNotEmpty($d['details'], $key);

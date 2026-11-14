@@ -3,8 +3,10 @@
 namespace App\Services\Accounting;
 
 use App\Exceptions\Domain\DomainException;
+use App\Models\Employee;
 use App\Models\Project;
 use App\Models\Referral;
+use App\Models\User;
 use App\Repositories\Contracts\ReferralRepositoryInterface;
 use App\Services\Accounting\Engine\ReferralTierCalculator;
 use App\Services\Shared\PeriodService;
@@ -63,6 +65,40 @@ class ReferralService
         }
 
         return $this->repo->query()->where('project_id', $project->id)->orderBy('id')->get();
+    }
+
+    /**
+     * Everyone who can be picked as a referrer: past referrers (most used first), then active
+     * employees and users. Case-insensitive de-duplication; placeholder values are dropped.
+     *
+     * @return list<array{name:string, count:int, meta:string}>
+     */
+    public function knownReferrers(): array
+    {
+        $out = [];
+        $add = function (string $name, int $count, string $meta) use (&$out) {
+            $name = preg_replace('/\s+/', ' ', trim($name));
+            $key = mb_strtolower($name);
+            if ($name === '' || in_array($key, ['referrer', 'refferer', 'referer', 'n/a', 'none', '-'], true)) {
+                return;
+            }
+            $out[$key] ??= ['name' => $name, 'count' => 0, 'meta' => $meta];
+            $out[$key]['count'] += $count;
+        };
+        $this->repo->query()->selectRaw('referrer, count(*) as n')->groupBy('referrer')->get()
+            ->each(fn ($r) => $add((string) $r->referrer, (int) $r->n, 'Past referrer'));
+        Project::query()->whereNotNull('referrer')->pluck('referrer')
+            ->each(fn ($v) => collect(Project::parseReferrers($v))->each(fn ($n) => $add($n, 0, 'Past referrer')));
+        Employee::query()->where('is_active', true)->pluck('name')->each(fn ($n) => $add((string) $n, 0, 'Employee'));
+        User::query()->where('is_active', true)->pluck('name')->each(fn ($n) => $add((string) $n, 0, 'Team member'));
+        foreach ($out as &$o) {
+            $o['meta'] = $o['count'] ? $o['count'].' referral'.($o['count'] > 1 ? 's' : '') : $o['meta'];
+        }
+        unset($o);
+        $list = array_values($out);
+        usort($list, fn ($a, $b) => [$b['count'], $a['name']] <=> [$a['count'], $b['name']]);
+
+        return $list;
     }
 
     /** Equal shares in paisa; remainder paisa to the first shares. @return list<float> */

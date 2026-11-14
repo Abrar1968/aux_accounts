@@ -16,6 +16,7 @@ class NotificationService
     /** type => [label, default channels, roles that receive it, locked (cannot disable in-app)] */
     public const CATALOGUE = [
         'payment_recorded' => ['Payment recorded', ['in_app', 'push'], ['owner', 'accountant'], false],
+        'mail_received' => ['Email reply received (Inbox)', ['in_app', 'push'], ['owner', 'accountant', 'sales_manager'], false],
         'posting_rejected' => ['Posting rejected', ['in_app', 'push'], [], false],
         'followups_due' => ['Follow-ups due', ['in_app', 'push', 'email'], ['owner', 'sales_manager', 'caller'], false],
         'meeting_soon' => ['Meeting soon', ['in_app', 'push'], ['owner', 'sales_manager', 'caller'], false],

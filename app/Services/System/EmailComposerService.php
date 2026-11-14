@@ -4,6 +4,7 @@ namespace App\Services\System;
 
 use App\Exceptions\Domain\DomainException;
 use App\Mail\ComposedMail;
+use App\Models\Collaborator;
 use App\Models\CustomerPayment;
 use App\Models\Lead;
 use App\Models\MarketingService;
@@ -11,6 +12,7 @@ use App\Models\OpeningReceivable;
 use App\Models\PartnershipRevenue;
 use App\Models\Payroll;
 use App\Models\Project;
+use App\Models\Referral;
 use App\Models\SentEmail;
 use App\Models\User;
 use App\Repositories\Contracts\SentEmailRepositoryInterface;
@@ -44,7 +46,10 @@ class EmailComposerService
         'payslip' => ['Salary statement', 'payroll', 'Monthly salary breakdown for an employee'],
         'lead_followup' => ['Lead follow-up', 'lead', 'Thank a prospect after a call and confirm next steps'],
         'monthly_summary' => ['Monthly financial summary', 'month', 'Key figures of a month for partners / investors'],
+        'partnership_statement' => ['Partnership statement', 'collaborator', 'Monthly earned revenue, receipts and balance for a partner'],
+        'referral_memo' => ['Referral commission memo', 'referral', 'Commission on a referred project — earned, paid and due'],
         'custom' => ['Custom message', null, 'Blank professional email with your own detail lines'],
+        'reply' => ['Reply', null, 'Reply to an inbox message'], // used by the Inbox, not offered in the composer
     ];
 
     public function __construct(
@@ -59,7 +64,9 @@ class EmailComposerService
     /** @return list<array{key:string,label:string,source:?string,description:string}> */
     public function templates(): array
     {
-        return array_map(fn ($k, $t) => ['key' => $k, 'label' => $t[0], 'source' => $t[1], 'description' => $t[2]], array_keys(self::TEMPLATES), self::TEMPLATES);
+        $list = array_diff_key(self::TEMPLATES, ['reply' => true]);
+
+        return array_map(fn ($k, $t) => ['key' => $k, 'label' => $t[0], 'source' => $t[1], 'description' => $t[2]], array_keys($list), $list);
     }
 
     /**
@@ -83,6 +90,10 @@ class EmailComposerService
                 ->map(fn ($p) => ['value' => 'payroll:'.$p->id, 'label' => $p->employee?->name.' · '.Period::of($p->period)->label(), 'meta' => $this->money($p->gross_salary)])->all(),
             'lead' => $like(Lead::query(), ['code', 'phone', 'business_type', 'service'])->latest('last_activity_at')->limit(30)->get()
                 ->map(fn ($l) => ['value' => 'lead:'.$l->id, 'label' => $l->phone.' · '.($l->business_type ?: 'Lead'), 'meta' => $l->outcome.' · '.$l->code])->all(),
+            'collaborator' => $like(Collaborator::query(), ['code', 'name', 'contact'])->orderBy('name')->limit(30)->get()
+                ->map(fn ($c) => ['value' => 'collaborator:'.$c->id, 'label' => $c->name.' · '.$c->code, 'meta' => $c->status.' · earned '.$this->money($this->partnershipRows($c)->sum('recognized_revenue'))])->all(),
+            'referral' => $like(Referral::query()->with('project:id,name,code'), ['code', 'referrer', 'notes'])->latest('id')->limit(40)->get()
+                ->map(fn ($r) => ['value' => 'referral:'.$r->id, 'label' => $r->referrer.' · '.($r->project?->name ?? $r->code), 'meta' => $r->code.' · memo '.$this->money($r->memo_amount).' · paid '.$this->money($r->paid_amount)])->all(),
             'month' => collect(array_reverse(Period::range($this->periods->modelStart(), Period::current())))
                 ->filter(fn (Period $p) => $q === '' || stripos($p->label(), $q) !== false)
                 ->map(fn (Period $p) => ['value' => 'month:'.$p->key(), 'label' => $p->label(), 'meta' => 'Monthly statement'])->values()->all(),
@@ -110,6 +121,8 @@ class EmailComposerService
         Project::query()->whereNotNull('client_email')->where('client_email', '!=', '')->latest('id')
             ->get(['id', 'code', 'name', 'customer', 'client_email'])
             ->each(fn (Project $p) => $add($p->client_email, $p->customer ?: $p->name, 'Project client', $p->code.' · '.$p->name));
+        Collaborator::query()->whereNotNull('contact')->get(['code', 'name', 'contact'])
+            ->each(fn (Collaborator $c) => $add(implode(',', $this->emailsIn((string) $c->contact)), $c->name, 'Partner', $c->code.' · partnership'));
         User::query()->where('is_active', true)->orderBy('name')->get(['name', 'email'])
             ->each(fn (User $u) => $add($u->email, $u->name, 'Team', 'Auxtech team'));
         SentEmail::query()->latest('id')->limit(300)->get(['to', 'cc', 'subject'])
@@ -130,6 +143,14 @@ class EmailComposerService
     public function recordRecipients(?string $ref): array
     {
         $ref = (string) $ref;
+        if (str_starts_with($ref, 'collaborator:')) {
+            return $this->emailsIn((string) Collaborator::query()->whereKey((int) Str::after($ref, ':'))->value('contact'));
+        }
+        if (str_starts_with($ref, 'referral:')) {
+            $name = Referral::query()->whereKey((int) Str::after($ref, ':'))->value('referrer');
+
+            return $name ? User::query()->where('is_active', true)->whereRaw('lower(name) = ?', [mb_strtolower(trim($name))])->pluck('email')->map(fn ($e) => strtolower($e))->unique()->values()->all() : [];
+        }
         $project = null;
         $customer = null;
         if (str_starts_with($ref, 'project:')) {
@@ -171,6 +192,8 @@ class EmailComposerService
             'payslip' => $this->payslipDraft($this->resolve($ref, 'payroll')),
             'lead_followup' => $this->leadDraft($this->resolve($ref, 'lead')),
             'monthly_summary' => $this->monthlyDraft($ref),
+            'partnership_statement' => $this->partnershipDraft($this->resolve($ref, 'collaborator')),
+            'referral_memo' => $this->referralDraft($this->resolve($ref, 'referral')),
             default => ['subject' => '', 'name' => null, 'intro' => '', 'details' => [], 'closing' => 'Please let us know if you have any questions.'],
         };
 
@@ -194,21 +217,25 @@ class EmailComposerService
     }
 
     /** Send synchronously so the user gets an immediate success / failure, and log the attempt. */
-    public function send(array $data, User $sender): SentEmail
+    public function send(array $data, User $sender, array $thread = []): SentEmail
     {
         $to = $this->addresses($data['to']);
         $cc = $this->addresses($data['cc'] ?? '');
+        // our own Message-ID: replies quote it in In-Reply-To, which threads them in the Inbox
+        $messageId = strtolower(Str::uuid()->toString().'@'.(Str::after((string) config('mail.from.address'), '@') ?: 'auxtech.local'));
         $log = $this->repo->create([
             'user_id' => $sender->id, 'template' => $data['template'], 'record_ref' => $data['record_ref'] ?? null,
+            'message_id' => $messageId, 'thread_root_id' => $thread['thread_root_id'] ?? null, 'reply_to_mail_id' => $thread['reply_to_mail_id'] ?? null,
             'to' => implode(', ', $to), 'cc' => $cc ? implode(', ', $cc) : null, 'subject' => $data['subject'],
-            'content' => array_intersect_key($data, array_flip(['greeting', 'intro', 'details', 'include_table', 'table', 'closing'])), 'status' => 'sending',
+            'content' => array_intersect_key($data, array_flip(['greeting', 'intro', 'details', 'include_table', 'table', 'closing', 'quote'])), 'status' => 'sending',
         ]);
         try {
             $mail = Mail::to($to);
             if ($cc) {
                 $mail->cc($cc);
             }
-            $mail->send(new ComposedMail($data['subject'], $this->render($data, $sender), (string) $this->settings->get('company.name')));
+            $mail->send(new ComposedMail($data['subject'], $this->render($data, $sender), (string) $this->settings->get('company.name'),
+                $messageId, $thread['in_reply_to'] ?? null, $thread['references'] ?? []));
             $log->update(['status' => 'sent', 'sent_at' => now()]);
         } catch (\Throwable $e) {
             $log->update(['status' => 'failed', 'error' => Str::limit($e->getMessage(), 1000)]);
@@ -233,6 +260,79 @@ class EmailComposerService
     }
 
     // ------------------------------------------------------------------ templates
+
+    /** @return list<string> email addresses found in free text (e.g. a contact field) */
+    private function emailsIn(string $text): array
+    {
+        preg_match_all('/[A-Z0-9._%+\-]+@[A-Z0-9.\-]+\.[A-Z]{2,}/i', $text, $m);
+
+        return array_values(array_unique(array_map('strtolower', $m[0])));
+    }
+
+    /** Monthly rows of every assignment of a collaborator, oldest first, with package names. */
+    private function partnershipRows(Collaborator $c)
+    {
+        return PartnershipRevenue::query()->with('assignment.package:id,name')
+            ->whereIn('assignment_id', $c->assignments()->pluck('id'))->orderBy('earned_month')->get();
+    }
+
+    private function partnershipDraft(Collaborator $c): array
+    {
+        $rows = $this->partnershipRows($c);
+        $received = CustomerPayment::query()->where('receivable_type', 'partnership')->whereIn('receivable_id', $rows->pluck('id'))
+            ->selectRaw('receivable_id, sum(cash_received + processing_fee) as amt')->groupBy('receivable_id')->pluck('amt', 'receivable_id');
+        $earned = Money::sum($rows->pluck('recognized_revenue')->filter(fn ($v) => $v !== null)->map(fn ($v) => (float) $v)->all());
+        $paid = Money::sum($received->map(fn ($v) => (float) $v)->values()->all());
+        $balance = Money::round($earned - $paid);
+        $packages = $c->assignments()->with('package:id,name')->where('status', 'Active')->get()->map(fn ($a) => $a->package?->name)->filter()->unique()->implode(', ');
+        $n = fn (float $v) => number_format($v, 2);
+
+        return [
+            'subject' => 'Partnership statement — '.$c->name,
+            'name' => $c->name,
+            'intro' => 'Please find below a summary of our partnership: the revenue recognised for each month, the payments received and the current balance.',
+            'details' => [
+                ['Partner', $c->name], ['Packages', $packages ?: '—'],
+                ['Agreement', ($c->agreement_start ? $this->date($c->agreement_start) : 'Not dated').' – '.($c->agreement_end ? $this->date($c->agreement_end) : 'ongoing')],
+                ['Months recognised', (string) $rows->whereNotNull('recognized_revenue')->count()],
+                ['Total earned', $this->money($earned)], ['Total received', $this->money($paid)],
+                [$balance >= 0 ? 'Balance due' : 'Advance with us', $this->money(abs($balance))],
+            ],
+            'table' => $rows->isEmpty() ? null : ['columns' => ['Month', 'Package', 'Earned (BDT)', 'Received (BDT)'],
+                'rows' => $rows->map(fn (PartnershipRevenue $r) => [
+                    $r->earned_month->format('M Y'), (string) ($r->assignment?->package?->name ?? $r->code),
+                    $r->recognized_revenue === null ? 'Pending' : $n((float) $r->recognized_revenue), $n((float) ($received[$r->id] ?? 0)),
+                ])->values()->all()],
+            'closing' => 'If any month does not match your records, simply reply to this email and we will reconcile it.',
+        ];
+    }
+
+    private function referralDraft(Referral $r): array
+    {
+        $r->loadMissing('project');
+        $p = $r->project;
+        $due = Money::round((float) $r->memo_amount - (float) $r->paid_amount);
+        $split = $p ? Referral::query()->where('project_id', $p->id)->count() : 1;
+        $all = Referral::query()->with('project:id,name,code')->whereRaw('lower(referrer) = ?', [mb_strtolower($r->referrer)])->orderBy('id')->get();
+        $n = fn (float $v) => number_format($v, 2);
+
+        return [
+            'subject' => 'Referral commission — '.($p?->name ?? $r->code),
+            'name' => $r->referrer,
+            'intro' => 'Thank you for referring '.($p ? "\"{$p->name}\"" : 'this project').' to us. Your referral commission is summarised below'
+                .($due > 0 ? '; the outstanding amount will be paid with your next settlement.' : ' and has been paid in full.'),
+            'details' => [
+                ['Referral ID', $r->code], ['Project', $p ? $p->name.' · '.$p->code : '—'], ['Client', $p?->customer ?: '—'],
+                ['Project value', $p ? $this->money($p->total_value) : '—', $p !== null],
+                ['Your commission', $this->money($r->memo_amount).($split > 1 ? " (split equally between {$split} referrers)" : '')],
+                ['Paid', $this->money($r->paid_amount).($r->paid_on ? ' on '.$this->date($r->paid_on) : '')],
+                [$due >= 0 ? 'Due' : 'Overpaid', $this->money(abs($due))],
+            ],
+            'table' => $all->count() > 1 ? ['columns' => ['Project', 'Commission (BDT)', 'Paid (BDT)', 'Due (BDT)'],
+                'rows' => $all->map(fn (Referral $x) => [(string) ($x->project?->name ?? $x->code), $n((float) $x->memo_amount), $n((float) $x->paid_amount), $n((float) $x->memo_amount - (float) $x->paid_amount)])->all()] : null,
+            'closing' => 'Thank you for your continued support. Reply to this email if you have any questions.',
+        ];
+    }
 
     /**
      * The person to greet: the project's client name (intake "Client name"), the marketing
@@ -402,7 +502,7 @@ class EmailComposerService
     private function resolve(?string $ref, string $kind): mixed
     {
         $id = (int) Str::after((string) $ref, $kind.':');
-        $class = ['payment' => CustomerPayment::class, 'project' => Project::class, 'payroll' => Payroll::class, 'lead' => Lead::class][$kind];
+        $class = ['payment' => CustomerPayment::class, 'project' => Project::class, 'payroll' => Payroll::class, 'lead' => Lead::class, 'collaborator' => Collaborator::class, 'referral' => Referral::class][$kind];
         if (! str_starts_with((string) $ref, $kind.':') || ! ($m = $class::query()->find($id))) {
             throw new DomainException('Select a record for this template.');
         }
@@ -428,6 +528,7 @@ class EmailComposerService
             'details' => array_values(array_filter($data['details'] ?? [], fn ($d) => ! empty($d['on']) && trim((string) ($d['label'] ?? '')) !== '')),
             'table' => ! empty($data['include_table']) ? ($data['table'] ?? null) : null,
             'closing' => $data['closing'] ?? '',
+            'quote' => $data['quote'] ?? null, 'quoteHeader' => $data['quote_header'] ?? null,
             // every email is signed by the same person, whoever clicks Send (Settings → Policies → Email signature)
             'sender' => $this->settings->get('company.signature_name') ?: $sender->name, 'title' => $this->settings->get('company.signature_title'),
             'company' => $this->settings->get('company.name'), 'website' => $this->settings->get('company.website'),

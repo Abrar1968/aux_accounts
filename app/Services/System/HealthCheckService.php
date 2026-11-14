@@ -6,6 +6,7 @@ use App\Models\Lead;
 use App\Models\Project;
 use App\Models\User;
 use App\Services\Accounting\FinancialStatementService;
+use App\Services\Mail\ImapConnector;
 use App\Services\Shared\PeriodService;
 use App\Support\Period;
 use Illuminate\Support\Facades\DB;
@@ -62,6 +63,17 @@ class HealthCheckService
         $add('Assets built', fn () => [is_file(public_path('build/manifest.json')), 'public/build/manifest.json']);
         $add('Pusher configured', fn () => [config('broadcasting.default') === 'pusher' && (string) config('broadcasting.connections.pusher.secret') !== '', 'app '.config('broadcasting.connections.pusher.app_id').' / '.config('broadcasting.connections.pusher.options.cluster')]);
         $add('Mail configured', fn () => [config('mail.default') === 'smtp' && (string) config('mail.mailers.smtp.password') !== '', config('mail.mailers.smtp.host').':'.config('mail.mailers.smtp.port').' as '.config('mail.mailers.smtp.username')]);
+        $add('Inbox mailbox (IMAP login)', function () {
+            $imap = app(ImapConnector::class);
+            if (! $imap->configured()) {
+                return [false, 'not configured — set MAIL_HOST / MAIL_USERNAME / MAIL_PASSWORD'];
+            }
+            $client = $imap->connect();
+            $box = $client->examine((string) config('mail.imap.folder', 'INBOX'));
+            $client->logout();
+
+            return [true, config('mail.imap.username').' · '.$box['exists'].' message(s) on the server'];
+        });
         $add('Scheduler heartbeat', function () {
             // crm:safety-check runs every 5 minutes once the cron line is active (seeded Apps Script history does not count)
             $last = DB::table('automation_runs')->where('command', 'crm:safety-check')->max('started_at');

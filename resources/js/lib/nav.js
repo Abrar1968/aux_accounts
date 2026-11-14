@@ -51,6 +51,7 @@ export const navigation = [
         { label: 'Import leads', href: '/crm/import', icon: 'upload', perm: 'crm.leads.import' },
     ]},
     { section: 'System', module: 'system', items: [
+        { label: 'Inbox', href: '/system/inbox', icon: 'inbox', perm: 'email.inbox', badge: 'inbox' },
         { label: 'Send email', href: '/system/email', icon: 'mail', perm: 'email.send' },
         { label: 'Settings', href: '/settings', icon: 'cog', perm: 'settings.manage' },
         { label: 'Users & roles', href: '/system/users', icon: 'users', perm: 'users.manage' },

@@ -29,6 +29,7 @@ watch(brand, (b) => {
 
 const user = computed(() => page.props.auth?.user);
 const unread = ref(page.props.notifications?.unread ?? 0);
+const inboxUnread = computed(() => page.props.inbox?.unread ?? 0);
 watch(() => page.props.notifications?.unread, (v) => (unread.value = v ?? 0));
 const drawer = ref(false);
 const palette = ref(false);
@@ -120,6 +121,7 @@ const greetingDate = computed(() => new Date().toLocaleDateString('en-GB', { wee
                     <span :class="shown === m.key ? 'bg-[#ffb454]/[0.14] ring-[#ffb454]/35' : 'ring-transparent group-hover:bg-white/[0.07]'" class="grid size-11 place-items-center rounded-2xl ring-1 ring-inset transition-all duration-200 group-hover:-translate-y-0.5">
                         <Icon :name="m.icon" :size="20" />
                     </span>
+                    <span v-if="m.key === 'system' && inboxUnread" class="absolute right-4 top-1 size-2.5 rounded-full bg-[#ffb454] shadow-[0_0_8px_#ffb454] ring-2 ring-[#070c1d]" :title="`${inboxUnread} unread in Inbox`" />
                     <span class="font-mono text-[9px] font-medium uppercase tracking-[0.12em]">{{ m.key === 'accounting' ? 'Books' : m.key === 'crm' ? 'CRM' : 'System' }}</span>
                 </button>
                 <div class="mt-auto flex flex-col items-center gap-1.5">
@@ -149,7 +151,8 @@ const greetingDate = computed(() => new Date().toLocaleDateString('en-GB', { wee
                                 <span v-if="isActive(i.href)" class="absolute inset-y-2 left-0 w-[3px] rounded-r-full bg-brand-400 shadow-[0_0_10px_var(--color-brand-400)]" aria-hidden="true" />
                                 <Icon :name="i.icon" :size="17" :class="isActive(i.href) ? 'text-brand-600' : 'text-ink-3 group-hover:text-brand-600'" class="shrink-0 transition-transform duration-200 group-hover:scale-110" />
                                 <span class="truncate transition-transform duration-200 group-hover:translate-x-0.5">{{ i.label }}</span>
-                                <kbd v-if="hint(i.href)" class="ml-auto hidden shrink-0 rounded border border-line px-1 font-mono text-[9.5px] text-ink-3 opacity-0 transition-opacity group-hover:opacity-100 lg:inline">{{ hint(i.href) }}</kbd>
+                                <span v-if="i.badge === 'inbox' && inboxUnread" class="ml-auto grid h-5 min-w-5 place-items-center rounded-full bg-brand-gradient px-1.5 font-mono text-[10px] font-bold text-on-brand shadow-[0_0_10px_-2px_var(--color-brand-400)]">{{ inboxUnread > 99 ? '99+' : inboxUnread }}</span>
+                                <kbd v-else-if="hint(i.href)" class="ml-auto hidden shrink-0 rounded border border-line px-1 font-mono text-[9.5px] text-ink-3 opacity-0 transition-opacity group-hover:opacity-100 lg:inline">{{ hint(i.href) }}</kbd>
                             </Link>
                         </div>
                     </div>

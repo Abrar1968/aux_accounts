@@ -3,10 +3,17 @@
 namespace Tests\Feature\System;
 
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Models\Collaborator;
+use App\Models\PartnershipRevenue;
 use App\Models\Project;
+use App\Models\Referral;
 use App\Models\Role;
 use App\Repositories\Contracts\LeadRepositoryInterface;
 use App\Repositories\Contracts\ProjectRepositoryInterface;
+use App\Services\Accounting\CustomerPaymentService;
+use App\Services\Accounting\PartnershipService;
+use App\Services\System\EmailComposerService;
+use App\Support\Period;
 use App\Support\PermissionCatalog;
 use Tests\Concerns\SeedsWorkbook;
 use Tests\TestCase;
@@ -70,13 +77,62 @@ class SearchRolesEmailTest extends TestCase
         $this->travelTo('2026-11-14 10:00:00');
         $p = Project::query()->firstOrFail();
         $p->update(['customer' => 'Md . Jahan Mia']);
-        $pay = app(\App\Services\Accounting\CustomerPaymentService::class)->record(['paid_at' => '2026-11-13 10:00', 'receivable_type' => 'project', 'receivable_id' => $p->id, 'cash_received' => 3890]);
+        $pay = app(CustomerPaymentService::class)->record(['paid_at' => '2026-11-13 10:00', 'receivable_type' => 'project', 'receivable_id' => $p->id, 'cash_received' => 3890]);
         $pay->forceFill(['canonical_name' => 'Organic'])->save();
-        $svc = app(\App\Services\System\EmailComposerService::class);
+        $svc = app(EmailComposerService::class);
 
         $this->assertSame('Dear Md . Jahan Mia,', $svc->draft('payment_receipt', 'payment:'.$pay->id)['greeting']);
         $this->assertSame('Dear Md . Jahan Mia,', $svc->draft('payment_reminder', 'receivable:project:'.$p->id)['greeting']);
         $this->assertSame('Dear Md . Jahan Mia,', $svc->draft('project_update', 'project:'.$p->id)['greeting']);
+    }
+
+    public function test_partnership_statement_and_referral_memo_templates(): void
+    {
+        $this->travelTo('2026-11-14 10:00:00');
+        $svc = app(EmailComposerService::class);
+        $keys = array_column($svc->templates(), 'key');
+        $this->assertContains('partnership_statement', $keys);
+        $this->assertContains('referral_memo', $keys);
+        $this->assertNotContains('reply', $keys, 'inbox-only template hidden from the composer');
+
+        // partnership: WTBL has Aug–Nov rows once generated; two months earned, 5,000 received
+        $col = Collaborator::query()->where('code', 'COL-0004')->firstOrFail();
+        $col->update(['contact' => 'Accounts: billing@wtbl.test, +8801700000000']);
+        app(PartnershipService::class)->generateThrough(Period::current());
+        $rows = PartnershipRevenue::query()->whereIn('assignment_id', $col->assignments()->pluck('id'))->orderBy('earned_month')->get();
+        $this->assertCount(4, $rows);
+        $rows[0]->update(['direct_amount' => 20000, 'recognized_revenue' => 20000]);
+        $rows[1]->update(['direct_amount' => 20000, 'recognized_revenue' => 20000]);
+        app(CustomerPaymentService::class)->record(['paid_at' => '2026-11-10 10:00', 'receivable_type' => 'partnership', 'receivable_id' => $rows[0]->id, 'cash_received' => 5000]);
+
+        $this->assertTrue(collect($svc->records('partnership_statement', 'wtbl'))->contains('value', 'collaborator:'.$col->id));
+        $d = $svc->draft('partnership_statement', 'collaborator:'.$col->id);
+        $det = collect($d['details'])->pluck('value', 'label');
+        $this->assertSame(['Dear WTBL,', 'BDT 40,000.00', 'BDT 5,000.00', 'BDT 35,000.00'], [$d['greeting'], $det['Total earned'], $det['Total received'], $det['Balance due']]);
+        $this->assertSame(['Aug 2026', 'Maintenance Package', '20,000.00', '5,000.00'], $d['table']['rows'][0]);
+        $this->assertSame('Pending', $d['table']['rows'][3][2]);
+        $this->assertSame(['billing@wtbl.test'], $d['recipients']);
+
+        // referral memo: Rajib Vai has several referrals → table of all of them
+        $ref = Referral::query()->where('referrer', 'Rajib Vai')->firstOrFail();
+        $d = $svc->draft('referral_memo', 'referral:'.$ref->id);
+        $det = collect($d['details'])->pluck('value', 'label');
+        $this->assertSame('Dear Rajib Vai,', $d['greeting']);
+        $this->assertSame('BDT '.number_format((float) $ref->memo_amount, 2), explode(' (', $det['Your commission'])[0]);
+        $this->assertGreaterThan(1, count($d['table']['rows']));
+        $abrar = Referral::query()->where('referrer', 'Abrar')->firstOrFail();
+        $this->assertContains('abrar@auxtech.local', $svc->draft('referral_memo', 'referral:'.$abrar->id)['recipients']);
+    }
+
+    public function test_referrer_picker_lists_people_most_used_first(): void
+    {
+        $list = $this->actingAs($this->owner())->getJson('/ajax/referrers')->assertOk()->json('referrers');
+        $names = array_column($list, 'name');
+        $this->assertSame('Rajib Vai', $names[0], 'most frequent referrer first');
+        $this->assertContains('Rizwan', $names);
+        $this->assertNotContains('Refferer', $names, 'placeholder values dropped');
+        $this->assertSame(count($names), count(array_unique(array_map('mb_strtolower', $names))));
+        $this->actingAs($this->userWithRole('caller'))->getJson('/ajax/referrers')->assertForbidden();
     }
 
     private function inertiaVersion(): string

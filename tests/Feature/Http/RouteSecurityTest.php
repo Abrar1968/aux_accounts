@@ -55,7 +55,7 @@ class RouteSecurityTest extends TestCase
             $user = $this->userWithRole($role, ucfirst($role).' Tester');
             foreach (Route::getRoutes() as $r) {
                 if (! in_array('GET', $r->methods(), true) || in_array($r->getName(), self::PUBLIC, true) || in_array($r->getName(), ['logout'], true)
-                    || str_starts_with($r->uri(), 'broadcasting') || str_starts_with($r->uri(), 'storage') || $r->uri() === 'up' || in_array($r->getName(), ['attachments.link', 'projects.signature'], true)) { // link needs an existing upload (covered in AutomationCommandsTest)
+                    || str_starts_with($r->uri(), 'broadcasting') || str_starts_with($r->uri(), 'storage') || $r->uri() === 'up' || in_array($r->getName(), ['attachments.link', 'projects.signature', 'inbox.html', 'inbox.attachment'], true)) { // need an existing upload / mail (covered in AutomationCommandsTest, InboxTest)
                     continue;
                 }
                 $uri = preg_replace_callback('/\{(\w+)\??\}/', fn ($m) => (string) ($params[$m[1]] ?? ''), $r->uri());

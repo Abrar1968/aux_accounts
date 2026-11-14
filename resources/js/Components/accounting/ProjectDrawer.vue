@@ -20,7 +20,7 @@ export function useProjectCrud() {
 </script>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import Drawer from '@/Components/ui/Drawer.vue';
 import Button from '@/Components/ui/Button.vue';
 import ImagePicker from '@/Components/ui/ImagePicker.vue';
@@ -28,6 +28,8 @@ import Input from '@/Components/ui/Input.vue';
 import MoneyInput from '@/Components/ui/MoneyInput.vue';
 import Select from '@/Components/ui/Select.vue';
 import Textarea from '@/Components/ui/Textarea.vue';
+import ChipSelect from '@/Components/ui/ChipSelect.vue';
+import { getJson } from '@/Composables/useJson';
 import { money } from '@/lib/format';
 
 const props = defineProps({ crud: { type: Object, required: true } });
@@ -39,7 +41,10 @@ const contract = computed(() => Number(form.base_value || 0) + Number(form.chang
 const referrers = computed(() => [...new Set(String(form.referrer ?? '').split(/[,;&+/]+/).map((n) => n.trim()).filter(Boolean))]);
 const referrerHint = computed(() => (referrers.value.length > 1
     ? `${referrers.value.length} referrers — the tier memo is split equally (${referrers.value.join(' · ')})`
-    : 'Separate several people with commas; the referral memo is split equally between them'));
+    : 'Pick one or more people (or type a new name); the referral memo is split equally between them'));
+// referrer options load when the drawer opens (past referrers first, then employees and team)
+const referrerOptions = ref([]);
+watch(open, (v) => { if (v && !referrerOptions.value.length) getJson('/ajax/referrers').then((r) => (referrerOptions.value = r.referrers)).catch(() => {}); }, { immediate: true });
 </script>
 
 <template>
@@ -81,7 +86,7 @@ const referrerHint = computed(() => (referrers.value.length > 1
                 <MoneyInput v-model="form.change_orders" label="Change orders" />
                 <div class="flex flex-col justify-end rounded-xl border border-dashed border-line bg-surface-2/60 px-3 py-2"><span class="text-[11px] font-semibold uppercase tracking-wide text-ink-3">Contract value</span><span class="num text-base font-bold">{{ money(contract, { decimals: true }) }}</span></div>
             </div>
-            <Input v-model="form.referrer" label="Referrer(s)" placeholder="e.g. Rizwan, Abrar" :hint="referrerHint" :error="form.errors.referrer" />
+            <ChipSelect v-model="form.referrer" :options="referrerOptions" label="Referrer(s)" placeholder="Select referrers…" create-label="Add new referrer" :hint="referrerHint" :error="form.errors.referrer" />
             <Textarea v-model="form.notes" label="Notes" />
             <ImagePicker v-if="!editing" v-model="form.client_signature" label="Client signature (optional)" hint="Printed on this client's invoices and statements only" :error="form.errors.client_signature" />
         </form>

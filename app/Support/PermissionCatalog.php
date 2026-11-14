@@ -16,6 +16,7 @@ final class PermissionCatalog
             'attachments.create' => 'Upload attachments',
             'attachments.delete' => 'Delete attachments',
             'email.send' => 'Send emails to clients',
+            'email.inbox' => 'Read the Inbox (client replies) and reply',
         ],
         'Projects & revenue' => [
             'accounting.projects.view' => 'View projects, recognition, marketing & partnerships',

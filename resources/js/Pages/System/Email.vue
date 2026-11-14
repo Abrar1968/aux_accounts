@@ -29,7 +29,7 @@ const record = ref(null); // combobox option
 const recordKey = ref(0); // remount combobox on template change
 const loading = ref(false);
 const current = computed(() => props.templates.find((t) => t.key === form.template));
-const templateLabel = (k) => props.templates.find((t) => t.key === k)?.label ?? k;
+const templateLabel = (k) => props.templates.find((t) => t.key === k)?.label ?? (k === 'reply' ? 'Inbox reply' : k);
 
 function chooseTemplate(t) {
     form.template = t.key;
@@ -111,7 +111,7 @@ watch(search, (q) => { clearTimeout(timer); timer = setTimeout(() => router.relo
             <Card title="2 · Record & recipients">
                 <div class="space-y-3">
                     <Combobox v-if="current?.source" :key="recordKey" v-model="record" :fetcher="fetchRecords" label="Record"
-                        :placeholder="{ payment: 'Search receipt, customer or revenue ID…', receivable: 'Search customer account…', project: 'Search project…', payroll: 'Search employee or month…', lead: 'Search phone or business…', month: 'Pick a month…' }[current.source]"
+                        :placeholder="{ payment: 'Search receipt, customer or revenue ID…', receivable: 'Search customer account…', project: 'Search project…', payroll: 'Search employee or month…', lead: 'Search phone or business…', month: 'Pick a month…', collaborator: 'Search partner (collaborator)…', referral: 'Search referrer or project…' }[current.source]"
                         :error="form.errors.record_ref" />
                     <p v-if="loading" class="text-xs text-ink-3">Generating email from the latest figures…</p>
                     <RecipientPicker v-model="form.to" :contacts="contacts" label="To" :error="form.errors.to"
@@ -146,7 +146,7 @@ watch(search, (q) => { clearTimeout(timer); timer = setTimeout(() => router.relo
                         </ul>
                     </div>
 
-                    <Switch v-if="form.table" v-model="form.include_table" label="Include transaction table" :description="`${form.table.rows.length} line(s): every charge and payment with running balance`" />
+                    <Switch v-if="form.table" v-model="form.include_table" label="Include transaction table" :description="`${form.table.rows.length} line(s): ${form.table.columns.join(' · ')}`" />
                     <Textarea v-model="form.closing" :rows="2" label="Closing" :error="form.errors.closing" />
                 </div>
             </Card>

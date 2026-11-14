@@ -115,4 +115,20 @@ return [
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
 
+    /*
+    | Inbox (System → Inbox): replies to emails sent from the app land in this mailbox and are read
+    | over IMAP (read-only, built-in client). Defaults reuse the SMTP mailbox login.
+    */
+    'imap' => [
+        'host' => env('IMAP_HOST', env('MAIL_HOST')),
+        'port' => (int) env('IMAP_PORT', 993),
+        'encryption' => env('IMAP_ENCRYPTION', 'ssl'),
+        'username' => env('IMAP_USERNAME', env('MAIL_USERNAME')),
+        'password' => env('IMAP_PASSWORD', env('MAIL_PASSWORD')),
+        'folder' => env('IMAP_FOLDER', 'INBOX'),
+        'verify_peer' => (bool) env('IMAP_VERIFY_PEER', true),
+        'initial_days' => (int) env('IMAP_INITIAL_DAYS', 30),
+        'max_message_mb' => (int) env('IMAP_MAX_MESSAGE_MB', 20),
+    ],
+
 ];

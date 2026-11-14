@@ -22,3 +22,4 @@
 | 18 | [Google Sheets sync](18-google-sheets-sync.md) | Lead sheet → CRM live sync (Apps Script push, signed webhook), set-up, troubleshooting |
 
 Current state: **Phases 0, 1, 3 and 4 complete**. Next: Prompt D (deploy) in 10-prompts.md, and Phase 2 hardening items.
+- [19 — Inbox, partnership & referral emails, referrer picker](19-inbox.md)

@@ -8,6 +8,7 @@ use App\Http\Resources\RecordResource;
 use App\Models\Referral;
 use App\Services\Accounting\ReferralService;
 use App\Services\Shared\ListingService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -15,6 +16,12 @@ use Inertia\Response;
 class ReferralController extends Controller
 {
     public function __construct(private readonly ReferralService $referrals) {}
+
+    /** Referrer picker options (project form). */
+    public function known(): JsonResponse
+    {
+        return response()->json(['referrers' => $this->referrals->knownReferrers()]);
+    }
 
     public function index(Request $request, ListingService $list): Response
     {

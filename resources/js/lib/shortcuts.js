@@ -17,6 +17,7 @@ export const shortcuts = [
     { group: 'Go to', keys: ['Ctrl', 'J'], key: 'j', label: 'Leads', href: '/crm/leads', perm: 'crm.leads.view', icon: 'phone' },
     { group: 'Go to', keys: ['Ctrl', 'I'], key: 'i', label: 'Pipeline', href: '/crm/pipeline', perm: 'crm.leads.view', icon: 'columns' },
     { group: 'Go to', keys: ['Ctrl', 'U'], key: 'u', label: 'Follow-ups', href: '/crm/follow-ups', perm: 'crm.leads.view', icon: 'bell' },
+    { group: 'Go to', keys: ['Ctrl', 'Shift', 'M'], key: 'm', shift: true, label: 'Inbox (client replies)', href: '/system/inbox', perm: 'email.inbox', icon: 'inbox' },
     { group: 'Go to', keys: ['Ctrl', ','], key: ',', label: 'Settings', href: '/settings', perm: 'settings.manage', icon: 'cog' },
     { group: 'Anywhere', keys: ['Ctrl', 'K'], key: 'k', label: 'Search everything / jump to a page', action: 'palette', icon: 'search' },
     { group: 'Anywhere', keys: ['Ctrl', 'F'], key: 'f', label: 'Search this list', action: 'find', icon: 'filter' },

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\Mail\MailboxService;
 use App\Services\System\BrandingService;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -49,6 +50,7 @@ class HandleInertiaRequests extends Middleware
             'notifications' => [
                 'unread' => fn () => $user?->unreadNotifications()->count() ?? 0,
             ],
+            'inbox' => fn () => $user?->hasPermission('email.inbox') ? ['unread' => app(MailboxService::class)->unreadCount()] : null,
             'pusher' => [
                 'key' => config('broadcasting.connections.pusher.key'),
                 'cluster' => config('broadcasting.connections.pusher.options.cluster'),
