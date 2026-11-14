@@ -50,7 +50,7 @@ const save = () => form.transform((d) => ({ gross_sales: d.gross_sales === '' ? 
 
 <template>
     <Head title="Partnerships" />
-    <PageHeader title="Partnerships" subtitle="Collaborator packages · monthly rows are generated for active assignments; blank earned amount = not recognised">
+    <PageHeader title="Partnerships" subtitle="Collaborator packages · every Active assignment gets one revenue row per month as soon as it is saved; blank earned amount = not recognised">
         <Button v-if="can('accounting.projects.create')" variant="secondary" icon="user" @click="col.create(); tab = 'collaborators'">New collaborator</Button>
         <Button v-if="can('accounting.projects.create')" icon="plus" @click="asg.create(); tab = 'assignments'">New assignment</Button>
     </PageHeader>
@@ -63,8 +63,13 @@ const save = () => form.transform((d) => ({ gross_sales: d.gross_sales === '' ? 
         <Pagination :page="revenues" />
     </Card>
     <Card v-else-if="tab === 'assignments'" :padded="false">
-        <DataTable :rows="assignments" :columns="[{ key: 'code', label: 'Assignment', primary: true, avatar: true, format: (v, r) => `${r.collaborator?.name} · ${r.package?.name}`, sub: (r) => r.code }, { key: 'status', label: 'Status', secondary: true }, { key: 'effective_from', label: 'From', format: date }, { key: 'effective_through', label: 'Through', format: date }, { key: 'earning_method', label: 'Method' }, { key: 'notes', label: 'Notes', hideMobile: true }]">
+        <DataTable :rows="assignments" :columns="[{ key: 'code', label: 'Assignment', primary: true, avatar: true, format: (v, r) => `${r.collaborator?.name} · ${r.package?.name}`, sub: (r) => r.code }, { key: 'status', label: 'Status', secondary: true }, { key: 'effective_from', label: 'From', format: date, class: 'whitespace-nowrap' }, { key: 'effective_through', label: 'Through', format: date, class: 'whitespace-nowrap' }, { key: 'earning_method', label: 'Method' }, { key: 'months', label: 'Revenue months' }, { key: 'notes', label: 'Notes', hideMobile: true }]">
             <template #cell-status="{ value }"><Badge :label="value" /></template>
+            <template #cell-months="{ row }">
+                <Badge v-if="row.no_rows_reason && row.status === 'Active'" tone="warning" :label="row.no_rows_reason" />
+                <span v-else-if="row.months" class="font-mono text-[12.5px] font-semibold text-ink">{{ row.months }} month{{ row.months > 1 ? 's' : '' }}</span>
+                <span v-else class="text-xs text-ink-3">{{ row.status === 'Active' ? 'Starts later' : 'Not active' }}</span>
+            </template>
             <template v-if="can('accounting.projects.update')" #actions="{ row }"><RowActions edit :remove="can('accounting.projects.delete')" @edit="asg.edit(row)" @remove="asg.askDelete(row)" /></template>
         </DataTable>
     </Card>
@@ -94,7 +99,7 @@ const save = () => form.transform((d) => ({ gross_sales: d.gross_sales === '' ? 
         </form>
         <template #footer><Button variant="secondary" @click="colOpen = false">Cancel</Button><Button type="submit" form="col-form" :loading="cf.processing">{{ colEditing ? 'Save changes' : 'Add collaborator' }}</Button></template>
     </Drawer>
-    <Drawer v-model="asgOpen" :icon="asgEditing ? 'pencil' : 'link'" :title="asgEditing ? `Edit ${asgEditing.code}` : 'New assignment'" subtitle="Active assignments create a monthly revenue row automatically">
+    <Drawer v-model="asgOpen" :icon="asgEditing ? 'pencil' : 'link'" :title="asgEditing ? `Edit ${asgEditing.code}` : 'New assignment'" subtitle="Saving as Active creates its monthly revenue rows immediately (from the effective date up to this month)">
         <form id="asg-form" class="space-y-4" @submit.prevent="asg.submit()">
             <Select v-model="af.collaborator_id" label="Collaborator" placeholder="Choose collaborator" :options="props.collaborators.map((c) => ({ value: c.id, label: c.name }))" :error="af.errors.collaborator_id" />
             <Select v-model="af.package_id" label="Package" placeholder="Choose package" :options="props.packages.map((p) => ({ value: p.id, label: p.name }))" :error="af.errors.package_id" />

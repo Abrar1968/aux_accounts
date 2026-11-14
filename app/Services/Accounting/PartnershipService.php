@@ -17,7 +17,9 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Partnerships module (AuxtechPartnerships.gs was never installed – implemented natively).
- * Only Active assignments of Active collaborators with a real effective date create rows.
+ * Active assignments (with an effective date, collaborator not Inactive) create one row per month,
+ * bounded by the collaborator's agreement dates when those are set. Rows appear as soon as an
+ * assignment or collaborator is saved, and nightly via accounting:daily.
  * Blank earned amount = not recognised; 0 = explicit zero. Method and share % are snapshotted.
  */
 class PartnershipService
@@ -27,39 +29,94 @@ class PartnershipService
         private readonly SequenceService $sequences,
     ) {}
 
+    /**
+     * Create the monthly rows of every Active assignment up to $through (idempotent) and remove
+     * empty rows that fall outside an assignment's window (dates shortened, set Draft/Inactive).
+     * A row is only removed while it has no earned input and no receipt.
+     */
     public function generateThrough(Period $through): int
     {
         $created = 0;
-        $assignments = PartnershipAssignment::query()->with('collaborator', 'package')
-            ->where('status', 'Active')->whereNotNull('effective_from')->get();
-        foreach ($assignments as $a) {
-            if ($a->collaborator?->status !== 'Active' || ! $a->collaborator->agreement_start) {
-                continue;
-            }
-            $from = Period::of(max($a->effective_from->toDateString(), $a->collaborator->agreement_start->toDateString()));
-            $endDates = array_filter([$a->effective_through?->toDateString(), $a->collaborator->agreement_end?->toDateString()]);
-            $to = $endDates ? Period::of(min($endDates)) : $through;
-            if ($through->lt($to)) {
-                $to = $through;
-            }
-            foreach ($from->lte($to) ? Period::range($from, $to) : [] as $m) {
-                $row = PartnershipRevenue::query()->firstOrCreate(
-                    ['assignment_id' => $a->id, 'earned_month' => $m->date()],
-                    ['code' => 'PART-'.$m->start->format('Ym').'-'.$a->code, 'earning_method' => $a->earning_method, 'share_percent' => $a->share_percent],
-                );
-                $created += $row->wasRecentlyCreated ? 1 : 0;
-            }
+        foreach (PartnershipAssignment::query()->with('collaborator')->get() as $a) {
+            $created += $this->syncAssignment($a, $through);
         }
 
         return $created;
     }
 
+    /** Rows for one assignment; returns how many were created. */
+    public function syncAssignment(PartnershipAssignment $a, ?Period $through = null): int
+    {
+        $through ??= Period::current();
+        $months = $this->window($a, $through);
+        $keep = array_map(fn (Period $m) => $m->date(), $months);
+        $created = 0;
+        foreach ($months as $m) {
+            $row = PartnershipRevenue::query()->firstOrCreate(
+                ['assignment_id' => $a->id, 'earned_month' => $m->date()],
+                ['code' => 'PART-'.$m->start->format('Ym').'-'.$a->code, 'earning_method' => $a->earning_method, 'share_percent' => $a->share_percent],
+            );
+            $created += $row->wasRecentlyCreated ? 1 : 0;
+        }
+        $paid = CustomerPayment::query()->where('receivable_type', 'partnership')->pluck('receivable_id')->all();
+        PartnershipRevenue::query()->where('assignment_id', $a->id)
+            ->whereNull('recognized_revenue')->whereNull('gross_sales')->whereNull('direct_amount')
+            ->whereNotIn('id', $paid)->get()
+            ->filter(fn (PartnershipRevenue $r) => ! in_array($r->earned_month->toDateString(), $keep, true))
+            ->each(fn (PartnershipRevenue $r) => $r->delete());
+
+        return $created;
+    }
+
+    /**
+     * Months an assignment earns in: from the later of its effective date and the collaborator's
+     * agreement start (when set) to the earliest of its through date, the agreement end and $through.
+     *
+     * @return list<Period>
+     */
+    public function window(PartnershipAssignment $a, Period $through): array
+    {
+        return $this->blockReason($a) !== null ? [] : $this->range($a, $through);
+    }
+
+    /** Why an assignment creates no monthly rows (null = it does). */
+    public function blockReason(PartnershipAssignment $a): ?string
+    {
+        $c = $a->collaborator;
+
+        return match (true) {
+            $a->status !== 'Active' => "Assignment is {$a->status} — set it to Active",
+            ! $a->effective_from => 'Assignment has no effective-from date',
+            ! $c => 'Collaborator is missing',
+            $c->status === 'Inactive' => 'Collaborator is Inactive',
+            default => $this->range($a, Period::of($a->effective_from->toDateString())->addMonths(1200)) === []
+                ? 'Outside the collaborator agreement dates' : null,
+        };
+    }
+
+    /** @return list<Period> */
+    private function range(PartnershipAssignment $a, Period $through): array
+    {
+        $c = $a->collaborator;
+        $from = Period::of(max(array_filter([$a->effective_from->toDateString(), $c?->agreement_start?->toDateString()])));
+        $ends = array_filter([$a->effective_through?->toDateString(), $c?->agreement_end?->toDateString()]);
+        $to = $ends ? Period::of(min($ends)) : $through;
+        if ($through->lt($to)) {
+            $to = $through;
+        }
+
+        return $from->lte($to) ? Period::range($from, $to) : [];
+    }
+
     public function overview(): array
     {
+        $this->generateThrough(Period::current()); // self-healing: rows exist the moment the page is opened
+
         return [
             'collaborators' => Collaborator::query()->orderBy('code')->get(),
             'packages' => PartnershipPackage::query()->orderBy('code')->get(),
-            'assignments' => PartnershipAssignment::query()->with('collaborator:id,code,name', 'package:id,code,name')->orderBy('code')->get(),
+            'assignments' => PartnershipAssignment::query()->with('collaborator', 'package:id,code,name')->withCount('revenues')->orderBy('code')->get()
+                ->map(fn (PartnershipAssignment $a) => $a->toArray() + ['months' => $a->revenues_count, 'no_rows_reason' => $this->blockReason($a)]),
         ];
     }
 
@@ -74,12 +131,16 @@ class PartnershipService
     {
         $n = $this->sequences->next('ASM', PartnershipAssignment::query()->count());
 
-        return PartnershipAssignment::query()->create($data + ['code' => 'ASM-'.str_pad((string) $n, 4, '0', STR_PAD_LEFT)]);
+        $a = PartnershipAssignment::query()->create($data + ['code' => 'ASM-'.str_pad((string) $n, 4, '0', STR_PAD_LEFT)]);
+        $this->syncAssignment($a->load('collaborator'));
+
+        return $a;
     }
 
     public function updateCollaborator(Collaborator $c, array $data): Collaborator
     {
         $c->update($data);
+        PartnershipAssignment::query()->with('collaborator')->where('collaborator_id', $c->id)->get()->each(fn ($a) => $this->syncAssignment($a));
 
         return $c;
     }
@@ -95,6 +156,7 @@ class PartnershipService
     public function updateAssignment(PartnershipAssignment $a, array $data): PartnershipAssignment
     {
         $a->update($data);
+        $this->syncAssignment($a->load('collaborator'));
 
         return $a;
     }

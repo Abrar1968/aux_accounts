@@ -65,6 +65,20 @@ class SearchRolesEmailTest extends TestCase
             ->assertOk()->assertJsonPath('props.draft.recipients', ['owner@client.test']);
     }
 
+    public function test_email_greets_the_client_not_the_revenue_label(): void
+    {
+        $this->travelTo('2026-11-14 10:00:00');
+        $p = Project::query()->firstOrFail();
+        $p->update(['customer' => 'Md . Jahan Mia']);
+        $pay = app(\App\Services\Accounting\CustomerPaymentService::class)->record(['paid_at' => '2026-11-13 10:00', 'receivable_type' => 'project', 'receivable_id' => $p->id, 'cash_received' => 3890]);
+        $pay->forceFill(['canonical_name' => 'Organic'])->save();
+        $svc = app(\App\Services\System\EmailComposerService::class);
+
+        $this->assertSame('Dear Md . Jahan Mia,', $svc->draft('payment_receipt', 'payment:'.$pay->id)['greeting']);
+        $this->assertSame('Dear Md . Jahan Mia,', $svc->draft('payment_reminder', 'receivable:project:'.$p->id)['greeting']);
+        $this->assertSame('Dear Md . Jahan Mia,', $svc->draft('project_update', 'project:'.$p->id)['greeting']);
+    }
+
     private function inertiaVersion(): string
     {
         return (string) app(HandleInertiaRequests::class)->version(request());

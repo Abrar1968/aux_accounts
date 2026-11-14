@@ -6,6 +6,9 @@ use App\Exceptions\Domain\DomainException;
 use App\Mail\ComposedMail;
 use App\Models\CustomerPayment;
 use App\Models\Lead;
+use App\Models\MarketingService;
+use App\Models\OpeningReceivable;
+use App\Models\PartnershipRevenue;
 use App\Models\Payroll;
 use App\Models\Project;
 use App\Models\SentEmail;
@@ -231,6 +234,24 @@ class EmailComposerService
 
     // ------------------------------------------------------------------ templates
 
+    /**
+     * The person to greet: the project's client name (intake "Client name"), the marketing
+     * client, the legacy customer or the collaborator — not the payment's revenue label.
+     */
+    private function clientName(string $type, int $id, ?string $fallback): ?string
+    {
+        $name = match ($type) {
+            'project' => Project::query()->whereKey($id)->value('customer'),
+            'marketing' => MarketingService::query()->whereKey($id)->value('client'),
+            'opening' => OpeningReceivable::query()->whereKey($id)->value('customer'),
+            'partnership' => PartnershipRevenue::query()->with('assignment.collaborator')->find($id)?->assignment?->collaborator?->name,
+            default => null,
+        };
+        $name = trim((string) ($name ?: $fallback));
+
+        return $name !== '' ? $name : null;
+    }
+
     private function paymentReceipt(CustomerPayment $p): array
     {
         $type = $p->receivable_type;
@@ -238,7 +259,7 @@ class EmailComposerService
 
         return [
             'subject' => 'Payment received — '.$p->code,
-            'name' => $p->canonical_name,
+            'name' => $this->clientName($type, (int) $p->receivable_id, $p->canonical_name),
             'intro' => "Thank you for your payment. We confirm that we have received the amount below against {$p->revenue_code}.",
             'details' => [
                 ['Receipt number', $p->code], ['Date received', $this->date($p->paid_at)],
@@ -276,13 +297,13 @@ class EmailComposerService
 
         return $full ? [
             'subject' => 'Account statement — '.$s['code'],
-            'name' => $s['customer'],
+            'name' => $this->clientName($type, $id, $s['customer']),
             'intro' => 'Please find below your account statement as of '.$this->date($s['as_of']).', listing every charge and payment on this account.',
             'details' => $details, 'table' => $table,
             'closing' => 'If any entry does not match your records, please reply to this email and we will reconcile it promptly.',
         ] : [
             'subject' => 'Friendly payment reminder — '.$s['code'],
-            'name' => $s['customer'],
+            'name' => $this->clientName($type, $id, $s['customer']),
             'intro' => $s['closing'] > 0
                 ? 'This is a friendly reminder that a balance of '.$this->money($s['closing'])." remains outstanding on your account ({$s['code']}). We would be grateful if you could arrange payment at your earliest convenience."
                 : "Thank you — your account ({$s['code']}) is fully settled. No payment is due at this time.",
