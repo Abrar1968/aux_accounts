@@ -34,8 +34,14 @@ export const navigation = [
         { label: 'Assets', href: '/accounting/assets', icon: 'box', perm: 'accounting.ledger.view' },
         { label: 'Liabilities', href: '/accounting/liabilities', icon: 'scale', perm: 'accounting.ledger.view' },
         { label: 'Capital', href: '/accounting/capital', icon: 'pie', perm: 'accounting.ledger.view' },
-        { label: 'Statements', href: '/accounting/statements', icon: 'doc', perm: 'accounting.reports.view' },
+
         { label: 'Periods', href: '/accounting/periods', icon: 'lock', perm: 'accounting.reports.view' },
+    ]},
+    { section: 'Reports', module: 'accounting', items: [
+        { label: 'Statements', href: '/accounting/statements', icon: 'doc', perm: 'accounting.reports.view' },
+        { label: 'Profit & loss', href: '/accounting/reports/profit-loss', icon: 'trend', perm: 'accounting.reports.view' },
+        { label: 'Cash flow', href: '/accounting/reports/cash-flow', icon: 'cash', perm: 'accounting.reports.view' },
+        { label: 'Trial balance', href: '/accounting/reports/trial-balance', icon: 'scale', perm: 'accounting.reports.view' },
     ]},
     { section: 'Lead CRM', module: 'crm', items: [
         { label: 'Today', href: '/crm', icon: 'sun', perm: 'crm.leads.view' },

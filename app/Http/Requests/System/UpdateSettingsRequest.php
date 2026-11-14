@@ -17,6 +17,7 @@ class UpdateSettingsRequest extends FormRequest
         return [
             'settings' => ['required', 'array'],
             'settings.*' => ['nullable'],
+            'settings.accounting\.fiscal_year_start' => ['sometimes', 'integer', 'between:1,12'],
         ];
     }
 }

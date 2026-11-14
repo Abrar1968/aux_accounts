@@ -22,7 +22,7 @@ const LABELS = {
     'siam.start': ['Siam contract start', 'date'], 'siam.months': ['Siam contract months', 'number'], 'siam.share': ['Siam revenue share (0–1)', 'number'],
     'opening.other_fixed_assets': ['Other pre-April fixed assets (৳)', 'number'], 'opening.other_assets': ['Other opening assets / deposits (৳)', 'number'],
     'opening.cash': ['Cash before 1 Apr (৳)', 'number'], 'opening.other_liabilities': ['Other opening liabilities (৳)', 'number'],
-    'crm.daily_slots': ['Daily lead target (1–500)', 'number'], 'crm.default_owner': ['Default lead owner', 'text'],
+    'accounting.fiscal_year_start': ['Financial year starts (month 1–12, 7 = July)', 'number'], 'crm.daily_slots': ['Daily lead target (1–500)', 'number'], 'crm.default_owner': ['Default lead owner', 'text'],
     'crm.default_business_type': ['Default business type', 'text'], 'crm.report_brand': ['Report brand', 'text'],
     'company.name': ['Company name (emails)', 'text'], 'company.website': ['Company website', 'text'], 'company.phone': ['Company phone', 'text'],
     'company.address': ['Company address', 'text'], 'company.signature_name': ['Email signature name', 'text'], 'company.signature_title': ['Email signature title', 'text'],

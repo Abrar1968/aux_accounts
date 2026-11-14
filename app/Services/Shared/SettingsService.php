@@ -46,6 +46,7 @@ class SettingsService
         'crm.report_brand' => 'Sales & Marketing',
         'crm.phone_country_code' => '88',
         'forecast.collection_rate' => 0.6,
+        'accounting.fiscal_year_start' => 7, // month the financial year starts (Bangladesh: July–June)
         // Email composer letterhead / signature
         'company.name' => 'Auxtech',
         'company.website' => 'https://auxtechsoftware.com',
@@ -79,7 +80,7 @@ class SettingsService
     public const EDITABLE = [
         'assets.ac_useful_life', 'assets.ac_residual', 'siam.start', 'siam.months', 'siam.share', 'referral.tiers',
         'opening.other_fixed_assets', 'opening.other_assets', 'opening.cash', 'opening.other_liabilities',
-        'forecast.collection_rate', 'crm.daily_slots', 'crm.default_owner', 'crm.default_business_type', 'crm.report_brand',
+        'forecast.collection_rate', 'accounting.fiscal_year_start', 'crm.daily_slots', 'crm.default_owner', 'crm.default_business_type', 'crm.report_brand',
         'company.name', 'company.website', 'company.phone', 'company.address', 'company.signature_name', 'company.signature_title',
     ];
 

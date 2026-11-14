@@ -42,6 +42,9 @@ class FinancialStatementService
 
     public const PROCESSING_FEE = 'Processing fee';
 
+    /** Liability codes with their own balance-sheet line (LIA-SIAM-SHARE settles the Siam share payable). */
+    public const NAMED_LIABILITIES = ['LIA-DEF', 'LIA-AC', 'LIA-SIAM', 'LIA-SIAM-SHARE'];
+
     /** key => [label, section] */
     public const LINES = [
         'project_revenue' => ['Project Revenue', 'income'],
@@ -72,6 +75,7 @@ class FinancialStatementService
         'expense_cash_paid' => ['Operating Expense Cash Paid', 'cash'],
         'advances_disbursed' => ['Employee Advances Disbursed', 'cash'],
         'liability_paid' => ['Liability / Financing Cash Paid', 'cash'],
+        'capital_out' => ['Owner Distributions / Capital Cash Out', 'cash'],
         'asset_cash_paid' => ['Direct Asset Purchase Cash Paid', 'cash'],
         'total_cash_out' => ['Total Cash Out', 'cash'],
         'net_cash_movement' => ['Net Cash Movement', 'cash'],
@@ -88,6 +92,7 @@ class FinancialStatementService
         'customer_advances' => ['Customer Advances / Contract Liability', 'liability'],
         'bank_overdraft' => ['Bank Overdraft', 'liability'],
         'payables' => ['Operating, Salary & Siam Share Payables', 'liability'],
+        'other_liabilities' => ['Other Liabilities / Loans', 'liability'],
         'total_liabilities' => ['Total Liabilities', 'liability'],
         'paid_in_capital' => ['Paid-in Capital', 'equity'],
         'opening_balance' => ['Provisional Opening Historical Balance', 'equity'],
@@ -232,7 +237,9 @@ class FinancialStatementService
         $s['advances_disbursed'] = $this->advances->sumBetween('amount', 'txn_date', $from, $to, ['type' => 'Disbursement']);
         $s['liability_paid'] = -$this->liabilities->sumBetween('cash_impact', 'period', $from, $to, ['cash_impact' => ['<', 0]]);
         $s['asset_cash_paid'] = $this->assets->sumBetween('cash_paid', 'cash_payment_date', $from, $to);
-        $s['total_cash_out'] = Money::sum([$s['salary_referral_paid'], $s['expense_cash_paid'], $s['advances_disbursed'], $s['liability_paid'], $s['asset_cash_paid']]);
+        // owner distributions / drawings (negative cash on Capital) leave the bank like any payment
+        $s['capital_out'] = abs($this->capital->sumBetween('cash_impact', 'period', $from, $to, ['cash_impact' => ['<', 0]]));
+        $s['total_cash_out'] = Money::sum([$s['salary_referral_paid'], $s['expense_cash_paid'], $s['advances_disbursed'], $s['liability_paid'], $s['asset_cash_paid'], $s['capital_out']]);
         $s['net_cash_movement'] = Money::round($s['total_cash_in'] - $s['total_cash_out']);
         $s['ending_cash'] = Money::round($s['beginning_cash'] + $s['net_cash_movement']);
 
@@ -264,7 +271,8 @@ class FinancialStatementService
         $b['customer_advances'] = $recv['advance'];
         $b['bank_overdraft'] = max(0.0, -$s['ending_cash']);
         $b['payables'] = $payable;
-        $b['total_liabilities'] = Money::sum([$b['prior_dues'], $b['ac_financing'], $b['siam_liability'], $b['customer_advances'], $b['bank_overdraft'], $b['payables']]);
+        $b['other_liabilities'] = $this->otherLiabilities($cut);
+        $b['total_liabilities'] = Money::sum([$b['prior_dues'], $b['ac_financing'], $b['siam_liability'], $b['customer_advances'], $b['bank_overdraft'], $b['payables'], $b['other_liabilities']]);
 
         $b['paid_in_capital'] = $this->capital->sumBefore('equity_impact', 'period', $cut);
         $b['opening_balance'] = $this->openingHistoricalBalance();
@@ -282,7 +290,7 @@ class FinancialStatementService
      *
      * @return array{0: float, 1: float}
      */
-    private function prepaidAndPayables(string $cut): array
+    public function prepaidAndPayables(string $cut): array
     {
         $paidExp = $this->expensePayments->query()->whereNotNull('paid_on')->where('paid_on', '<', $cut)
             ->selectRaw('operating_expense_id k, SUM(amount) s')->groupBy('operating_expense_id')->pluck('s', 'k');
@@ -318,6 +326,68 @@ class FinancialStatementService
         $dec = $this->liabilities->sumBefore('decrease', 'period', $cut, ['liability_code' => $code]);
 
         return max(0.0, Money::round($inc - $dec));
+    }
+
+    /**
+     * Balance sheet before the first model month (31 Mar 2026): the same rules as balanceSheet(),
+     * with no in-model activity. Used as the opening column of cash flow / trial balance reports.
+     *
+     * @return array<string, float>
+     */
+    public function openingPosition(): array
+    {
+        $cut = $this->periods->modelStart()->date();
+        $cash = Money::round($this->settings->get('opening.cash'));
+        $recv = $this->receivables->totalsAt($cut);
+        [$prepaid, $payable] = $this->prepaidAndPayables($cut);
+        $b = [
+            'ending_cash' => $cash, 'cash_bank' => max(0.0, $cash),
+            'accounts_receivable' => $recv['ar'],
+            'advance_receivable' => Money::round($this->advances->sumBefore('amount', 'txn_date', $cut, ['type' => 'Disbursement'])
+                - $this->advances->sumBefore('amount', 'txn_date', $cut, ['type' => 'Recovery'])),
+            'net_fixed_assets' => $this->openingNetFixedAssets($cut),
+            'other_assets' => Money::sum([$this->settings->get('opening.other_fixed_assets'), $this->settings->get('opening.other_assets'), $prepaid]),
+            'prior_dues' => $this->liabilityBalance('LIA-DEF', $cut), 'ac_financing' => $this->liabilityBalance('LIA-AC', $cut),
+            'siam_liability' => $this->liabilityBalance('LIA-SIAM', $cut), 'customer_advances' => $recv['advance'],
+            'bank_overdraft' => max(0.0, -$cash), 'payables' => $payable, 'other_liabilities' => $this->otherLiabilities($cut),
+            'paid_in_capital' => $this->capital->sumBefore('equity_impact', 'period', $cut),
+            'opening_balance' => $this->openingHistoricalBalance(), 'cumulative_net_income' => 0.0,
+        ];
+        $b['total_assets'] = Money::sum([$b['cash_bank'], $b['accounts_receivable'], $b['advance_receivable'], $b['net_fixed_assets'], $b['other_assets']]);
+        $b['total_liabilities'] = Money::sum([$b['prior_dues'], $b['ac_financing'], $b['siam_liability'], $b['customer_advances'], $b['bank_overdraft'], $b['payables'], $b['other_liabilities']]);
+        $b['total_equity'] = Money::sum([$b['paid_in_capital'], $b['opening_balance'], $b['cumulative_net_income']]);
+        $b['total_liabilities_equity'] = Money::round($b['total_liabilities'] + $b['total_equity']);
+        $b['balance_check'] = Money::round($b['total_assets'] - $b['total_liabilities_equity']);
+
+        return $b;
+    }
+
+    /** NBV of assets held before the model start (cost − opening accumulated depreciation, floored at residual). */
+    private function openingNetFixedAssets(string $cut): float
+    {
+        $nbv = 0;
+        foreach ($this->assets->query()->get() as $a) {
+            $acq = $a->acquisition_date?->toDateString();
+            if ($acq !== null && $acq < $cut) {
+                $nbv += Money::paisa(max((float) $a->residual_value, (float) $a->cost - (float) $a->opening_accumulated_dep));
+            }
+        }
+
+        return $nbv / 100;
+    }
+
+    /** Gross cost of fixed assets acquired before $cut (same inclusion rule as the NBV in the schedule). */
+    public function fixedAssetCostAt(string $cut): float
+    {
+        return Money::round($this->assets->query()->whereNotNull('acquisition_date')->where('acquisition_date', '<', $cut)->sum('cost'));
+    }
+
+    /** Loans / liabilities recorded under any other code (each code netted, never below zero). */
+    public function otherLiabilities(string $cut): float
+    {
+        return Money::sum($this->liabilities->query()->where('period', '<', $cut)->whereNotIn('liability_code', self::NAMED_LIABILITIES)
+            ->selectRaw('liability_code, SUM(increase) - SUM(decrease) bal')->groupBy('liability_code')->pluck('bal')
+            ->map(fn ($b) => max(0.0, Money::round((float) $b)))->all());
     }
 
     /** Opening_Balance!B21 — known opening assets − known liabilities − pre-model paid-in capital. */

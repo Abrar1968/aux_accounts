@@ -86,3 +86,20 @@ export async function exportIntakePdf(p, sections) {
     doc.signatures({ sealLabel: 'Authorised by', clientLabel: 'Client signature' });
     doc.download(`intake-${p.code}.pdf`);
 }
+
+/**
+ * Financial report PDF (P&L, cash flow, trial balance). blocks: [{ heading?, columns, rows: [{ cells, bold?, shade? }] }]
+ */
+export async function exportReportPdf({ title, subtitle, filename, meta = [], blocks = [], note = null }) {
+    const doc = await new PdfDoc({ title }).useBrand();
+    doc.letterhead(title.toUpperCase(), subtitle, [...meta, { label: 'Generated', value: today() }]);
+    for (const b of blocks) {
+        if (b.heading) { doc.ensure(40); doc.text(40, doc.y, b.heading, { size: 10.5, bold: true }); doc.y -= 15; }
+        const rows = b.rows.map((r) => r.cells.map((c) => String(c ?? '').replaceAll('৳', 'BDT ')));
+        doc.table(b.columns, rows, { bold: (_, i) => !!b.rows[i].bold, shade: (_, i) => !!b.rows[i].shade });
+        doc.y -= 6;
+    }
+    if (note) { doc.ensure(30); doc.text(40, doc.y, note, { size: 8, gray: 0.4 }); doc.y -= 16; }
+    doc.signatures({ sealLabel: 'Prepared & approved by' });
+    doc.download(filename);
+}

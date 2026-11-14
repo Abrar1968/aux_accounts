@@ -32,6 +32,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/statements/grid', [Accounting\StatementController::class, 'grid'])->name('statements.grid');
             Route::get('/statements/{month?}', [Accounting\StatementController::class, 'show'])->where('month', '\d{4}-\d{2}')->name('statements.show');
             Route::get('/controls', Accounting\ControlController::class)->name('controls');
+            Route::get('/reports/profit-loss', [Accounting\ReportController::class, 'profitLoss'])->name('reports.profit-loss');
+            Route::get('/reports/cash-flow', [Accounting\ReportController::class, 'cashFlow'])->name('reports.cash-flow');
+            Route::get('/reports/trial-balance', [Accounting\ReportController::class, 'trialBalance'])->name('reports.trial-balance');
         });
 
         Route::get('/projects', [Accounting\ProjectController::class, 'index'])->middleware('permission:accounting.projects.view')->name('projects.index');
