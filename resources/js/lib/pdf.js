@@ -112,20 +112,22 @@ export class PdfDoc {
 
     /** Signature row: accounts seal (always) and the client's signature (client documents only). */
     signatures({ sealLabel = 'Authorised signature', clientLabel = null } = {}) {
-        this.ensure(95);
+        this.ensure(105);
         const y = this.y - 60;
         const colW = 170;
         this.image('seal', this.margin, y + 4, colW, 52);
         this.line(this.margin, y, this.margin + colW, y, 0.5);
         this.text(this.margin, y - 11, sealLabel, { size: 8, gray: 0.35 });
-        if (brand?.company) this.text(this.margin, y - 21, `${brand.signature_title ? brand.signature_title + ', ' : ''}${brand.company}`, { size: 8, gray: 0.35 });
+        let sy = y - 22;
+        if (brand?.signature_name) { this.text(this.margin, sy, brand.signature_name, { size: 9, bold: true }); sy -= 10; } // Settings → Email signature name
+        if (brand?.company) this.text(this.margin, sy, `${brand.signature_title ? brand.signature_title + ', ' : ''}${brand.company}`, { size: 8, gray: 0.35 });
         if (clientLabel) {
             const x = this.right - colW;
             this.image('client', x, y + 4, colW, 52);
             this.line(x, y, this.right, y, 0.5);
             this.text(x, y - 11, clientLabel, { size: 8, gray: 0.35 });
         }
-        this.y = y - 32;
+        this.y = y - 42;
     }
 
     heading(s, sub) {

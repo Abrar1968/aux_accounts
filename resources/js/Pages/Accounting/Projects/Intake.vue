@@ -28,7 +28,7 @@ const sections = computed(() => [
         <Button size="sm" icon="printer" @click="printPage(`Intake ${p.code}`)">Print</Button>
     </PageHeader>
     <PrintLayout title="Project Intake Form" :subtitle="p.code" :meta="[{ label: 'Assign date', value: date(p.start_date) }, { label: 'Delivery', value: date(p.est_delivery_date) }]"
-        :client="p.client_signature" client-label="Client signature" seal-label="Auxtech">
+        :client="p.client_signature" client-label="Client signature" seal-label="Authorised by">
         <div class="grid gap-6 sm:grid-cols-2">
             <section v-for="[title, rows] in sections" :key="title" class="break-inside-avoid">
                 <h3 class="mb-2 border-b border-line pb-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-brand-600 dark:text-brand-300 print:text-black">{{ title }}</h3>

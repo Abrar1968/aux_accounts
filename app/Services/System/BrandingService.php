@@ -117,6 +117,7 @@ class BrandingService
             'company' => $this->settings->get('company.name'), 'address' => $this->settings->get('company.address'),
             'phone' => $this->settings->get('company.phone'), 'website' => $this->settings->get('company.website'),
             'email' => config('mail.from.address'), 'signature_title' => $this->settings->get('company.signature_title'),
+            'signature_name' => $this->settings->get('company.signature_name'),
             'logo' => $asset('logo'), 'seal' => $asset('seal'),
             'favicon' => $this->faviconUrl(),
             'mark' => $this->meta('logo') ? $this->faviconUrl(isset($this->meta('logo')['mark']) ? 'mark' : 'touch') : null,

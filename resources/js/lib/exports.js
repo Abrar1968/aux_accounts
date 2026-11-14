@@ -83,6 +83,6 @@ export async function exportIntakePdf(p, sections) {
             { bold: (r) => ['Contract value', 'Due'].includes(r[0]) });
     }
     if (p.notes) { doc.ensure(30); doc.text(40, doc.y, 'NOTE', { size: 9, bold: true, gray: 0.35 }); doc.y -= 14; doc.text(40, doc.y, p.notes.split('\n')[0], { size: 9 }); doc.y -= 20; }
-    doc.signatures({ sealLabel: 'Auxtech', clientLabel: 'Client signature' });
+    doc.signatures({ sealLabel: 'Authorised by', clientLabel: 'Client signature' });
     doc.download(`intake-${p.code}.pdf`);
 }

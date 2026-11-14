@@ -48,6 +48,7 @@ const contact = computed(() => [brand.value.address, brand.value.phone, brand.va
                 <div>
                     <div class="flex h-16 items-end"><img v-if="brand.seal" :src="brand.seal.png" alt="Accounts seal" class="max-h-16 w-auto max-w-[11rem] object-contain" /></div>
                     <p class="border-t border-line pt-2">{{ sealLabel }}</p>
+                    <p v-if="brand.signature_name" class="text-[13px] font-semibold text-ink">{{ brand.signature_name }}</p>
                     <p>{{ [brand.signature_title, brand.company].filter(Boolean).join(', ') }}</p>
                 </div>
                 <div v-if="client || clientLabel" class="text-right">
